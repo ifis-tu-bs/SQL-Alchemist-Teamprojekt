@@ -49,12 +49,26 @@
   
   <xs:complexType name="subtask_type">
     <xs:sequence>
-      <xs:element name="tasktext" type="string_type"/>
+      <xs:element name="tasktexts" type="tasktexts_type"/>
       <xs:element name="solution" type="solution_type"/>
       <xs:element name="requiredterms" minOccurs="0" maxOccurs="1" type="terms_type"/>
       <xs:element name="bannedterms" minOccurs="0" maxOccurs="1" type="terms_type"/>
       <xs:element name="points" type="points_type"/>
     </xs:sequence>
+  </xs:complexType>
+  
+  <xs:complexType name="tasktexts_type">
+    <xs:sequence>
+      <xs:element name="tasktext" minOccurs="1" maxOccurs="unbounded" type="tasktext_type"/>
+    </xs:sequence>
+  </xs:complexType>
+  
+  <xs:complexType name="tasktext_type">
+    <xs:simpleContent>
+      <xs:extension base="string_type">
+        <xs:attribute name="language" type="language_type" use="required" />
+      </xs:extension>
+    </xs:simpleContent>
   </xs:complexType>
   
   <xs:complexType name="terms_type">
@@ -75,6 +89,13 @@
       <xs:element name="evaluationstrategy" type="evaluationstrategy_type"/>
     </xs:sequence>
   </xs:complexType>
+  
+  <xs:simpleType name="language_type">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="DE" />
+      <xs:enumeration value="EN" />
+    </xs:restriction>
+  </xs:simpleType>
   
   <xs:simpleType name="evaluationstrategy_type">
     <xs:restriction base="xs:string">

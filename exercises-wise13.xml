@@ -95,7 +95,9 @@
     <subtasks>
       
       <subtask>
-        <tasktext>The super villain table is an excerpt of the powered person table. Provide a query on the powered person table that reproduces the super villain table.</tasktext>
+        <tasktexts>
+          <tasktext language="EN">The super villain table is an excerpt of the powered person table. Provide a query on the powered person table that reproduces the super villain table.</tasktext>
+        </tasktexts>
         <solution>
           <referencestatement>
             SELECT alias
@@ -108,7 +110,9 @@
       </subtask>
       
       <subtask>
-        <tasktext>A query for all super heroes having no cape.</tasktext>
+        <tasktexts>
+          <tasktext language="EN">A query for all super heroes having no cape.</tasktext>
+        </tasktexts>
         <solution>
           <referencestatement>
             SELECT *
@@ -121,7 +125,9 @@
       </subtask>
       
       <subtask>
-        <tasktext>A query for the names of all powers of Young Nastyman and the number of the comic they first appeared in, ordered by their appearance (newest first). If two powers appeared at the same time, sort them alphabetically by their name.</tasktext>
+        <tasktexts>
+          <tasktext language="EN">A query for the names of all powers of Young Nastyman and the number of the comic they first appeared in, ordered by their appearance (newest first). If two powers appeared at the same time, sort them alphabetically by their name.</tasktext>
+        </tasktexts>
         <solution>
           <referencestatement>
             SELECT power, comic
@@ -138,7 +144,9 @@
       </subtask>
       
       <subtask>
-        <tasktext>A query for the number of pages I would have to read if I wanted to read all Marvel comics in the database.</tasktext>
+        <tasktexts>
+          <tasktext language="EN">A query for the number of pages I would have to read if I wanted to read all Marvel comics in the database.</tasktext>
+        </tasktexts>
         <solution>
           <referencestatement>
             SELECT SUM(pages) AS sum
@@ -154,7 +162,9 @@
       </subtask>
       
       <subtask>
-        <tasktext>A query that states if the average powered person is evil (evilness > 0) or good (evilness ≤ 0), depending on all powered persons’ evilness levels.</tasktext>
+        <tasktexts>
+          <tasktext language="EN">A query that states if the average powered person is evil (evilness > 0) or good (evilness ≤ 0), depending on all powered persons’ evilness levels.</tasktext>
+        </tasktexts>
         <solution>
           <referencestatement>
             SELECT AVG(evilness_level)
@@ -166,8 +176,10 @@
       </subtask>
       
       <subtask>
-        <tasktext>A query for the aliases of all super heroes that fought super villains in a comic with a no from 10
+        <tasktexts>
+          <tasktext language="EN">A query for the aliases of all super heroes that fought super villains in a comic with a no from 10
 to 20, the comic’s title, and the number of powers the respective hero already possessed in that comic.</tasktext>
+        </tasktexts>
         <solution>
           <referencestatement>
             WITH no_alias_count (comic_no, alias, count) AS (

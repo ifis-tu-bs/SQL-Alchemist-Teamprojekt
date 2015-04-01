@@ -20,7 +20,10 @@
     
     <subtasks>
       <subtask><!--(1..n)-->
-        <tasktext>Natürlichsprachliche Beschreibung der Query</tasktext>
+        <tasktexts>
+          <tasktext language="DE">Natürlichsprachliche Beschreibung der Query</tasktext>
+          <tasktext language="EN">Naturallanguage Description</tasktext>
+        </tasktexts>
         <solution>
           <referencestatement>SELECT statement als Musterlösung</referencestatement>
           <evaluationstrategy>SET</evaluationstrategy><!--one of [SET, LIST]-->

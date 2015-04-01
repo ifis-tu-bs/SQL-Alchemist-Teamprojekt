@@ -32,7 +32,9 @@
     
     <subtasks>
       <subtask><!--(1..n)-->
-        <tasktext>Ohhkey...to start simple, just create a result set of with the ID of all "red" powders.</tasktext>
+        <tasktexts>
+          <tasktext language="EN">Ohhkey...to start simple, just create a result set of with the ID of all "red" powders.</tasktext>
+        </tasktexts>
         <solution>
           <referencestatement>SELECT if FROM Powders WHERE color="red"</referencestatement>
           <evaluationstrategy>SET</evaluationstrategy>
@@ -40,7 +42,9 @@
         <points>1</points>
       </subtask>
       <subtask>
-      	<tasktext>That was simple. Lets do something more complex. Get me all Powders which have a unique effect, i.e. an effect not shared by any other powder. Please sort that list by the powder's price from most expensive to cheapest.</tasktext>
+        <tasktexts>
+          <tasktext language="EN">That was simple. Lets do something more complex. Get me all Powders which have a unique effect, i.e. an effect not shared by any other powder. Please sort that list by the powder's price from most expensive to cheapest.</tasktext>
+        </tasktexts>
       	<!--How would we treat stuff like "powders" vs. the id of all powders? -->
       	<solution>
       		<referencestatement>
