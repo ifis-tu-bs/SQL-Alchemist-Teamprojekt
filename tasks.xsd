@@ -135,6 +135,11 @@
       <xs:enumeration value="ORDER BY" />
       <xs:enumeration value="COUNT" />
       <xs:enumeration value="SUM" />
+	  <xs:enumeration value="LEFT OUTER JOIN" />
+	  <xs:enumeration value="RIGHT OUTER JOIN" />
+	  <xs:enumeration value="AVG" />
+	  <xs:enumeration value="MAX" />
+	  <xs:enumeration value="MIN" />    
     </xs:restriction>
   </xs:simpleType>
   
