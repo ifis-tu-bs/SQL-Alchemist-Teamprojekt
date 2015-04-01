@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<tasks schemaversion="1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="tasks.xsd">
+
+  <task taskid="Alechmistic_Stuff_1" querylanguage="SQL"><!--querylanguage one of [SQL]-->
+    
+    <title>Welcome to SQL Alchemist!</title>
+    
+    <flufftext>Welcome to your first task in SQL-Alchemist. It will teach you the basics of this game by presenting several challanges you have to solve using your impressive SQL skills.</flufftext><!--(optional)-->
+    
+    <schema>
+      <relation><!--how would we handle autoincrement ids here?-->
+        <intension>CREATE TABLE Powders(id int not null primary key, pname varchar(100), color varchar(50), price int)</intension>
+        <extension>
+          <tuple>INSERT INTO Powders(id, pname, color) VALUES (1, "Magic Glitter", "red")</tuple>
+        </extension>
+      </relation>
+      <relation>
+      	<intension>CREATE TABLE Effects(id int not null primary key, ename varchar(100), description varchar(1000))</intension>
+      	<extension>
+      		<tuple>INSERT INTO Effects(id, ename) VALUES (1, "Dizzyness")</tuple>
+      	</extension></relation>
+      <relation>
+      	<intension>CREATE TABLE p2e(pid int  not null , eid int not null, strength int. PRIMARY KEY (pid. eid), FOREIGN KEY (pid) REFERENCES Powders(id), FOREIGN KEY (eid) REFERENCES Effects(id))</intension>
+      	<extension>
+            <tuple>
+                 INSERT INTO p2e VALUES (1, 1, 
+            </tuple>
+        </extension><!--Can we prevent automatically inserting more tuples for dizzyness? So that it stays unqiue for the red glitter powder?--><!--I wonder how data generation works: Should we provide some hints here? i.e. we need at least 100 powders, and 20 effects, and each powerd should have 0..5 effects each?-->
+      </relation>
+    </schema>
+    
+    <subtasks>
+      <subtask><!--(1..n)-->
+        <tasktext>Ohhkey...to start simple, just create a result set of with the ID of all "red" powders.</tasktext>
+        <solution>
+          <referencestatement>SELECT if FROM Powders WHERE color="red"</referencestatement>
+          <evaluationstrategy>SET</evaluationstrategy>
+        </solution>
+        <points>1</points>
+      </subtask>
+      <subtask>
+      	<tasktext>That was simple. Lets do something more complex. Get me all Powders which have a unique effect, i.e. an effect not shared by any other powder. Please sort that list by the powder's price from most expensive to cheapest.</tasktext>
+      	<!--How would we treat stuff like "powders" vs. the id of all powders? -->
+      	<solution>
+      		<referencestatement>
+      			SELECT * FROM Powders p JOIN p2e pe ON pe.pid=p.id WHERE pe.eid IN (SELECT eid FROM p2e GROUP BY eid HAVING count(pid)=1) ORDER BY p.price DESC
+      		</referencestatement>
+      		 <evaluationstrategy>LIST</evaluationstrategy>
+      	</solution>
+        <points>2</points>    
+      	</subtask>
+    </subtasks>
+    
+  </task>
+  
+</tasks>

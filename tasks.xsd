@@ -18,7 +18,7 @@
       <xs:element name="schema" type="schema_type"/>
       <xs:element name="subtasks" type="subtasks_type"/>
     </xs:sequence>
-    <xs:attribute name="taskid" type="int_type" use="required" />
+    <xs:attribute name="taskid" type="string_type" use="required" />
     <xs:attribute name="querylanguage" type="querylanguage_type" use="required" />
   </xs:complexType>
   
