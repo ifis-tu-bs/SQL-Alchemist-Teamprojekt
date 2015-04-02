@@ -4,9 +4,13 @@
 
   <task taskid="1" querylanguage="SQL"><!--querylanguage one of [SQL]-->
     
-    <title>Titel des Tasks</title>
+    <titles>
+      <title language="DE">Titel des Tasks</title><!--language one of [DE, EN]-->
+    </titles>
     
-    <flufftext>Beschreibung zum Rendern im Spiel.</flufftext><!--(optional)-->
+    <flufftexts>
+      <flufftext language="DE">Beschreibung zum Rendern im Spiel.</flufftext><!--(optional); language one of [DE, EN]-->
+    </flufftexts>
     
     <schema>
       <relation><!--(1..n)-->
