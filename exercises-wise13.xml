@@ -4,9 +4,13 @@
 
   <task taskid="exercises-wise13" querylanguage="SQL">
     
-    <title>Super Heros</title>
+    <titles>
+      <title language="EN">Super Heros</title>
+    </titles>
     
-    <flufftext>Super Heros und Super Villains.</flufftext>
+    <flufftexts>
+      <flufftext language="EN">Super Heros und Super Villains.</flufftext>
+    </flufftexts>
     
     <schema>
       <relation>

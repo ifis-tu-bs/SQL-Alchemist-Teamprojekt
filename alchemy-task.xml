@@ -4,9 +4,13 @@
 
   <task taskid="Alechmistic_Stuff_1" querylanguage="SQL"><!--querylanguage one of [SQL]-->
     
-    <title>Welcome to SQL Alchemist!</title>
+    <titles>
+      <title language="EN">Welcome to SQL Alchemist!</title>
+    </titles>
     
-    <flufftext>Welcome to your first task in SQL-Alchemist. It will teach you the basics of this game by presenting several challanges you have to solve using your impressive SQL skills.</flufftext><!--(optional)-->
+    <flufftexts>
+      <flufftext language="EN">Welcome to your first task in SQL-Alchemist. It will teach you the basics of this game by presenting several challanges you have to solve using your impressive SQL skills.</flufftext><!--(optional)-->
+    </flufftexts>
     
     <schema>
       <relation><!--how would we handle autoincrement ids here?-->

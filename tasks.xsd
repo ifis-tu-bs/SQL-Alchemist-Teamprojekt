@@ -13,8 +13,8 @@
   
   <xs:complexType name="task_type">
     <xs:sequence>
-      <xs:element name="title" type="string_type" />
-      <xs:element name="flufftext" minOccurs="0" maxOccurs="1" type="string_type" />
+      <xs:element name="titles" type="titles_type" />
+      <xs:element name="flufftexts" minOccurs="0" maxOccurs="1" type="flufftexts_type" />
       <xs:element name="schema" type="schema_type"/>
       <xs:element name="subtasks" type="subtasks_type"/>
     </xs:sequence>
@@ -57,24 +57,36 @@
     </xs:sequence>
   </xs:complexType>
   
-  <xs:complexType name="tasktexts_type">
+  <xs:complexType name="terms_type">
     <xs:sequence>
-      <xs:element name="tasktext" minOccurs="1" maxOccurs="unbounded" type="tasktext_type"/>
+      <xs:element name="term" maxOccurs="unbounded" type="term_type"/>
     </xs:sequence>
   </xs:complexType>
   
-  <xs:complexType name="tasktext_type">
+  <xs:complexType name="tasktexts_type">
+    <xs:sequence>
+      <xs:element name="tasktext" minOccurs="1" maxOccurs="unbounded" type="multilanguage_type"/>
+    </xs:sequence>
+  </xs:complexType>
+  
+  <xs:complexType name="flufftexts_type">
+    <xs:sequence>
+      <xs:element name="flufftext" minOccurs="1" maxOccurs="unbounded" type="multilanguage_type"/>
+    </xs:sequence>
+  </xs:complexType>
+  
+  <xs:complexType name="titles_type">
+    <xs:sequence>
+      <xs:element name="title" minOccurs="1" maxOccurs="unbounded" type="multilanguage_type"/>
+    </xs:sequence>
+  </xs:complexType>
+  
+  <xs:complexType name="multilanguage_type">
     <xs:simpleContent>
       <xs:extension base="string_type">
         <xs:attribute name="language" type="language_type" use="required" />
       </xs:extension>
     </xs:simpleContent>
-  </xs:complexType>
-  
-  <xs:complexType name="terms_type">
-    <xs:sequence>
-      <xs:element name="term" maxOccurs="unbounded" type="term_type"/>
-    </xs:sequence>
   </xs:complexType>
   
   <xs:simpleType name="querylanguage_type">

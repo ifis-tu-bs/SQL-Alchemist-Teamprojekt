@@ -4,9 +4,13 @@
 
   <task taskid="1" querylanguage="SQL">
     
-    <title>Movies</title>
+    <titles>
+      <title language="EN">Movies</title>
+    </titles>
     
-    <flufftext>Movies and Genres</flufftext>
+    <flufftexts>
+      <flufftext language="EN">Movies and Genres</flufftext>
+    </flufftexts>
     
     <schema>
       <relation>
