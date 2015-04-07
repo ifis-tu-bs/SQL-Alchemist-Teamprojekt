@@ -1,6 +1,7 @@
 package dbconnection;
 
 import java.sql.*;
+import java.util.StringTokenizer;
 
 /**
  * Class DB-Connection.
@@ -98,14 +99,20 @@ public class DBConnection {
      * @param conn Connection, DB-Connecion
      * @param select Boolean, true if SQL-Statement is Select-Statement
      */
-    public void executeSQLStatement(String sqlStatement, Connection conn, boolean select) {
+    public void executeSQLStatement(String sqlStatement, Connection conn) {
         Statement stmt = null;
+        boolean select = false;
+        
+        StringTokenizer st = new StringTokenizer(sqlStatement);
+        String s = st.nextToken().toLowerCase();
+        if (s.equals("select")) {
+            select = true;
+        }
         
         try {
             //Execute a query
             System.out.println("Executing SQL-Statement in given database...");
             stmt = conn.createStatement();
-            
             if (select) {
                 ResultSet rs = stmt.executeQuery(sqlStatement);
                 //Printing out the ResultSet

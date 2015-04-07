@@ -35,12 +35,12 @@ public class Test {
             " age INTEGER, " + 
             " PRIMARY KEY ( id ))";
         String sqlStatement2 = "INSERT INTO Registration " +
-                   "VALUES(10, 'Sumit', 'Mittal', 23)";
+                   "VALUES(102, 'Sumit', 'Mittal', 23)";
         String sqlStatement3 = "SELECT * FROM REGISTRATION";
         
         DBConnection dbConnection = new DBConnection(jdbcDriver, serverName, databaseName);
         Connection conn = dbConnection.buildDBConnection(user, pass);
-        dbConnection.executeSQLStatement(sqlStatement, conn, false);
-        dbConnection.buildDBConnection(user, pass);
+        dbConnection.executeSQLStatement(sqlStatement3, conn);
+        dbConnection.closeDBConnection(conn);
     }
 }
