@@ -49,4 +49,13 @@ public class Header {
     public void setFluffytext(String fluffytext) {
         this.fluffytext = fluffytext;
     }
+    
+    public String toString() {
+        StringBuffer sb = new StringBuffer();
+        sb.append("Header \n");
+        sb.append("Title:" + this.getTitle() + "\n");
+        sb.append("text:" + this.getFluffytext() + "\n");
+
+        return sb.toString();
+    }
 }
