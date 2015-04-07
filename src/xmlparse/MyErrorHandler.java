@@ -15,14 +15,17 @@ import org.xml.sax.SAXParseException;
  */
 public class MyErrorHandler implements ErrorHandler {
     public void warning(SAXParseException e) throws SAXException {
+        System.out.println("Achtung! Warnung: ");
         System.out.println(e.getMessage());
     }
 
     public void error(SAXParseException e) throws SAXException {
+        System.out.println("Achtung! Fehler: ");
         System.out.println(e.getMessage());
     }
 
     public void fatalError(SAXParseException e) throws SAXException {
+        System.out.println("Achtung! Fataler Fehler: ");
         System.out.println(e.getMessage());
     }
 }

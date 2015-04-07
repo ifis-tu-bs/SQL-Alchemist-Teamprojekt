@@ -17,8 +17,13 @@ public class Test {
      * @param args unused 
      */
     public static void main(String[] args) {
+        XMLSyntaxCheck sych = new XMLSyntaxCheck();
+        try {
+            sych.checkxml("exercises-wise11.xml");
+        }
+        catch(Exception e) {e.printStackTrace();};
         SAXParserExample spe = new SAXParserExample();
-	spe.runExample();
+	/*spe.runExample();*/
         
         String jdbcDriver = "com.mysql.jdbc.Driver";
         String serverName = "localhost";
