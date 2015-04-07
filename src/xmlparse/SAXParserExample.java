@@ -145,10 +145,4 @@ public class SAXParserExample extends DefaultHandler {
         }
 
     }
-
-    public static void main(String[] args) {
-        SAXParserExample spe = new SAXParserExample();
-        spe.runExample();
-    }
-
 }
