@@ -1,7 +1,5 @@
 import java.sql.*;
 
-package dbconnection;
-
 /**
  * Class DB-Connection.
  * 
