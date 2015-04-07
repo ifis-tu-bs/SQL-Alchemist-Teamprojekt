@@ -2,8 +2,6 @@ package dbconnection;
 
 import java.sql.*;
 
-
-
 /**
  * Class DB-Connection.
  * 
@@ -151,35 +149,5 @@ public class DBConnection {
                 se.printStackTrace();
             }
         }
-    }
-    
-    /**
-     * Main-Methde for testing, can be deleted if not longer needed.
-     * 
-     * @param args not used
-     */
-    public static void main(String[] args) {
-        String jdbcDriver = "com.mysql.jdbc.Driver";
-        String serverName = "localhost";
-        String databaseName = "sql-alchemist-teamprojekt";
-        
-        //Database credentials
-        String user = "root";
-        String pass = "";
-        
-        String sqlStatement = "CREATE TABLE REGISTRATION " +
-            "(id INTEGER not NULL, " +
-            " first VARCHAR(255), " + 
-            " last VARCHAR(255), " + 
-            " age INTEGER, " + 
-            " PRIMARY KEY ( id ))";
-        String sqlStatement2 = "INSERT INTO Registration " +
-                   "VALUES(10, 'Sumit', 'Mittal', 23)";
-        String sqlStatement3 = "SELECT * FROM REGISTRATION";
-        
-        DBConnection dbConnection = new DBConnection(jdbcDriver, serverName, databaseName);
-        Connection conn = dbConnection.buildDBConnection(user, pass);
-        dbConnection.executeSQLStatement(sqlStatement3, conn, true);
-        dbConnection.buildDBConnection(user, pass);
     }
 }
