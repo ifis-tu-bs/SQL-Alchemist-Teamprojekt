@@ -51,9 +51,11 @@ public class Relation {
 
     public String toString() {
         StringBuffer sb = new StringBuffer();
-        sb.append("Relation \n");
-        sb.append("Intension:" + getIntension() + "\n");
-        sb.append("Tuple:" + getTuple() + "\n");
+        //sb.append("Relation \n");
+        //sb.append("Intension:");
+        sb.append(getIntension());
+        //sb.append("\n");
+        //sb.append("Tuple:" + getTuple() + "\n");
 
         return sb.toString();
     }

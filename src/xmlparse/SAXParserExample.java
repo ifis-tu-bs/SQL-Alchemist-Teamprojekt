@@ -1,6 +1,8 @@
 package xmlparse;
 
+import dbconnection.DBConnection;
 import java.io.IOException;
+import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -33,8 +35,8 @@ public class SAXParserExample extends DefaultHandler {
     }
 
     public void runExample() {
-        parseDocument();
-        printData();
+        this.parseDocument();
+        this.printData();
     }
 
     private void parseDocument() {
@@ -51,7 +53,7 @@ public class SAXParserExample extends DefaultHandler {
             sp.parse("src/alchemy-task.xml", this);
             sp.parse("src/exam-wise13.xml", this);
             sp.parse("src/exercises-wise11.xml", this);
-            sp.parse("src/tasks.xml", this);
+            //sp.parse("src/tasks.xml", this);
 
         } catch (SAXException se) {
             se.printStackTrace();
@@ -66,13 +68,29 @@ public class SAXParserExample extends DefaultHandler {
      * Iterate through the list and print the contents
      */
     private void printData() {
-
+        String jdbcDriver = "com.mysql.jdbc.Driver";
+        String serverName = "localhost";
+        String databaseName = "sql-alchemist-teamprojekt";
+        
+        //Database credentials
+        String user = "root";
+        String pass = "123";
+        
+        DBConnection dbConnection = new DBConnection(jdbcDriver, serverName, databaseName);
+        
+        
         System.out.println("No of Relations '" + myrelation.size() + "'.");
 
         Iterator it = myrelation.iterator();
+        
         while (it.hasNext()) {
-            System.out.println(it.next().toString());
+            Connection conn = dbConnection.buildDBConnection(user, pass);
+            String sql = it.next().toString();
+            dbConnection.executeSQLStatement(sql, conn);
+            System.out.println(sql);
+            dbConnection.closeDBConnection(conn);
         }
+        
          System.out.println("No of Tasks '" + mytask.size() + "'.");
 
         it = mytask.iterator();

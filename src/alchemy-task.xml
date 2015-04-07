@@ -25,7 +25,7 @@
       		<tuple>INSERT INTO Effects(id, ename) VALUES (1, "Dizzyness")</tuple>
       	</extension></relation>
       <relation>
-      	<intension>CREATE TABLE p2e(pid int  not null , eid int not null, strength int. PRIMARY KEY (pid. eid), FOREIGN KEY (pid) REFERENCES Powders(id), FOREIGN KEY (eid) REFERENCES Effects(id))</intension>
+      	<intension>CREATE TABLE p2e(pid int  not null, eid int not null, strength int, PRIMARY KEY (pid, eid), FOREIGN KEY (pid) REFERENCES Powders(id), FOREIGN KEY (eid) REFERENCES Effects(id))</intension>
       	<extension>
             <tuple>
                  INSERT INTO p2e VALUES (1, 1, 

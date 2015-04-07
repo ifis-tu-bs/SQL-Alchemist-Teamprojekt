@@ -21,31 +21,11 @@ public class Test {
         try {
             sych.checkxml("exercises-wise11.xml");
         }
-        catch(Exception e) {e.printStackTrace();};
+        catch(Exception e) {
+            e.printStackTrace();
+        }
+        
         SAXParserExample spe = new SAXParserExample();
-	/*spe.runExample();*/
-        
-        String jdbcDriver = "com.mysql.jdbc.Driver";
-        String serverName = "localhost";
-        String databaseName = "sql-alchemist-teamprojekt";
-        
-        //Database credentials
-        String user = "root";
-        String pass = "123";
-        
-        String sqlStatement = "CREATE TABLE REGISTRATION " +
-            "(id INTEGER not NULL, " +
-            " first VARCHAR(255), " + 
-            " last VARCHAR(255), " + 
-            " age INTEGER, " + 
-            " PRIMARY KEY ( id ))";
-        String sqlStatement2 = "INSERT INTO Registration " +
-                   "VALUES(102, 'Sumit', 'Mittal', 23)";
-        String sqlStatement3 = "SELECT * FROM REGISTRATION";
-        
-        DBConnection dbConnection = new DBConnection(jdbcDriver, serverName, databaseName);
-        Connection conn = dbConnection.buildDBConnection(user, pass);
-        dbConnection.executeSQLStatement(sqlStatement3, conn);
-        dbConnection.closeDBConnection(conn);
+	spe.runExample();
     }
 }
