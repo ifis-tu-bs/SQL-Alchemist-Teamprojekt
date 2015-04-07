@@ -11,7 +11,7 @@ package xmlparse;
 public class Relation {
 
     private String intension;
-    private String tuble;
+    private String tuple;
 
     public Relation() {
     }
@@ -24,11 +24,11 @@ public class Relation {
         this.intension = intension;
     }
 
-    public String getTuble() {
-        return tuble;
+    public String getTuple() {
+        return tuple;
     }
 
-    public void setTuble(String tuble) {
-        this.tuble = tuble;
+    public void setTuple(String tuble) {
+        this.tuple = tuple;
     }
 }
