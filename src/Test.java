@@ -26,7 +26,7 @@ public class Test {
         
         //Database credentials
         String user = "root";
-        String pass = "";
+        String pass = "123";
         
         String sqlStatement = "CREATE TABLE REGISTRATION " +
             "(id INTEGER not NULL, " +
