@@ -73,7 +73,10 @@ public class DBConnection {
             System.out.println("SQL-Statement executed...");
         } catch (SQLException se) {
             //Handle errors for JDBC
-            se.printStackTrace();
+            StringBuffer sb = new StringBuffer();
+            sb.append(se.toString());
+            StringTokenizer st = new StringTokenizer(sb.toString(), "\n");
+            System.out.println("Die Fehlermeldung lautet: " + st.nextToken());
         } catch(Exception e) {
             //Handle errors for Class.forName
             e.printStackTrace();
@@ -142,7 +145,10 @@ public class DBConnection {
             System.out.println("SQL-Statement executed...");
         } catch (SQLException se) {
             //Handle errors for JDBC
-            se.printStackTrace();
+            StringBuffer sb = new StringBuffer();
+            sb.append(se.toString());
+            StringTokenizer st = new StringTokenizer(sb.toString(), "\n");
+            System.out.println("Die Fehlermeldung lautet: " + st.nextToken());
         } catch(Exception e) {
             //Handle errors for Class.forName
             e.printStackTrace();
