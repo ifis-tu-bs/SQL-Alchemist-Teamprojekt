@@ -18,14 +18,10 @@ public class Test {
         
         String exercise = args[0];
         XMLSyntaxCheck sych = new XMLSyntaxCheck();
-        try {
+
             sych.checkxml(exercise);
-        }
-        catch(Exception e) {
-            e.printStackTrace();
-        }
-        
-        MySAXParser sp = new MySAXParser();
-	sp.runExample(exercise);
+            
+            MySAXParser sp = new MySAXParser();
+            sp.runExample(exercise);
     }
 }

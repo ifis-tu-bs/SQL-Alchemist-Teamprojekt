@@ -50,7 +50,7 @@ public class MySAXParser extends DefaultHandler {
      */
     public void runExample(String exercise) {
         this.parseDocument(exercise);
-        this.printData();
+      //  this.printData();
         this.insertToDb();
     }
 
