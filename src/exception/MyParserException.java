@@ -18,17 +18,23 @@ public class MyParserException implements ErrorHandler {
     public MyParserException() {}
     
     public void warning(SAXParseException e) throws SAXException {
-        System.out.println("Achtung! Warnung: ");
+        int zeile = e.getLineNumber();
+        int spalte = e.getColumnNumber();
+        System.out.println("Achtung! Warnung: Überprüfe Zeile " + zeile + ", Spalte " + spalte);
         System.out.println(e.getMessage());
     }
 
     public void error(SAXParseException e) throws SAXException {
-        System.out.println("Achtung! Fehler: ");
+        int zeile = e.getLineNumber();
+        int spalte = e.getColumnNumber();
+        System.out.println("Achtung! Fehler in Zeile " + zeile + ", Spalte " + spalte);
         System.out.println(e.getMessage());
     }
 
     public void fatalError(SAXParseException e) throws SAXException {
-        System.out.println("Achtung! Fataler Fehler: ");
+        int zeile = e.getLineNumber();
+        int spalte = e.getColumnNumber();
+        System.out.println("Achtung! Fataler Fehler in Zeile " + zeile + ", Spalte " + spalte);
         System.out.println(e.getMessage());
     }
     
