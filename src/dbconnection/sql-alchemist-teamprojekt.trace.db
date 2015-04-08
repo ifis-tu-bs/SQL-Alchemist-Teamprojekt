@@ -1,0 +1,24 @@
+04-08 17:06:49 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Tabelle "POWDERS" besteht bereits
+Table "POWDERS" already exists; SQL statement:
+CREATE TABLE Powders(id int not null primary key, pname varchar(100), color varchar(50), price int) [42101-176]
+04-08 17:06:49 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Tabelle "EFFECTS" besteht bereits
+Table "EFFECTS" already exists; SQL statement:
+CREATE TABLE Effects(id int not null primary key, ename varchar(100), description varchar(1000)) [42101-176]
+04-08 17:06:50 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Tabelle "P2E" besteht bereits
+Table "P2E" already exists; SQL statement:
+CREATE TABLE p2e(pid int  not null, eid int not null, strength int, PRIMARY KEY (pid, eid), FOREIGN KEY (pid) REFERENCES Powders(id), FOREIGN KEY (eid) REFERENCES Effects(id)) [42101-176]
+04-08 17:08:43 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Tabelle "POWDERS" besteht bereits
+Table "POWDERS" already exists; SQL statement:
+CREATE TABLE Powders(id int not null primary key, pname varchar(100), color varchar(50), price int) [42101-176]
+04-08 17:08:43 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Tabelle "EFFECTS" besteht bereits
+Table "EFFECTS" already exists; SQL statement:
+CREATE TABLE Effects(id int not null primary key, ename varchar(100), description varchar(1000)) [42101-176]
+04-08 17:08:43 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Tabelle "P2E" besteht bereits
+Table "P2E" already exists; SQL statement:
+CREATE TABLE p2e(pid int  not null, eid int not null, strength int, PRIMARY KEY (pid, eid), FOREIGN KEY (pid) REFERENCES Powders(id), FOREIGN KEY (eid) REFERENCES Effects(id)) [42101-176]
