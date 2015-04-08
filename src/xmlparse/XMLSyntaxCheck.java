@@ -4,7 +4,6 @@
  * and open the template in the editor.
  */
 package xmlparse;
-package exception;
 
 import exception.MyParserException;
 import java.io.IOException;
