@@ -26,7 +26,15 @@ public class XMLSyntaxCheck {
      * @param args the command line arguments
      */
     
-
+    /** 
+     * checks if the given parameter s (e.g. tasks.xml) is a valid XML-file
+     * regarding XML-schema tasks.xsd
+     * @param s name of the xml-file you want to validate (like "tasks.xml")
+     * @throws SAXException
+     * @throws ParserConfigurationException
+     * @throws IOException 
+     */
+    
     public void checkxml(String s) throws SAXException, ParserConfigurationException, IOException {
         SAXParserFactory factory = SAXParserFactory.newInstance();
         factory.setValidating(false);
@@ -36,14 +44,14 @@ public class XMLSyntaxCheck {
         SchemaFactory.newInstance("http://www.w3.org/2001/XMLSchema");
 
         factory.setSchema(schemaFactory.newSchema(
-        new Source[] {new StreamSource("src/tasks.xsd")}));
+        new Source[] {new StreamSource("src/tasks.xsd")})); // source of xml-schema-file
 
         SAXParser parser = factory.newSAXParser();
 
         XMLReader reader = parser.getXMLReader();
         reader.setErrorHandler(new MyErrorHandler());
-        reader.parse(new InputSource("src/" + s));
-        System.out.println("Alles tippitoppi!");
+        reader.parse(new InputSource("src/" + s));  //source of xml-file
+        System.out.println("Alles tippitoppi!"); // if this line is executed, the file is valid.
     }
     
 }
