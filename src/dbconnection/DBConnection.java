@@ -70,13 +70,7 @@ public class DBConnection {
             } else {
                 stmt.executeUpdate(sqlStatement);
             }
-            //Close statement
-            stmt.close();
             System.out.println("SQL-Statement executed...");
-            
-            //Close connection
-            System.out.println("Closing Connection...");
-            conn.close();
         } catch (SQLException se) {
             //Handle errors for JDBC
             se.printStackTrace();
@@ -145,13 +139,7 @@ public class DBConnection {
                     stmt.executeUpdate(sqlStmt);
                 }
             }
-            //Close statement
-            stmt.close();
             System.out.println("SQL-Statement executed...");
-            
-            //Close connection
-            System.out.println("Closing Connection...");
-            conn.close();
         } catch (SQLException se) {
             //Handle errors for JDBC
             se.printStackTrace();
@@ -172,7 +160,7 @@ public class DBConnection {
                     conn.close();
                 }
             } catch (SQLException se) {
-                se.printStackTrace();
+;
             }
         }
         
@@ -207,22 +195,19 @@ public class DBConnection {
      * @param rs ResultSet, ResultSet of a SELECT-statement
      * @return String[][], multidimensional Stringarray containing
      *                     the name of the DB-table and the associated value
+     * @throws java.sql.SQLException
      */
-    public String[][] transformResultSet(ResultSet rs) {
+    private String[][] transformResultSet(ResultSet rs) throws SQLException {
         String[][] result = null;
         
-        try {
-            ResultSetMetaData rsmd = rs.getMetaData();
-            int columnsNumber = rsmd.getColumnCount();
-             result = new String[columnsNumber][2];
-            while (rs.next()) {
-                for (int i = 1; i <= columnsNumber; i++) {
-                    result[i][0] = rsmd.getColumnName(i);
-                    result[i][1] = rs.getString(i);
-                }
+        ResultSetMetaData rsmd = rs.getMetaData();
+        int columnsNumber = rsmd.getColumnCount();
+        result = new String[columnsNumber][2];
+        while (rs.next()) {
+            for (int i = 1; i <= columnsNumber; i++) {
+                result[i][0] = rsmd.getColumnName(i);
+                result[i][1] = rs.getString(i);
             }
-        } catch(SQLException se) {
-            se.printStackTrace();
         }
         
         return result;
@@ -234,22 +219,19 @@ public class DBConnection {
      * Prints out the ResultSet of a SELECT-statement.
      * 
      * @param rs ResultSet, ResultSet of a SELECT-statement
+     * @throws java.sql.SQLException
      */
-    public void printResultSet(ResultSet rs) {
-        try {
-            ResultSetMetaData rsmd = rs.getMetaData();
-            int columnsNumber = rsmd.getColumnCount();
-            while (rs.next()) {
-                for (int i = 1; i <= columnsNumber; i++) {
-                    if (i > 1) {
-                        System.out.print(",  ");
-                    }
-                    System.out.print(rsmd.getColumnName(i) + ": " + rs.getString(i));
+    private void printResultSet(ResultSet rs) throws SQLException {
+        ResultSetMetaData rsmd = rs.getMetaData();
+        int columnsNumber = rsmd.getColumnCount();
+        while (rs.next()) {
+            for (int i = 1; i <= columnsNumber; i++) {
+                if (i > 1) {
+                    System.out.print(",  ");
                 }
-                System.out.println("");
+                System.out.print(rsmd.getColumnName(i) + ": " + rs.getString(i));
             }
-        } catch(SQLException se) {
-            se.printStackTrace();
+            System.out.println("");
         }
     }
 }
