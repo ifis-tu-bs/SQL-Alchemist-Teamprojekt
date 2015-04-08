@@ -1,6 +1,8 @@
 package dbconnection;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.StringTokenizer;
 
 /**
@@ -12,10 +14,8 @@ import java.util.StringTokenizer;
  */
 public class DBConnection {
     
-    private String jdbcDriver;
-    private String serverName;
-    private String databaseName;
-    private String dbURL;
+    private final String jdbcDriver;
+    private final String dbURL;
     
     /**
      * Constructor DBConnection.
@@ -28,24 +28,25 @@ public class DBConnection {
      */
     public DBConnection(String jdbcDriver, String serverName, String databaseName) {
         this.jdbcDriver = jdbcDriver;
-        this.serverName = serverName;
-        this.databaseName = databaseName;
-        
         this.dbURL = "jdbc:mysql://" + serverName + "/" + databaseName;
     }
     
     /**
-     * Method buildDBConnection.
+     * Method executeSQLStatement.
      * 
-     * Building a Connection to a Database, the connection is returned to
-     * execute SQL-Statements on this connection.
+     * Building a connection to a database. Executing a SQL-Statement.
+     * The ResultSet of a SELECT-Statement is printed out,
      * 
      * @param user String, username
      * @param pass String, password for user
-     * @return Connection, DB-Connection
+     * @param sqlStatement String, SQL-Statement to be executed
+     * @return String[][], multidimensional Stringarray containing
+     *                     the name of the DB-table and the associated value
      */
-    public Connection buildDBConnection(String user, String pass) {
+    public String[][] executeSQLStatement(String user, String pass, String sqlStatement) {
         Connection conn = null;
+        Statement stmt = null;
+        String[][] result = null;
         
         try {
             //Register JDBC driver
@@ -55,84 +56,27 @@ public class DBConnection {
             //Open a connection
             System.out.println("Connecting to database...");
             conn = DriverManager.getConnection(this.dbURL, user, pass);
-        } catch (SQLException se) {
-           //Handle errors for JDBC
-           se.printStackTrace();
-        } catch(Exception e) {
-           //Handle errors for Class.forName
-           e.printStackTrace();
-        }
-        
-        return conn;
-    }
-    
-    
-    /**
-     * Method closeDBConnection.
-     * 
-     * Closing DB-Connection.
-     * 
-     * @param conn Connection, DB-Connection
-     */
-    public void closeDBConnection(Connection conn) {
-        try {
-            //Close connection
-            System.out.println("Closing Connection...");
-            conn.close();
-        } catch (SQLException se) {
-           //Handle errors for JDBC
-           se.printStackTrace();
-        } catch(Exception e) {
-           //Handle errors for Class.forName
-           e.printStackTrace();
-        }
-    }
-    
-    /**
-     * Method executeSQLStatement.
-     * 
-     * Executing any SQL-Statement. The ResultSet is null
-     * if the SQL-Statement is not a SELECT-Statement. Otherwise the ResultSet
-     * of the SELECT-Statement is printed out,
-     * 
-     * @param sqlStatement String, SQL-Statement to be executed
-     * @param conn Connection, DB-Connecion
-     * @param select Boolean, true if SQL-Statement is Select-Statement
-     */
-    public void executeSQLStatement(String sqlStatement, Connection conn) {
-        Statement stmt = null;
-        boolean select = false;
-        
-        StringTokenizer st = new StringTokenizer(sqlStatement);
-        String s = st.nextToken().toLowerCase();
-        if (s.equals("select")) {
-            select = true;
-        }
-        
-        try {
+
             //Execute a query
             System.out.println("Executing SQL-Statement in given database...");
             stmt = conn.createStatement();
-            if (select) {
+            if (this.checkKindOfStatement(sqlStatement)) {
                 ResultSet rs = stmt.executeQuery(sqlStatement);
                 //Printing out the ResultSet
-                ResultSetMetaData rsmd = rs.getMetaData();
-                int columnsNumber = rsmd.getColumnCount();
-                while (rs.next()) {
-                    for (int i = 1; i <= columnsNumber; i++) {
-                        if (i > 1) {
-                            System.out.print(",  ");
-                        }
-                        System.out.print(rs.getString(i) + " " + rsmd.getColumnName(i));
-                    }
-                    System.out.println("");
-                }
+                this.printResultSet(rs);
+                result = this.transformResultSet(rs);
+                //Close ResultSet
+                rs.close();
             } else {
                 stmt.executeUpdate(sqlStatement);
-                //Close statement
-                stmt.close();
             }
+            //Close statement
+            stmt.close();
             System.out.println("SQL-Statement executed...");
+            
+            //Close connection
+            System.out.println("Closing Connection...");
+            conn.close();
         } catch (SQLException se) {
             //Handle errors for JDBC
             se.printStackTrace();
@@ -155,6 +99,157 @@ public class DBConnection {
             } catch (SQLException se) {
                 se.printStackTrace();
             }
+        }
+        
+        return result;
+    }
+    
+    /**
+     * Method executeSQLStatement.
+     * 
+     * Building a connection to a database. Executing a SQL-Statement.
+     * The ResultSet of a SELECT-Statement is printed out,
+     * 
+     * @param user String, username
+     * @param pass String, password for user
+     * @param sqlStatement String, SQL-Statement to be executed
+     * @return List, List with several multidimensional Stringarrays containing
+     *               the name of the DB-table and the associated value
+     */
+    public List executeSQLStatement(String user, String pass, String[] sqlStatement) {
+        Connection conn = null;
+        Statement stmt = null;
+        List result = new ArrayList();
+        
+        try {
+            //Register JDBC driver
+            System.out.println("Register JDBC-Driver...");
+            Class.forName(this.jdbcDriver);
+
+            //Open a connection
+            System.out.println("Connecting to database...");
+            conn = DriverManager.getConnection(this.dbURL, user, pass);
+
+            //Execute a querys
+            stmt = conn.createStatement();
+            for (String sqlStmt : sqlStatement) {
+                System.out.println("Executing SQL-Statement in given database...");
+                if (this.checkKindOfStatement(sqlStmt)) {
+                    ResultSet rs = stmt.executeQuery(sqlStmt);
+                    //Printing out the ResultSet
+                    this.printResultSet(rs);
+                    result.add(this.transformResultSet(rs));
+                    //Close ResultSet
+                    rs.close();
+                } else {
+                    stmt.executeUpdate(sqlStmt);
+                }
+            }
+            //Close statement
+            stmt.close();
+            System.out.println("SQL-Statement executed...");
+            
+            //Close connection
+            System.out.println("Closing Connection...");
+            conn.close();
+        } catch (SQLException se) {
+            //Handle errors for JDBC
+            se.printStackTrace();
+        } catch(Exception e) {
+            //Handle errors for Class.forName
+            e.printStackTrace();
+        } finally {
+            //finally block used to close resources
+            try {
+                if (stmt!=null) {
+                    stmt.close();
+                }
+            } catch (SQLException se2) {
+                se2.printStackTrace();
+            }
+            try {
+                if (conn!=null) {
+                    conn.close();
+                }
+            } catch (SQLException se) {
+                se.printStackTrace();
+            }
+        }
+        
+        return result;
+    }
+    
+    /**
+     * Method checkKindOfStatement.
+     * 
+     * Checks whether the sql-statement is a SELECT-statement or not.
+     * 
+     * @param sqlStatement String, SQL-statement
+     * @return boolean, true if sql-statment is SELECT-statement
+     */
+    public boolean checkKindOfStatement(String sqlStatement) {
+        boolean isSelect = false;
+        
+        StringTokenizer st = new StringTokenizer(sqlStatement);
+        String s = st.nextToken().toLowerCase();
+        if (s.equals("select")) {
+            isSelect = true;
+        }
+        
+        return isSelect;
+    }
+    
+    /**
+     * Method tranformResultSet.
+     * 
+     * Transforms a ResultSet into a multidimensional Stringarray.
+     * 
+     * @param rs ResultSet, ResultSet of a SELECT-statement
+     * @return String[][], multidimensional Stringarray containing
+     *                     the name of the DB-table and the associated value
+     */
+    public String[][] transformResultSet(ResultSet rs) {
+        String[][] result = null;
+        
+        try {
+            ResultSetMetaData rsmd = rs.getMetaData();
+            int columnsNumber = rsmd.getColumnCount();
+             result = new String[columnsNumber][2];
+            while (rs.next()) {
+                for (int i = 1; i <= columnsNumber; i++) {
+                    result[i][0] = rsmd.getColumnName(i);
+                    result[i][1] = rs.getString(i);
+                }
+            }
+        } catch(SQLException se) {
+            se.printStackTrace();
+        }
+        
+        return result;
+    }
+    
+    /**
+     * Method printResultSet.
+     * 
+     * Prints out the ResultSet of a SELECT-statement.
+     * 
+     * @param rs ResultSet, ResultSet of a SELECT-statement
+     */
+    public void printResultSet(ResultSet rs) {
+        try {
+            ResultSetMetaData rsmd = rs.getMetaData();
+            int columnsNumber = rsmd.getColumnCount();
+            while (rs.next()) {
+                for (int i = 1; i <= columnsNumber; i++) {
+                    if (i > 1) {
+                        System.out.print(",  ");
+                    }
+                    System.out.print(rsmd.getColumnName(i) + ": " + rs.getString(i));
+                }
+                System.out.println("");
+            }
+        } catch(SQLException se) {
+            se.printStackTrace();
         }
     }
 }
