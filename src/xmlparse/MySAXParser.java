@@ -121,9 +121,12 @@ public class MySAXParser extends DefaultHandler {
         DBConnection dbconn = new DBConnection(jdbcDriver, serverName, databaseName);
         while (it.hasNext()) {
             Relation s = (Relation)it.next();
+            String[] a = s.getTuple();
+            for (int i = 0; i < a.length; i++){
+                a[i] = a[i].replace('\"', '\'');
+            }
             dbconn.executeSQLStatement(user, pass, s.getIntension());
-            dbconn.executeSQLStatement(user, pass, s.getTuple());
-            System.out.println(s);
+            dbconn.executeSQLStatement(user, pass, a);
         }
     }
 
