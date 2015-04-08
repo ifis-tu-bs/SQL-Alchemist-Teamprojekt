@@ -72,11 +72,7 @@ public class DBConnection {
             }
             System.out.println("SQL-Statement executed...");
         } catch (SQLException se) {
-            //Handle errors for JDBC
-            StringBuffer sb = new StringBuffer();
-            sb.append(se.toString());
-            StringTokenizer st = new StringTokenizer(sb.toString(), "\n");
-            System.out.println("Die Fehlermeldung lautet: " + st.nextToken());
+            this.printMySQLException(se);
         } catch(Exception e) {
             //Handle errors for Class.forName
             e.printStackTrace();
@@ -87,14 +83,14 @@ public class DBConnection {
                     stmt.close();
                 }
             } catch (SQLException se2) {
-                se2.printStackTrace();
+                this.printMySQLException(se2);
             }
             try {
                 if (conn!=null) {
                     conn.close();
                 }
-            } catch (SQLException se) {
-                se.printStackTrace();
+            } catch (SQLException se3) {
+                this.printMySQLException(se3);
             }
         }
         
@@ -144,11 +140,7 @@ public class DBConnection {
             }
             System.out.println("SQL-Statement executed...");
         } catch (SQLException se) {
-            //Handle errors for JDBC
-            StringBuffer sb = new StringBuffer();
-            sb.append(se.toString());
-            StringTokenizer st = new StringTokenizer(sb.toString(), "\n");
-            System.out.println("Die Fehlermeldung lautet: " + st.nextToken());
+            this.printMySQLException(se);
         } catch(Exception e) {
             //Handle errors for Class.forName
             e.printStackTrace();
@@ -159,18 +151,33 @@ public class DBConnection {
                     stmt.close();
                 }
             } catch (SQLException se2) {
-                se2.printStackTrace();
+                this.printMySQLException(se2);
             }
             try {
                 if (conn!=null) {
                     conn.close();
                 }
-            } catch (SQLException se) {
-;
+            } catch (SQLException se3) {
+                this.printMySQLException(se3);
             }
         }
         
         return result;
+    }
+    
+    /**
+     * Method printMySQLException.
+     * 
+     * Prints own Error-Message for SQLException.
+     * 
+     * @param se SQLException
+     */
+    public void printMySQLException(SQLException se) {
+        //Handle errors for SQLException
+        StringBuffer sb = new StringBuffer();
+        sb.append(se.toString());
+        StringTokenizer st = new StringTokenizer(sb.toString(), "\n");
+        System.out.println("Die Fehlermeldung lautet: " + st.nextToken());
     }
     
     /**
