@@ -110,15 +110,15 @@ public class MySAXParser extends DefaultHandler {
      */
     private void insertToDb() {
         Iterator it = myrelation.iterator();
-        String jdbcDriver = "com.mysql.jdbc.Driver";
-        String serverName = "localhost";
+        String driver = "org.h2.Driver";
+        String path = "./src/dbconnection";
         String databaseName = "sql-alchemist-teamprojekt";
         
         //Database credentials
-        String user = "root";
-        String pass = "123";
+        String user = "";
+        String pass = "";
         
-        DBConnection dbconn = new DBConnection(jdbcDriver, serverName, databaseName);
+        DBConnection dbconn = new DBConnection(driver, path, databaseName);
         while (it.hasNext()) {
             Relation s = (Relation)it.next();
             dbconn.executeSQLStatement(user, pass, s.getIntension());

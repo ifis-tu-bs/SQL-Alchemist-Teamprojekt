@@ -14,7 +14,7 @@ import java.util.StringTokenizer;
  */
 public class DBConnection {
     
-    private final String jdbcDriver;
+    private final String driver;
     private final String dbURL;
     
     /**
@@ -22,13 +22,13 @@ public class DBConnection {
      * 
      * Declare some Variables.
      * 
-     * @param jdbcDriver String, JDDB-Driver
-     * @param serverName String, servername
+     * @param driver String, JDDB-Driver
+     * @param path String, path
      * @param databaseName String, databasename
      */
-    public DBConnection(String jdbcDriver, String serverName, String databaseName) {
-        this.jdbcDriver = jdbcDriver;
-        this.dbURL = "jdbc:mysql://" + serverName + "/" + databaseName;
+    public DBConnection(String driver, String path, String databaseName) {
+        this.driver = driver;
+        this.dbURL = "jdbc:h2:" + path + "/" + databaseName;
     }
     
     /**
@@ -50,8 +50,8 @@ public class DBConnection {
         
         try {
             //Register JDBC driver
-            System.out.println("Register JDBC-Driver...");
-            Class.forName(this.jdbcDriver);
+            System.out.println("Register driver...");
+            Class.forName(this.driver);
 
             //Open a connection
             System.out.println("Connecting to database...");
@@ -117,8 +117,8 @@ public class DBConnection {
         
         try {
             //Register JDBC driver
-            System.out.println("Register JDBC-Driver...");
-            Class.forName(this.jdbcDriver);
+            System.out.println("Register driver...");
+            Class.forName(this.driver);
 
             //Open a connection
             System.out.println("Connecting to database...");
