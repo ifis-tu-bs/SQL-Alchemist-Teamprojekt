@@ -1,4 +1,5 @@
 import dbconnection.*;
+import java.util.Iterator;
 import xmlparse.*;
 import java.util.List;
 
@@ -17,13 +18,6 @@ public class Test {
      * @param args unused 
      */
     public static void main(String[] args) {
-        String jdbcDriver = "com.mysql.jdbc.Driver";
-        String serverName = "localhost";
-        String databaseName = "sql-alchemist-teamprojekt";
-        
-        //Database credentials
-        String user = "root";
-        String pass = "123";
         
         String exercise = "exercises-wise13.xml";
         XMLSyntaxCheck sych = new XMLSyntaxCheck();
@@ -36,17 +30,5 @@ public class Test {
         
         SAXParserExample spe = new SAXParserExample();
 	spe.runExample(exercise);
-        
-        String sql1 = "SELECT * FROM example_innodb";
-        
-        String sql2 = "SELECT * FROM example";
-        
-        String[] sql = new String[2];
-        
-        sql[0] = sql1;
-        sql[1] = sql2;
-        
-        DBConnection dbconn = new DBConnection("com.mysql.jdbc.Driver", "localhost", "sql-alchemist-teamprojekt");
-        List result = dbconn.executeSQLStatement(user, pass, sql);
     }
 }

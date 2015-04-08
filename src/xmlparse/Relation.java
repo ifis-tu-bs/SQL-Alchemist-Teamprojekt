@@ -50,9 +50,18 @@ public class Relation {
     /**
      * get-method for the insert-into-statements
      *
-     * @return
+     * @return tuple
      */
-    public String getTuple() {
+    public String[] getTuple() {
+        return this.tuple;
+    }
+
+    /**
+     * get-metohd for the insert-statements as a string
+     *
+     * @return tuple
+     */
+    public String getTupleAsString() {
         String s = "";
         for (int i = 0; i < this.tuple.length; i++) {
 
@@ -82,7 +91,7 @@ public class Relation {
      */
     public String toString() {
         StringBuffer sb = new StringBuffer();
-        sb.append(getIntension() + "\n" + getTuple());
+        sb.append(getIntension() + "\n" + getTupleAsString());
         return sb.toString();
     }
 }

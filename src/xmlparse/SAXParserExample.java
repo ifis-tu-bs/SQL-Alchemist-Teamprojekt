@@ -1,5 +1,6 @@
 package xmlparse;
 
+import dbconnection.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -50,6 +51,7 @@ public class SAXParserExample extends DefaultHandler {
     public void runExample(String exercise) {
         this.parseDocument(exercise);
         this.printData();
+        //this.insertToDb();
     }
 
     /**
@@ -100,6 +102,23 @@ public class SAXParserExample extends DefaultHandler {
         it = myheader.iterator();
         while (it.hasNext()) {
             System.out.println(it.next().toString());
+        }
+    }
+    private void insertToDb() {
+        Iterator it = myrelation.iterator();
+        String jdbcDriver = "com.mysql.jdbc.Driver";
+        String serverName = "localhost";
+        String databaseName = "sql-alchemist-teamprojekt";
+        
+        //Database credentials
+        String user = "root";
+        String pass = "123";
+        DBConnection dbconn = new DBConnection(jdbcDriver, serverName, databaseName);
+        while (it.hasNext()) {
+            Relation s = (Relation)it.next();
+            dbconn.executeSQLStatement(user, pass, s.getIntension());
+            dbconn.executeSQLStatement(user, pass, s.getTuple());
+            System.out.println(s);
         }
     }
 
