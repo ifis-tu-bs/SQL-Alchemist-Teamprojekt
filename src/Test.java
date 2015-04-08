@@ -1,6 +1,5 @@
 import dbconnection.*;
 import xmlparse.*;
-import java.sql.*;
 import java.util.List;
 
 /**
@@ -26,13 +25,17 @@ public class Test {
         String user = "root";
         String pass = "123";
         
+        String exercise = "exercises-wise13.xml";
         XMLSyntaxCheck sych = new XMLSyntaxCheck();
         try {
-            sych.checkxml("exercises-wise11.xml");
+            sych.checkxml(exercise);
         }
         catch(Exception e) {
             e.printStackTrace();
         }
+        
+        SAXParserExample spe = new SAXParserExample();
+	spe.runExample(exercise);
         
         String sql1 = "SELECT * FROM example_innodb";
         

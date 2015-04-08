@@ -1,8 +1,6 @@
 package xmlparse;
 
-import dbconnection.DBConnection;
 import java.io.IOException;
-import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -16,6 +14,11 @@ import org.xml.sax.SAXException;
 
 import org.xml.sax.helpers.DefaultHandler;
 
+/**
+ * class to parse the XML-File into java
+ *
+ * @author Tobias
+ */
 public class SAXParserExample extends DefaultHandler {
 
     List myrelation;
@@ -26,20 +29,33 @@ public class SAXParserExample extends DefaultHandler {
     private Header tempheader;
     private Relation temprelation;
     private Task temptask;
+    /**
+     * buffer for the XML-lines
+     */
     StringBuffer sb = new StringBuffer();
 
+    /**
+     * constructor
+     */
     public SAXParserExample() {
         myrelation = new ArrayList();
         mytask = new ArrayList();
         myheader = new ArrayList();
     }
 
-    public void runExample() {
-        this.parseDocument();
+    /**
+     * run-method
+     * @param exercise
+     */
+    public void runExample(String exercise) {
+        this.parseDocument(exercise);
         this.printData();
     }
 
-    private void parseDocument() {
+    /**
+     * method to parse the XML-File
+     */
+    private void parseDocument(String exercise) {
 
         //get a factory
         SAXParserFactory spf = SAXParserFactory.newInstance();
@@ -49,11 +65,7 @@ public class SAXParserExample extends DefaultHandler {
             SAXParser sp = spf.newSAXParser();
 
             //parse the file and also register this class for call backs
-            sp.parse("src/exercises-wise13.xml", this);
-            sp.parse("src/alchemy-task.xml", this);
-            sp.parse("src/exam-wise13.xml", this);
-            sp.parse("src/exercises-wise11.xml", this);
-            //sp.parse("src/tasks.xml", this);
+            sp.parse("src/" + exercise, this);
 
         } catch (SAXException se) {
             se.printStackTrace();
@@ -68,36 +80,22 @@ public class SAXParserExample extends DefaultHandler {
      * Iterate through the list and print the contents
      */
     private void printData() {
-        String jdbcDriver = "com.mysql.jdbc.Driver";
-        String serverName = "localhost";
-        String databaseName = "sql-alchemist-teamprojekt";
-        
-        //Database credentials
-        String user = "root";
-        String pass = "123";
-        
-        DBConnection dbConnection = new DBConnection(jdbcDriver, serverName, databaseName);
-        
-        
+
         System.out.println("No of Relations '" + myrelation.size() + "'.");
 
         Iterator it = myrelation.iterator();
-        
+
         while (it.hasNext()) {
-            Connection conn = dbConnection.buildDBConnection(user, pass);
-            String sql = it.next().toString();
-            dbConnection.executeSQLStatement(sql, conn);
-            System.out.println(sql);
-            dbConnection.closeDBConnection(conn);
+            System.out.println(it.next().toString());
         }
-        
-         System.out.println("No of Tasks '" + mytask.size() + "'.");
+
+        System.out.println("No of Tasks '" + mytask.size() + "'.");
 
         it = mytask.iterator();
         while (it.hasNext()) {
             System.out.println(it.next().toString());
         }
-         System.out.println("No of Header '" + myheader.size() + "'.");
+        System.out.println("No of Header '" + myheader.size() + "'.");
 
         it = myheader.iterator();
         while (it.hasNext()) {
@@ -128,7 +126,7 @@ public class SAXParserExample extends DefaultHandler {
     }
 
     public void endElement(String uri, String localName, String qName) throws SAXException {
-        
+
         if (qName.equalsIgnoreCase("relation")) {
             //add it to the list
             myrelation.add(temprelation);
@@ -152,14 +150,14 @@ public class SAXParserExample extends DefaultHandler {
         } else if (qName.equalsIgnoreCase("points")) {
             temptask.setPoints(Integer.parseInt(sb.toString()));
         }
-        
+
         if (qName.equalsIgnoreCase("task")) {
             //add it to the list
             myheader.add(tempheader);
         } else if (qName.equalsIgnoreCase("title")) {
             tempheader.setTitle(sb.toString());
         } else if (qName.equalsIgnoreCase("flufftext")) {
-            tempheader.setFluffytext(sb.toString());
+            tempheader.setFlufftext(sb.toString());
         }
 
     }
