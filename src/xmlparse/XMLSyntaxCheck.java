@@ -31,27 +31,27 @@ public class XMLSyntaxCheck {
      * checks if the given parameter s (e.g. tasks.xml) is a valid XML-file
      * regarding XML-schema tasks.xsd
      * @param s name of the xml-file you want to validate (like "tasks.xml")
-     * @throws SAXException
-     * @throws ParserConfigurationException
-     * @throws IOException 
      */
     
-    public void checkxml(String s) throws SAXException, ParserConfigurationException, IOException {
-        SAXParserFactory factory = SAXParserFactory.newInstance();
-        factory.setValidating(false);
-        factory.setNamespaceAware(true);
+    public void checkxml(String s) {
+        try {
+            SAXParserFactory factory = SAXParserFactory.newInstance();
+            factory.setValidating(false);
+            factory.setNamespaceAware(true);
 
-        SchemaFactory schemaFactory = SchemaFactory.newInstance("http://www.w3.org/2001/XMLSchema");
+            SchemaFactory schemaFactory = SchemaFactory.newInstance("http://www.w3.org/2001/XMLSchema");
 
-        factory.setSchema(schemaFactory.newSchema(
-        new Source[] {new StreamSource("src/tasks.xsd")})); // source of xml-schema-file
+            factory.setSchema(schemaFactory.newSchema(
+            new Source[] {new StreamSource("src/tasks.xsd")})); // source of xml-schema-file
 
-        SAXParser parser = factory.newSAXParser();
+            SAXParser parser = factory.newSAXParser();
 
-        XMLReader reader = parser.getXMLReader();
-        reader.setErrorHandler(new MyParserException());
-        reader.parse(new InputSource("src/" + s));  //source of xml-file
-        System.out.println("Datei ist valide."); // if this line is executed, the file is valid.
+            XMLReader reader = parser.getXMLReader();
+            reader.setErrorHandler(new MyParserException());
+            reader.parse(new InputSource("src/" + s));  //source of xml-file
+            System.out.println("Datei ist valide."); // if this line is executed, the file is valid.
+        } catch (SAXException | ParserConfigurationException | IOException e) {
+            e.printStackTrace();
+        }
     }
-    
 }
