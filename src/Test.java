@@ -16,7 +16,7 @@ public class Test {
      */
     public static void main(String[] args) {
         
-        String exercise = "exercises-wise13.xml";
+        String exercise = args[0];
         XMLSyntaxCheck sych = new XMLSyntaxCheck();
         try {
             sych.checkxml(exercise);
