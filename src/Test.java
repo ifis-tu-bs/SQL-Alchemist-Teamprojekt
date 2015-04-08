@@ -20,12 +20,13 @@ public class Test {
         XMLSyntaxCheck sych = new XMLSyntaxCheck();
         try {
             sych.checkxml(exercise);
+            
+            MySAXParser sp = new MySAXParser();
+            sp.runExample(exercise);
         }
         catch(Exception e) {
             e.printStackTrace();
         }
         
-        MySAXParser sp = new MySAXParser();
-	sp.runExample(exercise);
     }
 }
