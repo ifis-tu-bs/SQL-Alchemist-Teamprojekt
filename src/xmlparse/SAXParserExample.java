@@ -2,7 +2,6 @@ package xmlparse;
 
 import dbconnection.DBConnection;
 import java.io.IOException;
-import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -47,6 +46,7 @@ public class SAXParserExample extends DefaultHandler {
 
     /**
      * run-method
+     * @param exercise
      */
     public void runExample(String exercise) {
         this.parseDocument(exercise);
@@ -81,15 +81,6 @@ public class SAXParserExample extends DefaultHandler {
      * Iterate through the list and print the contents
      */
     private void printData() {
-        String jdbcDriver = "com.mysql.jdbc.Driver";
-        String serverName = "localhost";
-        String databaseName = "sql-alchemist-teamprojekt";
-
-        //Database credentials
-        String user = "root";
-        String pass = "123";
-
-        DBConnection dbConnection = new DBConnection(jdbcDriver, serverName, databaseName);
 
         System.out.println("No of Relations '" + myrelation.size() + "'.");
 
