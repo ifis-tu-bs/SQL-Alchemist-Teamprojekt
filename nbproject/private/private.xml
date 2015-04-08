@@ -2,27 +2,17 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-<<<<<<< HEAD
-        <group/>
-=======
         <group>
-<<<<<<< HEAD
             <file>file:/C:/Users/Tobias/Desktop/Teamprojekt/SQL-Alchemist-Teamprojekt/src/xmlparse/Task.java</file>
-            <file>file:/C:/Users/Tobias/Desktop/Teamprojekt/SQL-Alchemist-Teamprojekt/src/xmlparse/MyErrorHandler.java</file>
             <file>file:/C:/Users/Tobias/Desktop/Teamprojekt/SQL-Alchemist-Teamprojekt/src/Test.java</file>
             <file>file:/C:/Users/Tobias/Desktop/Teamprojekt/SQL-Alchemist-Teamprojekt/src/dbconnection/DBConnection.java</file>
             <file>file:/C:/Users/Tobias/Desktop/Teamprojekt/SQL-Alchemist-Teamprojekt/src/xmlparse/Header.java</file>
             <file>file:/C:/Users/Tobias/Desktop/Teamprojekt/SQL-Alchemist-Teamprojekt/src/xmlparse/Relation.java</file>
-            <file>file:/C:/Users/Tobias/Desktop/Teamprojekt/SQL-Alchemist-Teamprojekt/src/xmlparse/SAXParserExample.java</file>
+            <file>file:/C:/Users/Tobias/Desktop/Teamprojekt/SQL-Alchemist-Teamprojekt/src/xmlparse/MySAXParser.java</file>
+            <file>file:/C:/Users/Tobias/Desktop/Teamprojekt/SQL-Alchemist-Teamprojekt/src/alchemy-task.xml</file>
             <file>file:/C:/Users/Tobias/Desktop/Teamprojekt/SQL-Alchemist-Teamprojekt/src/xmlparse/XMLSyntaxCheck.java</file>
-=======
-            <file>file:/C:/Users/Philips/Documents/GitHub/SQL-Alchemist-Teamprojekt/src/Test.java</file>
-            <file>file:/C:/Users/Philips/Documents/GitHub/SQL-Alchemist-Teamprojekt/src/xmlparse/XMLSyntaxCheck.java</file>
-            <file>file:/C:/Users/Philips/Documents/GitHub/SQL-Alchemist-Teamprojekt/src/xmlparse/SAXParserExample.java</file>
-            <file>file:/C:/Users/Philips/Documents/GitHub/SQL-Alchemist-Teamprojekt/src/dbconnection/DBConnection.java</file>
-            <file>file:/C:/Users/Philips/Documents/GitHub/SQL-Alchemist-Teamprojekt/src/xmlparse/MyErrorHandler.java</file>
->>>>>>> b9e0e2796e9f558056303b60f3518fb76d6414fe
+            <file>file:/C:/Users/Tobias/Desktop/Teamprojekt/SQL-Alchemist-Teamprojekt/src/exception/MyParserException.java</file>
+            <file>file:/C:/Users/Tobias/Desktop/Teamprojekt/SQL-Alchemist-Teamprojekt/src/exercises-wise13.xml</file>
         </group>
->>>>>>> e85f43431383f8b72fb47dd18589fc59b8e1c83b
     </open-files>
 </project-private>
