@@ -17,15 +17,16 @@ public class Test {
      * @param args unused 
      */
     public static void main(String[] args) {
+        String exercise = "exercises-wise13.xml";
         XMLSyntaxCheck sych = new XMLSyntaxCheck();
         try {
-            sych.checkxml("exercises-wise11.xml");
+            sych.checkxml(exercise);
         }
         catch(Exception e) {
             e.printStackTrace();
         }
         
         SAXParserExample spe = new SAXParserExample();
-	spe.runExample();
+	spe.runExample(exercise);
     }
 }
