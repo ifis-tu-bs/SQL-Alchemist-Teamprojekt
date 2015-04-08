@@ -4,7 +4,9 @@
  * and open the template in the editor.
  */
 package xmlparse;
+package exception;
 
+import exception.MyParserException;
 import java.io.IOException;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
@@ -49,7 +51,7 @@ public class XMLSyntaxCheck {
         SAXParser parser = factory.newSAXParser();
 
         XMLReader reader = parser.getXMLReader();
-        reader.setErrorHandler(new MyErrorHandler());
+        reader.setErrorHandler(new MyParserException());
         reader.parse(new InputSource("src/" + s));  //source of xml-file
         System.out.println("Alles tippitoppi!"); // if this line is executed, the file is valid.
     }
