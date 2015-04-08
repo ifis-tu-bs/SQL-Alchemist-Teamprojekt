@@ -1,6 +1,5 @@
 package xmlparse;
 
-import dbconnection.DBConnection;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;

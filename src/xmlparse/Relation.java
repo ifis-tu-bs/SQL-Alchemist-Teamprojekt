@@ -82,7 +82,7 @@ public class Relation {
      */
     public String toString() {
         StringBuffer sb = new StringBuffer();
-        sb.append(getIntension() + getTuple());
+        sb.append(getIntension() + "\n" + getTuple());
         return sb.toString();
     }
 }
