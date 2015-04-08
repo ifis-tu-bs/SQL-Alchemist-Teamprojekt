@@ -3,10 +3,11 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/Tobias/Desktop/Teamprojekt/SQL-Alchemist-Teamprojekt/src/dbconnection/DBConnection.java</file>
-            <file>file:/C:/Users/Tobias/Desktop/Teamprojekt/SQL-Alchemist-Teamprojekt/src/xmlparse/Header.java</file>
-            <file>file:/C:/Users/Tobias/Desktop/Teamprojekt/SQL-Alchemist-Teamprojekt/src/xmlparse/Relation.java</file>
-            <file>file:/C:/Users/Tobias/Desktop/Teamprojekt/SQL-Alchemist-Teamprojekt/src/xmlparse/SAXParserExample.java</file>
+            <file>file:/C:/Users/Philips/Documents/GitHub/SQL-Alchemist-Teamprojekt/src/Test.java</file>
+            <file>file:/C:/Users/Philips/Documents/GitHub/SQL-Alchemist-Teamprojekt/src/xmlparse/XMLSyntaxCheck.java</file>
+            <file>file:/C:/Users/Philips/Documents/GitHub/SQL-Alchemist-Teamprojekt/src/xmlparse/SAXParserExample.java</file>
+            <file>file:/C:/Users/Philips/Documents/GitHub/SQL-Alchemist-Teamprojekt/src/dbconnection/DBConnection.java</file>
+            <file>file:/C:/Users/Philips/Documents/GitHub/SQL-Alchemist-Teamprojekt/src/xmlparse/MyErrorHandler.java</file>
         </group>
     </open-files>
 </project-private>
