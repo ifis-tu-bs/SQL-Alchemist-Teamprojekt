@@ -1,7 +1,4 @@
-import dbconnection.*;
-import java.util.Iterator;
 import xmlparse.*;
-import java.util.List;
 
 /**
  * Class Test.
@@ -28,7 +25,7 @@ public class Test {
             e.printStackTrace();
         }
         
-        SAXParserExample spe = new SAXParserExample();
-	spe.runExample(exercise);
+        MySAXParser sp = new MySAXParser();
+	sp.runExample(exercise);
     }
 }
