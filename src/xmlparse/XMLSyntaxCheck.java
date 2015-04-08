@@ -52,7 +52,7 @@ public class XMLSyntaxCheck {
         XMLReader reader = parser.getXMLReader();
         reader.setErrorHandler(new MyParserException());
         reader.parse(new InputSource("src/" + s));  //source of xml-file
-        System.out.println("Alles tippitoppi!"); // if this line is executed, the file is valid.
+        System.out.println("Datei ist valide."); // if this line is executed, the file is valid.
     }
     
 }
