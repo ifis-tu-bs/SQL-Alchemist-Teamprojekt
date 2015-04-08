@@ -41,8 +41,7 @@ public class XMLSyntaxCheck {
         factory.setValidating(false);
         factory.setNamespaceAware(true);
 
-        SchemaFactory schemaFactory = 
-        SchemaFactory.newInstance("http://www.w3.org/2001/XMLSchema");
+        SchemaFactory schemaFactory = SchemaFactory.newInstance("http://www.w3.org/2001/XMLSchema");
 
         factory.setSchema(schemaFactory.newSchema(
         new Source[] {new StreamSource("src/tasks.xsd")})); // source of xml-schema-file

@@ -51,7 +51,7 @@ public class MySAXParser extends DefaultHandler {
     public void runExample(String exercise) {
         this.parseDocument(exercise);
         this.printData();
-        //this.insertToDb();
+        this.insertToDb();
     }
 
     /**
@@ -104,6 +104,10 @@ public class MySAXParser extends DefaultHandler {
             System.out.println(it.next().toString());
         }
     }
+    
+    /**
+     * Iterate through the list and insert the contents to db
+     */
     private void insertToDb() {
         Iterator it = myrelation.iterator();
         String jdbcDriver = "com.mysql.jdbc.Driver";
