@@ -4,3 +4,4 @@
 build.xml
 manifest.mf
 /dist/
+/src/dbconnection.mv.db
