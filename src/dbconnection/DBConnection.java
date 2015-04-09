@@ -50,11 +50,11 @@ public class DBConnection {
         
         try {
             //Register JDBC driver
-            System.out.println("Register driver...");
-            Class.forName(this.driver);
+            //System.out.println("Register driver...");
+            Class.forName("this.driver");
 
             //Open a connection
-            System.out.println("Connecting to database...");
+            //System.out.println("Connecting to database...");
             conn = DriverManager.getConnection(this.dbURL, user, pass);
 
             //Execute a query
@@ -75,7 +75,7 @@ public class DBConnection {
             this.printMySQLException(se);
         } catch(Exception e) {
             //Handle errors for Class.forName
-            e.printStackTrace();
+            System.out.println("Fehler beim Registrieren des Datenbanktreibers (Class.forName())!");
         } finally {
             //finally block used to close resources
             try {
@@ -116,14 +116,14 @@ public class DBConnection {
         
         try {
             //Register JDBC driver
-            System.out.println("Register driver...");
+            //System.out.println("Register driver...");
             Class.forName(this.driver);
 
             //Open a connection
-            System.out.println("Connecting to database...");
+            //System.out.println("Connecting to database...");
             conn = DriverManager.getConnection(this.dbURL, user, pass);
 
-            //Execute a querys
+            //Execute querys
             stmt = conn.createStatement();
             for (String sqlStmt : sqlStatement) {
                 System.out.println("Executing SQL-Statement in given database...");
@@ -143,7 +143,7 @@ public class DBConnection {
             this.printMySQLException(se);
         } catch(Exception e) {
             //Handle errors for Class.forName
-            e.printStackTrace();
+            System.out.println("Fehler beim Registrieren des Datenbanktreibers (Class.forName())!");
         } finally {
             //finally block used to close resources
             try {
