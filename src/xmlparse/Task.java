@@ -12,6 +12,7 @@ public class Task {
     private String evaluationstrategy;
     private String[] term;
     private int points;
+    private String language;
 
     /**
      * constructor without parameters
@@ -118,6 +119,24 @@ public class Task {
      */
     public void setPoints(int points) {
         this.points = points;
+    }
+
+    /**
+     * get-method for the langugage
+     *
+     * @return language
+     */
+    public String getLanguage() {
+        return language;
+    }
+
+    /**
+     * set-method for the language
+     *
+     * @param language
+     */
+    public void setLanguage(String language) {
+        this.language = language;
     }
 
     /**

@@ -46,12 +46,14 @@ public class MySAXParser extends DefaultHandler {
 
     /**
      * run-method
+     *
      * @param exercise
      */
     public void runExample(String exercise) {
         this.parseDocument(exercise);
-      //  this.printData();
-        this.insertToDb();
+        //this.printData();
+        //this.insertToDb();
+        this.selectFromDb();
     }
 
     /**
@@ -104,29 +106,50 @@ public class MySAXParser extends DefaultHandler {
             System.out.println(it.next().toString());
         }
     }
-    
+
     /**
      * Iterate through the list and insert the contents to db
      */
-    private void insertToDb() {
+    public void insertToDb() {
         Iterator it = myrelation.iterator();
         String driver = "org.h2.Driver";
         String path = "./src/dbconnection";
         String databaseName = "sql-alchemist-teamprojekt";
-        
+
         //Database credentials
         String user = "";
         String pass = "";
-        
+
         DBConnection dbconn = new DBConnection(driver, path, databaseName);
         while (it.hasNext()) {
-            Relation s = (Relation)it.next();
+            Relation s = (Relation) it.next();
             String[] a = s.getTuple();
-            for (int i = 0; i < a.length; i++){
+            for (int i = 0; i < a.length; i++) {
                 a[i] = a[i].replace('\"', '\'');
             }
             dbconn.executeSQLStatement(user, pass, s.getIntension());
             dbconn.executeSQLStatement(user, pass, a);
+        }
+    }
+
+    /**
+     * Iterate through the list and execute the Statements
+     */
+    public void selectFromDb() {
+        Iterator it = mytask.iterator();
+        String driver = "org.h2.Driver";
+        String path = "./src/dbconnection";
+        String databaseName = "sql-alchemist-teamprojekt";
+
+        //Database credentials
+        String user = "";
+        String pass = "";
+
+        DBConnection dbconn = new DBConnection(driver, path, databaseName);
+        while (it.hasNext()) {
+            Task select = (Task) it.next();
+            String selectString = select.getReferencestatement().replace('\"', '\'');
+            dbconn.executeSQLStatement(user, pass, selectString);
         }
     }
 
@@ -141,9 +164,11 @@ public class MySAXParser extends DefaultHandler {
         }
         if (qName.equalsIgnoreCase("Task")) {
             tempheader = new Header();
+            tempheader.setLanguage(attributes.getValue("language"));
         }
         if (qName.equalsIgnoreCase("subtask")) {
             temptask = new Task();
+            temptask.setLanguage(attributes.getValue("language"));
         }
     }
 

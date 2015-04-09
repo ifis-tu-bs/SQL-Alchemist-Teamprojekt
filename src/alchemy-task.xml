@@ -40,7 +40,9 @@
           <tasktext language="EN">Ohhkey...to start simple, just create a result set of with the ID of all "red" powders.</tasktext>
         </tasktexts>
         <solution>
-          <referencestatement>SELECT if FROM Powders WHERE color="red"</referencestatement>
+          <referencestatement>
+                SELECT * FROM Powders WHERE color='red'
+          </referencestatement>
           <evaluationstrategy>SET</evaluationstrategy>
         </solution>
         <points>1</points>

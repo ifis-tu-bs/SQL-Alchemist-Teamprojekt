@@ -11,6 +11,7 @@ public class Header {
     //private String task;
     private String title;
     private String flufftext;
+    private String language;
 
     /**
      * constructor
@@ -69,6 +70,24 @@ public class Header {
      */
     public void setFlufftext(String flufftext) {
         this.flufftext = flufftext;
+    }
+
+    /**
+     * get-method for the langugage
+     *
+     * @return language
+     */
+    public String getLanguage() {
+        return language;
+    }
+
+    /**
+     * set-method for the language
+     *
+     * @param language
+     */
+    public void setLanguage(String language) {
+        this.language = language;
     }
 
     /**
