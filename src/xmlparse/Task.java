@@ -7,7 +7,7 @@ package xmlparse;
  */
 public class Task {
 
-    private String tasktexts;
+    private String[] tasktexts;
     private String referencestatement;
     private String evaluationstrategy;
     private String[] term;
@@ -18,6 +18,7 @@ public class Task {
      * constructor without parameters
      */
     public Task() {
+        this.tasktexts = new String[0];
         this.term = new String[0];
     }
 
@@ -26,7 +27,7 @@ public class Task {
      *
      * @return tasktext
      */
-    public String getTasktexts() {
+    public String[] getTasktexts() {
         return tasktexts;
     }
 
@@ -36,7 +37,12 @@ public class Task {
      * @param tasktexts
      */
     public void setTasktexts(String tasktexts) {
-        this.tasktexts = tasktexts;
+        String[] temp = new String[this.tasktexts.length + 1];
+        for (int i = 0; i < this.tasktexts.length; i++) {
+            temp[i] = this.tasktexts[i];
+        }
+        temp[temp.length - 1] = tasktexts;
+        this.tasktexts = temp;
     }
 
     /**
@@ -147,7 +153,9 @@ public class Task {
     public String toString() {
         StringBuffer sb = new StringBuffer();
         sb.append("Task \n");
-        sb.append("Tasktext:" + this.getTasktexts() + "\n");
+        for (int i = 0; i < this.getTasktexts().length; i++) {
+            sb.append("Tasktext:" + this.tasktexts[i] + "\n");
+        }
         sb.append("Referencestatement:" + this.getReferencestatement() + "\n");
         sb.append("Evaluationstrategy:" + this.getEvaluationstrategy() + "\n");
         sb.append("Requiredterms:" + this.getTerm() + "\n");

@@ -51,9 +51,9 @@ public class MySAXParser extends DefaultHandler {
      */
     public void runExample(String exercise) {
         this.parseDocument(exercise);
-        //this.printData();
+        this.printData();
         //this.insertToDb();
-        this.selectFromDb();
+        //this.selectFromDb();
     }
 
     /**
@@ -164,11 +164,9 @@ public class MySAXParser extends DefaultHandler {
         }
         if (qName.equalsIgnoreCase("Task")) {
             tempheader = new Header();
-            tempheader.setLanguage(attributes.getValue("language"));
         }
         if (qName.equalsIgnoreCase("subtask")) {
             temptask = new Task();
-            temptask.setLanguage(attributes.getValue("language"));
         }
     }
 
@@ -191,7 +189,7 @@ public class MySAXParser extends DefaultHandler {
         if (qName.equalsIgnoreCase("subtask")) {
             //add it to the list
             mytask.add(temptask);
-        } else if (qName.equalsIgnoreCase("tasktexts")) {
+        } else if (qName.equalsIgnoreCase("tasktext")) {
             temptask.setTasktexts(sb.toString());
         } else if (qName.equalsIgnoreCase("referencestatement")) {
             temptask.setReferencestatement(sb.toString());
