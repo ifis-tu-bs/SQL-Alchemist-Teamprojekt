@@ -17,7 +17,7 @@ public class MyParserException implements ErrorHandler {
      * Constructor MyParserException.
      */
     public MyParserException() {
-        //Nothing to do
+        //Nothing to do.
     }
     
     /**
