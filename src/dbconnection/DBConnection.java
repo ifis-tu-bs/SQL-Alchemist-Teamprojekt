@@ -75,7 +75,7 @@ public class DBConnection {
             this.printMySQLException(se);
         } catch(Exception e) {
             //Handle errors for Class.forName
-            System.out.println("Fehler beim Registrieren des Datenbanktreibers (Class.forName())!");;
+            System.out.println("Fehler beim Registrieren des Datenbanktreibers (Class.forName())!");
         } finally {
             //finally block used to close resources
             try {
@@ -143,7 +143,7 @@ public class DBConnection {
             this.printMySQLException(se);
         } catch(Exception e) {
             //Handle errors for Class.forName
-            e.printStackTrace();
+            System.out.println("Fehler beim Registrieren des Datenbanktreibers (Class.forName())!");
         } finally {
             //finally block used to close resources
             try {
