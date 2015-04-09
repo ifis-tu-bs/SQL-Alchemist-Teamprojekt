@@ -22,3 +22,127 @@ CREATE TABLE Effects(id int not null primary key, ename varchar(100), descriptio
 org.h2.jdbc.JdbcSQLException: Tabelle "P2E" besteht bereits
 Table "P2E" already exists; SQL statement:
 CREATE TABLE p2e(pid int  not null, eid int not null, strength int, PRIMARY KEY (pid, eid), FOREIGN KEY (pid) REFERENCES Powders(id), FOREIGN KEY (eid) REFERENCES Effects(id)) [42101-176]
+04-08 17:19:47 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Tabelle "POWDERS" besteht bereits
+Table "POWDERS" already exists; SQL statement:
+CREATE TABLE Powders(id int not null primary key, pname varchar(100), color varchar(50), price int) [42101-176]
+04-08 17:19:47 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Tabelle "EFFECTS" besteht bereits
+Table "EFFECTS" already exists; SQL statement:
+CREATE TABLE Effects(id int not null primary key, ename varchar(100), description varchar(1000)) [42101-176]
+04-08 17:19:47 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Tabelle "P2E" besteht bereits
+Table "P2E" already exists; SQL statement:
+CREATE TABLE p2e(pid int  not null, eid int not null, strength int, PRIMARY KEY (pid, eid), FOREIGN KEY (pid) REFERENCES Powders(id), FOREIGN KEY (eid) REFERENCES Effects(id)) [42101-176]
+04-09 12:38:50 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Tabelle "POWDERS" besteht bereits
+Table "POWDERS" already exists; SQL statement:
+CREATE TABLE Powders(id int not null primary key, pname varchar(100), color varchar(50), price int) [42101-176]
+04-09 12:38:50 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Tabelle "EFFECTS" besteht bereits
+Table "EFFECTS" already exists; SQL statement:
+CREATE TABLE Effects(id int not null primary key, ename varchar(100), description varchar(1000)) [42101-176]
+04-09 12:38:51 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Tabelle "P2E" besteht bereits
+Table "P2E" already exists; SQL statement:
+CREATE TABLE p2e(pid int  not null, eid int not null, strength int, PRIMARY KEY (pid, eid), FOREIGN KEY (pid) REFERENCES Powders(id), FOREIGN KEY (eid) REFERENCES Effects(id)) [42101-176]
+04-09 12:40:15 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Feld "IF" nicht gefunden
+Column "IF" not found; SQL statement:
+SELECT if FROM Powders WHERE color="red" [42122-176]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:344)
+	at org.h2.message.DbException.get(DbException.java:178)
+	at org.h2.message.DbException.get(DbException.java:154)
+	at org.h2.expression.ExpressionColumn.optimize(ExpressionColumn.java:148)
+	at org.h2.command.dml.Select.prepare(Select.java:831)
+	at org.h2.command.Parser.prepareCommand(Parser.java:248)
+	at org.h2.engine.Session.prepareLocal(Session.java:442)
+	at org.h2.engine.Session.prepareCommand(Session.java:384)
+	at org.h2.jdbc.JdbcConnection.prepareCommand(JdbcConnection.java:1188)
+	at org.h2.jdbc.JdbcStatement.executeQuery(JdbcStatement.java:75)
+	at dbconnection.DBConnection.executeSQLStatement(DBConnection.java:64)
+	at xmlparse.MySAXParser.selectFromDb(MySAXParser.java:151)
+	at xmlparse.MySAXParser.runExample(MySAXParser.java:56)
+	at Test.main(Test.java:25)
+04-09 12:41:13 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Feld "IF" nicht gefunden
+Column "IF" not found; SQL statement:
+SELECT if FROM Powders WHERE color="red" [42122-176]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:344)
+	at org.h2.message.DbException.get(DbException.java:178)
+	at org.h2.message.DbException.get(DbException.java:154)
+	at org.h2.expression.ExpressionColumn.optimize(ExpressionColumn.java:148)
+	at org.h2.command.dml.Select.prepare(Select.java:831)
+	at org.h2.command.Parser.prepareCommand(Parser.java:248)
+	at org.h2.engine.Session.prepareLocal(Session.java:442)
+	at org.h2.engine.Session.prepareCommand(Session.java:384)
+	at org.h2.jdbc.JdbcConnection.prepareCommand(JdbcConnection.java:1188)
+	at org.h2.jdbc.JdbcStatement.executeQuery(JdbcStatement.java:75)
+	at dbconnection.DBConnection.executeSQLStatement(DBConnection.java:64)
+	at xmlparse.MySAXParser.selectFromDb(MySAXParser.java:152)
+	at xmlparse.MySAXParser.runExample(MySAXParser.java:56)
+	at Test.main(Test.java:25)
+04-09 12:41:29 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Feld "IF" nicht gefunden
+Column "IF" not found; SQL statement:
+SELECT if FROM Powders WHERE color="red" [42122-176]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:344)
+	at org.h2.message.DbException.get(DbException.java:178)
+	at org.h2.message.DbException.get(DbException.java:154)
+	at org.h2.expression.ExpressionColumn.optimize(ExpressionColumn.java:148)
+	at org.h2.command.dml.Select.prepare(Select.java:831)
+	at org.h2.command.Parser.prepareCommand(Parser.java:248)
+	at org.h2.engine.Session.prepareLocal(Session.java:442)
+	at org.h2.engine.Session.prepareCommand(Session.java:384)
+	at org.h2.jdbc.JdbcConnection.prepareCommand(JdbcConnection.java:1188)
+	at org.h2.jdbc.JdbcStatement.executeQuery(JdbcStatement.java:75)
+	at dbconnection.DBConnection.executeSQLStatement(DBConnection.java:64)
+	at xmlparse.MySAXParser.selectFromDb(MySAXParser.java:152)
+	at xmlparse.MySAXParser.runExample(MySAXParser.java:56)
+	at Test.main(Test.java:25)
+04-09 12:42:43 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Syntax Fehler in SQL Befehl "SELECT FROM POWDERS WHERE[*] COLOR=""red"" "; erwartet "., (, AS, RIGHT, LEFT, FULL, INNER, JOIN, CROSS, NATURAL, ,, SELECT"
+Syntax error in SQL statement "SELECT FROM POWDERS WHERE[*] COLOR=""red"" "; expected "., (, AS, RIGHT, LEFT, FULL, INNER, JOIN, CROSS, NATURAL, ,, SELECT"; SQL statement:
+SELECT FROM Powders WHERE color="red" [42001-176]
+04-09 12:44:22 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Syntax Fehler in SQL Befehl "SELECT FROM POWDERS WHERE[*] COLOR='red' "; erwartet "., (, AS, RIGHT, LEFT, FULL, INNER, JOIN, CROSS, NATURAL, ,, SELECT"
+Syntax error in SQL statement "SELECT FROM POWDERS WHERE[*] COLOR='red' "; expected "., (, AS, RIGHT, LEFT, FULL, INNER, JOIN, CROSS, NATURAL, ,, SELECT"; SQL statement:
+SELECT FROM Powders WHERE color='red' [42001-176]
+04-09 12:49:51 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Syntax Fehler in SQL Befehl "
+                SELECT FROM POWDERS WHERE[*] COLOR='red'
+           "; erwartet "., (, AS, RIGHT, LEFT, FULL, INNER, JOIN, CROSS, NATURAL, ,, SELECT"
+Syntax error in SQL statement "
+                SELECT FROM POWDERS WHERE[*] COLOR='red'
+           "; expected "., (, AS, RIGHT, LEFT, FULL, INNER, JOIN, CROSS, NATURAL, ,, SELECT"; SQL statement:
+
+                SELECT FROM Powders WHERE color='red'
+           [42001-176]
+04-09 12:50:40 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Syntax Fehler in SQL Befehl "
+                SELECT FROM POWDERS WHERE[*] COLOR='red'
+           "; erwartet "., (, AS, RIGHT, LEFT, FULL, INNER, JOIN, CROSS, NATURAL, ,, SELECT"
+Syntax error in SQL statement "
+                SELECT FROM POWDERS WHERE[*] COLOR='red'
+           "; expected "., (, AS, RIGHT, LEFT, FULL, INNER, JOIN, CROSS, NATURAL, ,, SELECT"; SQL statement:
+
+                SELECT FROM Powders WHERE color='red'
+           [42001-176]
+04-09 12:51:07 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Syntax Fehler in SQL Befehl "
+                SELECT FROM POWDERS WHERE[*] COLOR='red'
+           "; erwartet "., (, AS, RIGHT, LEFT, FULL, INNER, JOIN, CROSS, NATURAL, ,, SELECT"
+Syntax error in SQL statement "
+                SELECT FROM POWDERS WHERE[*] COLOR='red'
+           "; expected "., (, AS, RIGHT, LEFT, FULL, INNER, JOIN, CROSS, NATURAL, ,, SELECT"; SQL statement:
+
+                SELECT FROM Powders WHERE color='red'
+           [42001-176]
+04-09 12:55:19 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Syntax Fehler in SQL Befehl "SELECT * FROM EFFECTS P2E POWDERS[*]"
+Syntax error in SQL statement "SELECT * FROM EFFECTS P2E POWDERS[*]"; SQL statement:
+SELECT * FROM EFFECTS P2E POWDERS [42000-186]
+04-09 12:55:22 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Syntax Fehler in SQL Befehl "SELECT * FROM EFFECTS P2E POWDERS[*]"
+Syntax error in SQL statement "SELECT * FROM EFFECTS P2E POWDERS[*]"; SQL statement:
+SELECT * FROM EFFECTS P2E POWDERS [42000-186]
