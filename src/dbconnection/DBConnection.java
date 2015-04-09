@@ -51,7 +51,7 @@ public class DBConnection {
         try {
             //Register JDBC driver
             System.out.println("Register driver...");
-            Class.forName(this.driver);
+            Class.forName("this.driver");
 
             //Open a connection
             System.out.println("Connecting to database...");
@@ -75,7 +75,7 @@ public class DBConnection {
             this.printMySQLException(se);
         } catch(Exception e) {
             //Handle errors for Class.forName
-            e.printStackTrace();
+            System.out.println("Fehler beim Registrieren des Datenbanktreibers (Class.forName())!");;
         } finally {
             //finally block used to close resources
             try {
