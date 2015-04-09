@@ -5,3 +5,5 @@ build.xml
 manifest.mf
 /dist/
 /src/dbconnection.mv.db
+/src/dbconnection.sql-alchemist-teamprojekt.trace.db
+/src/dbconnection.sql-alchemist-teamprojekt.h2.db
