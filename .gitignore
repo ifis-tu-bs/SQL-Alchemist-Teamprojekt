@@ -9,3 +9,4 @@ manifest.mf
 /src/dbconnection.sql-alchemist-teamprojekt.h2.db
 /target
 /project/target
+/project/project/target/
