@@ -1,4 +1,4 @@
-name := """SQLA2"""
+name := """SQL-Alchemist-Core"""
 
 version := "1.0"
 

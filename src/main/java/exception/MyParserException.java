@@ -11,6 +11,10 @@ import org.xml.sax.ErrorHandler;
  * 
  * @author Philip Holzhüter
  */
+
+// @todo Bennennt den Krams mal gescheit!
+// @todo Warum ist denn Eure Exception gar keine Exception sondern n Error Hanlder??
+// @todo also, ihr Fangt in diesem ErrorHanlder SAX fehler ein, und gebt die in Form von sinnigen Exceptions wieder raus.
 public class MyParserException implements ErrorHandler {
     
     /**
