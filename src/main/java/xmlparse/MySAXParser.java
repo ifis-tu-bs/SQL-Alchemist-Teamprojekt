@@ -69,7 +69,7 @@ public class MySAXParser extends DefaultHandler {
             SAXParser sp = spf.newSAXParser();
 
             //parse the file and also register this class for call backs
-            sp.parse("src/" + exercise, this);
+            sp.parse("input/xml/" + exercise, this);
 
         } catch (SAXException se) {
             se.printStackTrace();
@@ -113,7 +113,7 @@ public class MySAXParser extends DefaultHandler {
     public void insertToDb() {
         Iterator it = myrelation.iterator();
         String driver = "org.h2.Driver";
-        String path = "./src/dbconnection";
+        String path = "./dbs";
         String databaseName = "sql-alchemist-teamprojekt";
 
         //Database credentials
@@ -138,7 +138,7 @@ public class MySAXParser extends DefaultHandler {
     public void selectFromDb() {
         Iterator it = mytask.iterator();
         String driver = "org.h2.Driver";
-        String path = "./src/dbconnection";
+        String path = "./dbs";
         String databaseName = "sql-alchemist-teamprojekt";
 
         //Database credentials

@@ -33,7 +33,6 @@ public class XMLSyntaxCheck {
      * regarding XML-schema tasks.xsd
      * @param s name of the xml-file you want to validate (like "tasks.xml")
      */
-    
     public void checkxml(String s) {
         try {
             SAXParserFactory factory = SAXParserFactory.newInstance();
@@ -43,13 +42,13 @@ public class XMLSyntaxCheck {
             SchemaFactory schemaFactory = SchemaFactory.newInstance("http://www.w3.org/2001/XMLSchema");
 
             factory.setSchema(schemaFactory.newSchema(
-            new Source[] {new StreamSource("src/tasks.xsd")})); // source of xml-schema-file
+            new Source[] {new StreamSource("input/xml/tasks.xsd")})); // source of xml-schema-file
 
             SAXParser parser = factory.newSAXParser();
 
             XMLReader reader = parser.getXMLReader();
             reader.setErrorHandler(new MyParserException());
-            reader.parse(new InputSource("src/" + s));  //source of xml-file
+            reader.parse(new InputSource("input/xml/" + s));  //source of xml-file
             System.out.println("Datei ist valide."); // if this line is executed, the file is valid.
         } catch (SAXException | ParserConfigurationException | IOException e) {
             StringBuffer sb = new StringBuffer();
