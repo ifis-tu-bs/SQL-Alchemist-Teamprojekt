@@ -52,8 +52,8 @@ public class MySAXParser extends DefaultHandler {
     public void runExample(String exercise) {
         this.parseDocument(exercise);
         this.printData();
-        //this.insertToDb();
-        //this.selectFromDb();
+        this.insertToDb();
+        this.selectFromDb();
     }
 
     /**

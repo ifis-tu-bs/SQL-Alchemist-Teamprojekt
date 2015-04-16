@@ -34,7 +34,7 @@ public class MyParserException implements ErrorHandler {
     public void warning(SAXParseException e) throws SAXException {
         int zeile = e.getLineNumber();
         int spalte = e.getColumnNumber();
-        System.out.println("Achtung! Warnung: ÃœberprÃ¼fe Zeile " + zeile + ", Spalte " + spalte);
+        System.out.println("Achtung! Warnung: Überprüfe Zeile " + zeile + ", Spalte " + spalte);
         System.out.println(e.getMessage());
     }
     
