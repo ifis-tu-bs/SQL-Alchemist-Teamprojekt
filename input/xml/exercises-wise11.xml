@@ -25,12 +25,12 @@
           );
         </intension>
         <extension>
-          <tuple>INSERT INTO Movie VALUES (1, 'The Godfather', 1972, 10000000, 'cinema');</tuple>
-          <tuple>INSERT INTO Movie VALUES (2, 'The Godfather 2', 1975, 20000000, 'cinema');</tuple>
-          <tuple>INSERT INTO Movie VALUES (3, 'The Godfather 3', 1979, 10000000, 'cinema');</tuple>
-          <tuple>INSERT INTO Movie VALUES (4, 'Fight Club', 1999, 10000000, 'cinema');</tuple>
-          <tuple>INSERT INTO Movie VALUES (5, 'Batman Returns', 1980, 100000, 'TV');</tuple>
-          <tuple>INSERT INTO Movie VALUES (6, 'Titanic', 1990, 90000000, 'cinema');</tuple>
+          <tuple>INSERT INTO Movie VALUES (1, 'The Godfather', 1972, 'USA', 10000000, 'cinema');</tuple>
+          <tuple>INSERT INTO Movie VALUES (2, 'The Godfather 2', 1975, 'USA', 20000000, 'cinema');</tuple>
+          <tuple>INSERT INTO Movie VALUES (3, 'The Godfather 3', 1979, 'USA', 10000000, 'cinema');</tuple>
+          <tuple>INSERT INTO Movie VALUES (4, 'Fight Club', 1999, 'USA', 10000000, 'cinema');</tuple>
+          <tuple>INSERT INTO Movie VALUES (5, 'Batman Returns', 1980, 'USA', 100000, 'TV');</tuple>
+          <tuple>INSERT INTO Movie VALUES (6, 'Titanic', 1990, 'USA', 90000000, 'cinema');</tuple>
         </extension>
       </relation>
       <relation>
@@ -122,7 +122,7 @@
         <solution>
           <referencestatement>
             SELECT *
-            FROM movies
+            FROM Movie
             WHERE TYPE = 'cinema'
           </referencestatement>
           <evaluationstrategy>SET</evaluationstrategy>
@@ -153,7 +153,7 @@
           <referencestatement>
            SELECT p.NAME
 		FROM person p
-			 JOIN play ps
+			 JOIN plays ps
 			 ON p.pid = ps.person
 			 JOIN movie m
 			 ON ps.movie = m.mid
@@ -177,7 +177,7 @@
 				COUNT(m.mid)
 			FROM
 				has_genre hg
-				LEFT OUTER JOIN movies m
+				LEFT OUTER JOIN movie m
 					ON hg.movie = m.mid
           </referencestatement>
           <evaluationstrategy>SET</evaluationstrategy>
@@ -202,7 +202,7 @@
 				JOIN crew c
 				ON ps.movie = c.movie
 				JOIN person p2
-				ON c.person = p2.person
+				ON c.person = p2.pid
 			WHERE ps.ROLE = 'killer'
 				AND p.sex = 'f'
 				AND c.TYPE = 'director'

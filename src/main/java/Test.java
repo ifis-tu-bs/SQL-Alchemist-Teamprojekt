@@ -23,7 +23,7 @@ public class Test {
      */
     public static void main(String[] args) {
         //Pass the xml-file
-        String exercise = "exercises-wise13.xml";
+        String exercise = "exercises-wise11.xml";
         
         //Make the xml-sructure-check
         XMLSyntaxCheck sych = new XMLSyntaxCheck();

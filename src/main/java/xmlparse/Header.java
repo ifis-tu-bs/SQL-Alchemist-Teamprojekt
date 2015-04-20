@@ -39,7 +39,7 @@ public class Header {
      */
 
     /**
-     * get-method for the title
+     * get-method for the title of the exercise
      *
      * @return title
      */
@@ -48,7 +48,7 @@ public class Header {
     }
 
     /**
-     * set-method for the title
+     * set-method for the title of the exercise
      *
      * @param title
      */
@@ -62,7 +62,7 @@ public class Header {
     }
 
     /**
-     * get-method for the text
+     * get-method for the introductiontext of the exercise
      *
      * @return flufftext
      */
@@ -71,7 +71,7 @@ public class Header {
     }
 
     /**
-     * set-method for the text
+     * set-method for the introductiontext of the exercise
      *
      * @param flufftext
      */
@@ -85,7 +85,7 @@ public class Header {
     }
 
     /**
-     * get-method for the langugage
+     * get-method for the langugage of the exercise
      *
      * @return language
      */
@@ -94,7 +94,7 @@ public class Header {
     }
 
     /**
-     * set-method for the language
+     * set-method for the language of the exercise
      *
      * @param language
      */
@@ -103,7 +103,7 @@ public class Header {
     }
 
     /**
-     * method to make a string
+     * method to make a string out of the header of the exercise sheet
      *
      * @return string
      */

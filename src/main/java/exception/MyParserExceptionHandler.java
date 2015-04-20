@@ -15,17 +15,18 @@ import org.xml.sax.ErrorHandler;
 // @todo Bennennt den Krams mal gescheit!
 // @todo Warum ist denn Eure Exception gar keine Exception sondern n Error Hanlder??
 // @todo also, ihr Fangt in diesem ErrorHanlder SAX fehler ein, und gebt die in Form von sinnigen Exceptions wieder raus.
-public class MyParserException implements ErrorHandler {
+public class MyParserExceptionHandler implements ErrorHandler {
     
     /**
      * Constructor MyParserException.
      */
-    public MyParserException() {
+    public MyParserExceptionHandler() {
         //Nothing to do.
     }
     
     /**
      * Method warning.
+     * Print the warning with the line number, if the xml-file is not correct
      * 
      * @param e SAXParseException
      * @throws SAXException 
@@ -40,6 +41,7 @@ public class MyParserException implements ErrorHandler {
     
     /**
      * Method error.
+     * Print the error with the line number, if the xml-file is not correct
      * 
      * @param e SAXParseException
      * @throws SAXException 
@@ -54,6 +56,7 @@ public class MyParserException implements ErrorHandler {
     
     /**
      * Method fatalError.
+     * Print the fatal error with the line number, if the xml-file is not correct
      * 
      * @param e SAXParseException
      * @throws SAXException 

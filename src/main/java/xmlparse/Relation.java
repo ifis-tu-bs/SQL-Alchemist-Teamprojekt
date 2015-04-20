@@ -30,7 +30,7 @@ public class Relation {
     }
 
     /**
-     * get-method for the table
+     * get-method for the create-table-statement
      *
      * @return intension
      */
@@ -39,7 +39,7 @@ public class Relation {
     }
 
     /**
-     * set-metohd for the table
+     * set-method for the create-table-statement
      *
      * @param intension
      */
@@ -48,7 +48,7 @@ public class Relation {
     }
 
     /**
-     * get-method for the insert-into-statements
+     * get-method for the insert-into-statements as a list
      *
      * @return tuple
      */
@@ -57,7 +57,7 @@ public class Relation {
     }
 
     /**
-     * get-metohd for the insert-statements as a string
+     * get-method for the insert-statements as a string
      *
      * @return tuple
      */
@@ -85,7 +85,7 @@ public class Relation {
     }
 
     /**
-     * method to make a string
+     * method to make a string of the relations
      *
      * @return string
      */

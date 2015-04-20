@@ -23,7 +23,8 @@ public class Task {
     }
 
     /**
-     * get-method for the tasktext
+     * get-method for the tasktext. The defintion of the problem, 
+     * that has to be solved
      *
      * @return tasktext
      */
@@ -32,7 +33,8 @@ public class Task {
     }
 
     /**
-     * set-method for the tasktext
+     * set-method for the tasktext. The defintion of the problem, 
+     * that has to be solved
      *
      * @param tasktexts
      */
@@ -46,7 +48,7 @@ public class Task {
     }
 
     /**
-     * get-method for the referencestatement
+     * get-method for the referencestatement (the solution of the task)
      *
      * @return referencestatement
      */
@@ -55,7 +57,7 @@ public class Task {
     }
 
     /**
-     * set-method for the referencestatement
+     * set-method for the referencestatement (the solution of the task)
      *
      * @param referencestatement
      */
@@ -64,7 +66,7 @@ public class Task {
     }
 
     /**
-     * get-method for the evaluationstrategy
+     * get-method for the evaluationstrategy (Set or List)
      *
      * @return evaluationstrategy
      */
@@ -73,7 +75,7 @@ public class Task {
     }
 
     /**
-     * set-method for the evaluationstrategy
+     * set-method for the evaluationstrategy (Set or List)
      *
      * @param evaluationstrategy
      */
@@ -82,7 +84,7 @@ public class Task {
     }
 
     /**
-     * get-method for the requied terms
+     * get-method for the requied terms, which the user need for this task
      *
      * @return terms
      */
@@ -96,7 +98,7 @@ public class Task {
     }
 
     /**
-     * set-method for the requied terms
+     * set-method for the requied terms, which the user need for this task
      *
      * @param term
      */
@@ -110,7 +112,7 @@ public class Task {
     }
 
     /**
-     * get-method for the points
+     * get-method for the points of the task
      *
      * @return points
      */
@@ -119,7 +121,7 @@ public class Task {
     }
 
     /**
-     * set-method for the points
+     * set-method for the points of the task
      *
      * @param points
      */
@@ -128,7 +130,7 @@ public class Task {
     }
 
     /**
-     * get-method for the langugage
+     * get-method for the langugage of the task
      *
      * @return language
      */
@@ -137,7 +139,7 @@ public class Task {
     }
 
     /**
-     * set-method for the language
+     * set-method for the language of the task
      *
      * @param language
      */
@@ -146,7 +148,7 @@ public class Task {
     }
 
     /**
-     * method to make a string
+     * method to make a string out of the tasks
      *
      * @return string
      */

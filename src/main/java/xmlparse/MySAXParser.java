@@ -36,7 +36,7 @@ public class MySAXParser extends DefaultHandler {
     StringBuffer sb = new StringBuffer();
 
     /**
-     * constructor
+     * constructor create empty lists
      */
     public MySAXParser() {
         myrelation = new ArrayList();
@@ -45,7 +45,7 @@ public class MySAXParser extends DefaultHandler {
     }
 
     /**
-     * run-method
+     * run-method parse the document and print the result
      *
      * @param exercise
      */
@@ -81,7 +81,7 @@ public class MySAXParser extends DefaultHandler {
     }
 
     /**
-     * Iterate through the list and print the contents
+     * Iterate through the list and print the contents of the xml-file
      */
     private void printData() {
 
@@ -108,7 +108,8 @@ public class MySAXParser extends DefaultHandler {
     }
 
     /**
-     * Iterate through the list and insert the contents to db
+     * Iterate through the list and insert the contents of the xml-file to the
+     * database
      */
     public void insertToDb() {
         Iterator it = myrelation.iterator();
@@ -127,13 +128,14 @@ public class MySAXParser extends DefaultHandler {
             for (int i = 0; i < a.length; i++) {
                 a[i] = a[i].replace('\"', '\'');
             }
-            dbconn.executeSQLStatement(user, pass, s.getIntension());
-            dbconn.executeSQLStatement(user, pass, a);
+            dbconn.executeSQLUpdateStatement(user, pass, s.getIntension());
+            dbconn.executeSQLUpdateStatement(user, pass, a);
         }
     }
 
     /**
-     * Iterate through the list and execute the Statements
+     * Iterate through the list and execute the Statements of the xml-file in
+     * the database
      */
     public void selectFromDb() {
         Iterator it = mytask.iterator();
@@ -149,11 +151,20 @@ public class MySAXParser extends DefaultHandler {
         while (it.hasNext()) {
             Task select = (Task) it.next();
             String selectString = select.getReferencestatement().replace('\"', '\'');
-            dbconn.executeSQLStatement(user, pass, selectString);
+            dbconn.executeSQLSelectStatement(user, pass, selectString);
         }
     }
 
     //Event Handlers
+    /**
+     * Helper-method to parse the document
+     *
+     * @param uri
+     * @param localName
+     * @param qName
+     * @param attributes
+     * @throws SAXException
+     */
     public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
         //reset
         sb.setLength(0);
@@ -170,11 +181,27 @@ public class MySAXParser extends DefaultHandler {
         }
     }
 
+    /**
+     * Helper-method to parse the document
+     *
+     * @param ch
+     * @param start
+     * @param length
+     * @throws SAXException
+     */
     public void characters(char[] ch, int start, int length) throws SAXException {
 
         sb.append(ch, start, length);
     }
 
+    /**
+     * Helper-method to parse the document
+     *
+     * @param uri
+     * @param localName
+     * @param qName
+     * @throws SAXException
+     */
     public void endElement(String uri, String localName, String qName) throws SAXException {
 
         if (qName.equalsIgnoreCase("relation")) {

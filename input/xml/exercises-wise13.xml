@@ -72,8 +72,9 @@
       <relation>
         <intension>
           CREATE TABLE SuperHero (
-            alias VARCHAR(255) NOT NULL REFERENCES PoweredPerson(alias) PRIMARY KEY,
-            cape BOOLEAN
+            alias VARCHAR(255) NOT NULL REFERENCES PoweredPerson(alias),
+            cape BOOLEAN,
+            PRIMARY KEY (alias)
           );
         </intension>
         <extension>
@@ -85,7 +86,8 @@
       <relation>
         <intension>
           CREATE TABLE SuperVillain (
-            alias VARCHAR(255) NOT NULL REFERENCES PoweredPerson(alias) PRIMARY KEY
+            alias VARCHAR(255) NOT NULL REFERENCES PoweredPerson(alias),
+            PRIMARY KEY (alias)
           );
         </intension>
         <extension>

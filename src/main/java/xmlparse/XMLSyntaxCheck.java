@@ -5,7 +5,7 @@
  */
 package xmlparse;
 
-import exception.MyParserException;
+import exception.MyParserExceptionHandler;
 import java.io.IOException;
 import java.util.StringTokenizer;
 import javax.xml.parsers.ParserConfigurationException;
@@ -47,7 +47,7 @@ public class XMLSyntaxCheck {
             SAXParser parser = factory.newSAXParser();
 
             XMLReader reader = parser.getXMLReader();
-            reader.setErrorHandler(new MyParserException());
+            reader.setErrorHandler(new MyParserExceptionHandler());
             reader.parse(new InputSource("input/xml/" + s));  //source of xml-file
             System.out.println("Datei ist valide."); // if this line is executed, the file is valid.
         } catch (SAXException | ParserConfigurationException | IOException e) {
