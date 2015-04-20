@@ -1,9 +1,6 @@
 package dbconnection;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.StringTokenizer;
 
 /**
  * Class DB-Connection.
@@ -49,45 +46,24 @@ public class DBConnection {
         String[][] result = null;
 
         try {
-            //Register JDBC driver
-            //System.out.println("Register driver...");
+            //Register JDBC driver and open connection
             Class.forName(this.driver);
-
-            //Open a connection
-            //System.out.println("Connecting to database...");
             conn = DriverManager.getConnection(this.dbURL, user, pass);
 
             //Execute a query
-            System.out.println("Executing SQL-Statement in given database...");
             stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(sqlStatement);
-            //Printing out the ResultSet
-            this.printResultSet(rs);
             result = this.transformResultSet(rs);
-            //Close ResultSet
+            
+            //Close db-connection
             rs.close();
-            System.out.println("SQL-Statement executed...");
+            stmt.close();
+            conn.close();
         } catch (SQLException se) {
             this.printMySQLException(se);
-        } catch (Exception e) {
+        } catch (ClassNotFoundException e) {
             //Handle errors for Class.forName
             System.out.println("Fehler beim Registrieren des Datenbanktreibers (Class.forName())!");
-        } finally {
-            //finally block used to close resources
-            try {
-                if (stmt != null) {
-                    stmt.close();
-                }
-            } catch (SQLException se2) {
-                this.printMySQLException(se2);
-            }
-            try {
-                if (conn != null) {
-                    conn.close();
-                }
-            } catch (SQLException se3) {
-                this.printMySQLException(se3);
-            }
         }
 
         return result;
@@ -106,45 +82,25 @@ public class DBConnection {
     public void executeSQLUpdateStatement(String user, String pass, String sqlStatement) {
         Connection conn = null;
         Statement stmt = null;
-        String[][] result = null;
 
         try {
-            //Register JDBC driver
-            //System.out.println("Register driver...");
+            //Register JDBC driver and open connection
             Class.forName(this.driver);
-
-            //Open a connection
-            //System.out.println("Connecting to database...");
             conn = DriverManager.getConnection(this.dbURL, user, pass);
 
             //Execute a query
-            System.out.println("Executing SQL-Statement in given database...");
             stmt = conn.createStatement();
             stmt.executeUpdate(sqlStatement);
-            System.out.println("SQL-Statement executed...");
+            
+            //Close db-connection
+            stmt.close();
+            conn.close();
         } catch (SQLException se) {
             this.printMySQLException(se);
-        } catch (Exception e) {
+        } catch (ClassNotFoundException e) {
             //Handle errors for Class.forName
             System.out.println("Fehler beim Registrieren des Datenbanktreibers (Class.forName())!");
-        } finally {
-            //finally block used to close resources
-            try {
-                if (stmt != null) {
-                    stmt.close();
-                }
-            } catch (SQLException se2) {
-                this.printMySQLException(se2);
-            }
-            try {
-                if (conn != null) {
-                    conn.close();
-                }
-            } catch (SQLException se3) {
-                this.printMySQLException(se3);
-            }
         }
-
     }
 
     /**
@@ -160,46 +116,107 @@ public class DBConnection {
     public void executeSQLUpdateStatement(String user, String pass, String[] sqlStatement) {
         Connection conn = null;
         Statement stmt = null;
-        List result = new ArrayList();
 
         try {
-            //Register JDBC driver
-            //System.out.println("Register driver...");
+            //Register JDBC driver and open connection
             Class.forName(this.driver);
-
-            //Open a connection
-            //System.out.println("Connecting to database...");
             conn = DriverManager.getConnection(this.dbURL, user, pass);
 
-            //Execute querys
+            //Execute queries
             stmt = conn.createStatement();
             for (String sqlStmt : sqlStatement) {
-                System.out.println("Executing SQL-Statement in given database...");
-
                 stmt.executeUpdate(sqlStmt);
             }
-            System.out.println("SQL-Statement executed...");
+            
+            //Close db-connection
+            stmt.close();
+            conn.close();
         } catch (SQLException se) {
             this.printMySQLException(se);
-        } catch (Exception e) {
+        } catch (ClassNotFoundException e) {
             //Handle errors for Class.forName
             System.out.println("Fehler beim Registrieren des Datenbanktreibers (Class.forName())!");
-        } finally {
-            //finally block used to close resources
-            try {
-                if (stmt != null) {
-                    stmt.close();
-                }
-            } catch (SQLException se2) {
-                this.printMySQLException(se2);
+        }
+    }
+    
+    /**
+     * Method executeSQLSelectPreparedStatement.
+     * 
+     * Building a connection to a database. Executing a SQL-PreparedStatement.
+     * 
+     * @param user String, username
+     * @param pass String, password for user
+     * @param preparedSqlStatement String, SQL-PreparedStatement to be executed
+     * @param variables String[], Variables to be passed in the prepared Statement
+     * @return String[][], multidimensional Stringarray containing
+     *                     the name of the DB-table and the associated value
+     */
+    public String[][] executeSQLSelectPreparedStatement(String user, String pass, String preparedSqlStatement, String[] variables) {
+        Connection conn;
+        PreparedStatement pStmt;
+        String[][] result = null;
+        
+        try {
+            //Register JDBC driver and open db-connection
+            Class.forName(this.driver);
+            conn = DriverManager.getConnection(this.dbURL, user, pass);
+
+            //Execute a query
+            pStmt = conn.prepareStatement(preparedSqlStatement);
+            for (int i = 1; i <= variables.length; i++) {
+                pStmt.setString(i, variables[i-1]);
             }
-            try {
-                if (conn != null) {
-                    conn.close();
-                }
-            } catch (SQLException se3) {
-                this.printMySQLException(se3);
+            ResultSet rs = pStmt.executeQuery();
+            result = this.transformResultSet(rs);            
+            
+            //Close db-Connection
+            rs.close();
+            pStmt.close();
+            conn.close();
+        } catch (SQLException se) {
+            this.printMySQLException(se);
+        } catch(ClassNotFoundException e) {
+            //Handle errors for Class.forName
+            System.out.println("Fehler beim Registrieren des Datenbanktreibers (Class.forName())!");
+        }
+        
+        return result;
+    }
+    
+    /**
+     * Method executeSQLPreparedStatement.
+     * 
+     * Building a connection to a database. Executing a SQL-PreparedStatement.
+     * 
+     * @param user String, username
+     * @param pass String, password for user
+     * @param preparedSqlStatement String, SQL-PreparedStatement to be executed
+     * @param variables String[], Variables to be passed in the prepared Statement
+     */
+    public void executeSQLUpdatePreparedStatement(String user, String pass, String preparedSqlStatement, String[] variables) {
+        Connection conn;
+        PreparedStatement pStmt;
+        
+        try {
+            //Register JDBC driver and open db-connection
+            Class.forName(this.driver);
+            conn = DriverManager.getConnection(this.dbURL, user, pass);
+
+            //Execute a query
+            pStmt = conn.prepareStatement(preparedSqlStatement);
+            for (int i = 1; i <= variables.length; i++) {
+                pStmt.setString(i, variables[i-1]);
             }
+            pStmt.executeUpdate();
+            
+            //Close db-Connection
+            pStmt.close();
+            conn.close();
+        } catch (SQLException se) {
+            this.printMySQLException(se);
+        } catch(ClassNotFoundException e) {
+            //Handle errors for Class.forName
+            System.out.println("Fehler beim Registrieren des Datenbanktreibers (Class.forName())!");
         }
     }
 
@@ -215,26 +232,6 @@ public class DBConnection {
         StringBuffer sb = new StringBuffer();
         sb.append(se.toString());
         System.out.println("Die Fehlermeldung lautet: " + sb.toString());
-    }
-
-    /**
-     * Method checkKindOfStatement.
-     *
-     * Checks whether the sql-statement is a SELECT-statement or not.
-     *
-     * @param sqlStatement String, SQL-statement
-     * @return boolean, true if sql-statment is SELECT-statement
-     */
-    public boolean checkKindOfStatement(String sqlStatement) {
-        boolean isSelect = false;
-
-        StringTokenizer st = new StringTokenizer(sqlStatement);
-        String s = st.nextToken().toLowerCase();
-        if (s.equals("select")) {
-            isSelect = true;
-        }
-
-        return isSelect;
     }
 
     /**
@@ -254,9 +251,9 @@ public class DBConnection {
         int columnsNumber = rsmd.getColumnCount();
         result = new String[columnsNumber][2];
         while (rs.next()) {
-            for (int i = 1; i <= columnsNumber; i++) {
-                result[i][0] = rsmd.getColumnName(i);
-                result[i][1] = rs.getString(i);
+            for (int i = 0; i < columnsNumber; i++) {
+                result[i][0] = rsmd.getColumnName(i+1);
+                result[i][1] = rs.getString(i+1);
             }
         }
 

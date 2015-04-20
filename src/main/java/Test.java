@@ -1,3 +1,4 @@
+import sandbox.*;
 import xmlparse.*;
 
 /**
@@ -22,7 +23,7 @@ public class Test {
      * @param args unused 
      */
     public static void main(String[] args) {
-        //Pass the xml-file
+        /*//Pass the xml-file
         String exercise = "exercises-wise11.xml";
         
         //Make the xml-sructure-check
@@ -31,6 +32,8 @@ public class Test {
         
         //Parse the xml-file und uild the db-tables
         MySAXParser sp = new MySAXParser();
-        sp.runExample(exercise);
+        sp.runExample(exercise);*/
+        
+        Game test = new Game("test");
     }
 }
