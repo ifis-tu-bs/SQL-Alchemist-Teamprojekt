@@ -15,6 +15,9 @@ import org.xml.sax.SAXException;
 
 import org.xml.sax.helpers.DefaultHandler;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 /**
  * class to parse the XML-File into java
  *
@@ -22,6 +25,8 @@ import org.xml.sax.helpers.DefaultHandler;
  */
 public class MySAXParser extends DefaultHandler {
 
+    private static final Logger logger = LogManager.getLogger(MySAXParser.class.getName());
+    
     private List myrelation;
     private List myheader;
     private List mytask;
@@ -106,7 +111,7 @@ public class MySAXParser extends DefaultHandler {
             sp.parse("input/xml/" + exercise, this);
 
         } catch (SAXException | ParserConfigurationException | IOException se) {
-            se.printStackTrace();
+            logger.error(se.getStackTrace()); 
         }
     }
 
