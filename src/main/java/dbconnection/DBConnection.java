@@ -76,6 +76,7 @@ public class DBConnection {
             //Execute a query
             stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(sqlStatement);
+            this.printResultSet(rs);
             result = this.transformResultSet(rs);
             
             //Close db-connection

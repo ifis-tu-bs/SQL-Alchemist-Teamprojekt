@@ -98,7 +98,7 @@ public class MySAXParser extends DefaultHandler {
     /**
      * method to parse the XML-File
      */
-    private void parseDocument(String exercise) {
+    public void parseDocument(String exercise) {
 
         //get a factory
         SAXParserFactory spf = SAXParserFactory.newInstance();

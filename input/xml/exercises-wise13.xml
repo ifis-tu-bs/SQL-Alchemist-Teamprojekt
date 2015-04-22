@@ -59,12 +59,12 @@
         </intension>
         <extension>
           <tuple>INSERT INTO HasPowerSince VALUES (13, 'Young Nastyman', 'Flight');</tuple>
-          <tuple>INSERT INTO HasPowerSince VALUES (8, 'Professor X', 'Telepathy');</tuple>
+          <tuple>INSERT INTO HasPowerSince VALUES (12, 'Professor X', 'Telepathy');</tuple>
           <tuple>INSERT INTO HasPowerSince VALUES (15, 'Mystique', 'Shapeshifting');</tuple>
-          <tuple>INSERT INTO HasPowerSince VALUES (2, 'Superman', 'Telepathy');</tuple>
-          <tuple>INSERT INTO HasPowerSince VALUES (17, 'Wonderboy', 'Telekinesis');</tuple>
-          <tuple>INSERT INTO HasPowerSince VALUES (11, 'Magneto', 'Magnetism');</tuple>
-          <tuple>INSERT INTO HasPowerSince VALUES (24, 'Young Nastyman', 'Mind Bullets');</tuple>
+          <tuple>INSERT INTO HasPowerSince VALUES (13, 'Superman', 'Telepathy');</tuple>
+          <tuple>INSERT INTO HasPowerSince VALUES (18, 'Wonderboy', 'Telekinesis');</tuple>
+          <tuple>INSERT INTO HasPowerSince VALUES (12, 'Magneto', 'Magnetism');</tuple>
+          <tuple>INSERT INTO HasPowerSince VALUES (21, 'Young Nastyman', 'Mind Bullets');</tuple>
           <tuple>INSERT INTO HasPowerSince VALUES (21, 'Superman', 'Flight');</tuple>
           <tuple>INSERT INTO HasPowerSince VALUES (12, 'Wonderboy', 'Levitation');</tuple>
         </extension>

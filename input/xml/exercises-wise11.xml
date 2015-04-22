@@ -43,10 +43,10 @@
           );
         </intension>
         <extension>
-          	<tuple>INSERT INTO Person VALUES (1, 'Al Pacino', 'male', 1900-1-1);</tuple>
-  			<tuple>INSERT INTO Person VALUES (2, 'Marlon Brando', 'male', 1950-1-1);</tuple>
-  			<tuple>INSERT INTO Person VALUES (3, 'Leonardo DiCaprio', 'male', 1990-1-1);</tuple>
-  			<tuple>INSERT INTO Person VALUES (4, 'Martin Scorsese', 'male', 1956-1-1);</tuple>
+          	<tuple>INSERT INTO Person VALUES (1, 'Al Pacino', 'male', '1900-01-01');</tuple>
+  			<tuple>INSERT INTO Person VALUES (2, 'Marlon Brando', 'male', '1950-01-01');</tuple>
+  			<tuple>INSERT INTO Person VALUES (3, 'Leonardo DiCaprio', 'male', '1990-01-01');</tuple>
+  			<tuple>INSERT INTO Person VALUES (4, 'Martin Scorsese', 'male', '1956-01-01');</tuple>
         </extension>
       </relation>
       <relation>
@@ -84,23 +84,6 @@
       </relation>
       <relation>
         <intension>
-          CREATE TABLE Has_Genre (
-            movie VARCHAR(255) NOT NULL REFERENCES Movie(mid),
-        	genre VARCHAR(255) NOT NULL REFERENCES Genre(name),
-        	PRIMARY KEY(movie, genre)
-          );
-        </intension>
-        <extension>
-         <tuple>INSERT INTO Has_Genre VALUES (1, 1);</tuple>
-         <tuple>INSERT INTO Has_Genre VALUES (2, 1);</tuple>
-         <tuple>INSERT INTO Has_Genre VALUES (3, 1);</tuple>
-         <tuple>INSERT INTO Has_Genre VALUES (4, 2);</tuple>
-         <tuple>INSERT INTO Has_Genre VALUES (5, 1);</tuple>
-         <tuple>INSERT INTO Has_Genre VALUES (5, 2);</tuple>
-        </extension>
-      </relation>
-       <relation>
-        <intension>
           CREATE TABLE Genre (
             name VARCHAR(255) NOT NULL PRIMARY KEY,
         	description VARCHAR(500) NOT NULL
@@ -109,6 +92,23 @@
         <extension>
          <tuple>INSERT INTO Genre VALUES ('Action', 'BOOM BOOM Movies');</tuple>
          <tuple>INSERT INTO Genre VALUES ('Comedy', 'Funny Movies');</tuple>
+        </extension>
+      </relation>
+      <relation>
+        <intension>
+          CREATE TABLE Has_Genre (
+            movie VARCHAR(255) NOT NULL REFERENCES Movie(mid),
+        	genre VARCHAR(255) NOT NULL REFERENCES Genre(name),
+        	PRIMARY KEY(movie, genre)
+          );
+        </intension>
+        <extension>
+         <tuple>INSERT INTO Has_Genre VALUES (1, 'Action');</tuple>
+         <tuple>INSERT INTO Has_Genre VALUES (2, 'Action');</tuple>
+         <tuple>INSERT INTO Has_Genre VALUES (3, 'Action');</tuple>
+         <tuple>INSERT INTO Has_Genre VALUES (4, 'Comedy');</tuple>
+         <tuple>INSERT INTO Has_Genre VALUES (5, 'Action');</tuple>
+         <tuple>INSERT INTO Has_Genre VALUES (5, 'Comedy');</tuple>
         </extension>
       </relation>
     </schema>

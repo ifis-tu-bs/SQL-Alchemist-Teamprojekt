@@ -45,7 +45,7 @@ public class Game {
 
             //Parse the xml-file und build the db-tables
             MySAXParser msp = new MySAXParser(tmpDbConn);
-            msp.parseAndCreateDb(taskName + ".xml");
+            msp.parseDocument(taskName + ".xml");
             newTask.setMySaxParser(msp);
             
             //Update #players
