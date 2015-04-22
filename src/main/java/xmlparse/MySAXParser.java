@@ -113,7 +113,6 @@ public class MySAXParser extends DefaultHandler {
      */
     public void insertToDb() {
         Iterator it = myrelation.iterator();
-        String driver = "org.h2.Driver";
         String path = "./dbs";
         String databaseName = "sql-alchemist-teamprojekt";
 
@@ -121,7 +120,7 @@ public class MySAXParser extends DefaultHandler {
         String user = "";
         String pass = "";
 
-        DBConnection dbconn = new DBConnection(driver, path, databaseName);
+        DBConnection dbconn = new DBConnection(path, databaseName);
         while (it.hasNext()) {
             Relation s = (Relation) it.next();
             String[] a = s.getTuple();
@@ -139,7 +138,6 @@ public class MySAXParser extends DefaultHandler {
      */
     public void selectFromDb() {
         Iterator it = mytask.iterator();
-        String driver = "org.h2.Driver";
         String path = "./dbs";
         String databaseName = "sql-alchemist-teamprojekt";
 
@@ -147,7 +145,7 @@ public class MySAXParser extends DefaultHandler {
         String user = "";
         String pass = "";
 
-        DBConnection dbconn = new DBConnection(driver, path, databaseName);
+        DBConnection dbconn = new DBConnection(path, databaseName);
         while (it.hasNext()) {
             Task select = (Task) it.next();
             String selectString = select.getReferencestatement().replace('\"', '\'');

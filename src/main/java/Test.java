@@ -34,6 +34,8 @@ public class Test {
         MySAXParser sp = new MySAXParser();
         sp.runExample(exercise);*/
         
-        Game test = new Game("test");
+        Game test = new Game();
+        sandbox.Task task = test.startGame("test");
+        test.endGame(task);
     }
 }

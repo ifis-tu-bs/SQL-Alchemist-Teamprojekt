@@ -1,31 +1,55 @@
 package dbconnection;
 
 import java.sql.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Class DB-Connection.
  *
  * Establishing a connection to a database and executing SQL-Statements.
  *
- * @author Tobias Grünhagen
+ * @author Tobias Gruenhagen
  */
 public class DBConnection {
 
-    private final String driver;
-    private final String dbURL;
+    private final String driver = "org.h2.Driver";
+    private String dbURL;
+
+    /**
+     * Getter for dbURL.
+     * 
+     * @return String, db-url
+     */
+    public String getDbURL() {
+        return dbURL;
+    }
+    
+    /**
+     * Setter for dbURL.
+     * 
+     * @param dbURL String, db-url
+     */
+    public void setDbURL(String dbURL) {
+        this.dbURL = dbURL;
+    }
 
     /**
      * Constructor DBConnection.
      *
-     * Declare some Variables.
+     * Declare some Variables and register jdbc-driver.
      *
-     * @param driver String, JDDB-Driver
      * @param path String, path
      * @param databaseName String, databasename
      */
-    public DBConnection(String driver, String path, String databaseName) {
-        this.driver = driver;
+    public DBConnection(String path, String databaseName) {
         this.dbURL = "jdbc:h2:" + path + "/" + databaseName;
+        try {
+            Class.forName(this.driver);
+        } catch (ClassNotFoundException ex) {
+            //Handle errors for Class.forName
+            System.out.println("Fehler beim Registrieren des Datenbanktreibers (Class.forName())!");
+        }
     }
 
     /**
@@ -46,8 +70,7 @@ public class DBConnection {
         String[][] result = null;
 
         try {
-            //Register JDBC driver and open connection
-            Class.forName(this.driver);
+            //Open connection
             conn = DriverManager.getConnection(this.dbURL, user, pass);
 
             //Execute a query
@@ -61,9 +84,6 @@ public class DBConnection {
             conn.close();
         } catch (SQLException se) {
             this.printMySQLException(se);
-        } catch (ClassNotFoundException e) {
-            //Handle errors for Class.forName
-            System.out.println("Fehler beim Registrieren des Datenbanktreibers (Class.forName())!");
         }
 
         return result;
@@ -84,8 +104,7 @@ public class DBConnection {
         Statement stmt = null;
 
         try {
-            //Register JDBC driver and open connection
-            Class.forName(this.driver);
+            //Open connection
             conn = DriverManager.getConnection(this.dbURL, user, pass);
 
             //Execute a query
@@ -97,9 +116,6 @@ public class DBConnection {
             conn.close();
         } catch (SQLException se) {
             this.printMySQLException(se);
-        } catch (ClassNotFoundException e) {
-            //Handle errors for Class.forName
-            System.out.println("Fehler beim Registrieren des Datenbanktreibers (Class.forName())!");
         }
     }
 
@@ -118,8 +134,7 @@ public class DBConnection {
         Statement stmt = null;
 
         try {
-            //Register JDBC driver and open connection
-            Class.forName(this.driver);
+            //Open connection
             conn = DriverManager.getConnection(this.dbURL, user, pass);
 
             //Execute queries
@@ -133,9 +148,6 @@ public class DBConnection {
             conn.close();
         } catch (SQLException se) {
             this.printMySQLException(se);
-        } catch (ClassNotFoundException e) {
-            //Handle errors for Class.forName
-            System.out.println("Fehler beim Registrieren des Datenbanktreibers (Class.forName())!");
         }
     }
     
@@ -157,8 +169,7 @@ public class DBConnection {
         String[][] result = null;
         
         try {
-            //Register JDBC driver and open db-connection
-            Class.forName(this.driver);
+            //Open connection
             conn = DriverManager.getConnection(this.dbURL, user, pass);
 
             //Execute a query
@@ -175,9 +186,6 @@ public class DBConnection {
             conn.close();
         } catch (SQLException se) {
             this.printMySQLException(se);
-        } catch(ClassNotFoundException e) {
-            //Handle errors for Class.forName
-            System.out.println("Fehler beim Registrieren des Datenbanktreibers (Class.forName())!");
         }
         
         return result;
@@ -198,8 +206,7 @@ public class DBConnection {
         PreparedStatement pStmt;
         
         try {
-            //Register JDBC driver and open db-connection
-            Class.forName(this.driver);
+            //Open connection
             conn = DriverManager.getConnection(this.dbURL, user, pass);
 
             //Execute a query
@@ -214,9 +221,6 @@ public class DBConnection {
             conn.close();
         } catch (SQLException se) {
             this.printMySQLException(se);
-        } catch(ClassNotFoundException e) {
-            //Handle errors for Class.forName
-            System.out.println("Fehler beim Registrieren des Datenbanktreibers (Class.forName())!");
         }
     }
 

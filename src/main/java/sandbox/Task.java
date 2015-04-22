@@ -1,11 +1,7 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package sandbox;
 
 import dbconnection.*;
+import org.h2.tools.DeleteDbFiles;
 
 /**
  *
@@ -17,7 +13,8 @@ public class Task {
     private boolean dbMem = false;
     private int players = 0;
     
-    private DBConnection dbConn = new DBConnection("org.h2.Driver", "./dbs", "sql-alchemist-teamprojekt");
+    private DBConnection tmpDbConn;
+    private final DBConnection fixDbConn = new DBConnection("./dbs", "sql-alchemist-teamprojekt");
 
     public String getName() {
         return name;
@@ -35,6 +32,10 @@ public class Task {
         return players;
     }
 
+    public DBConnection getTmpDbConn() {
+        return tmpDbConn;
+    }
+
     public void setName(String name) {
         this.name = name;
     }
@@ -50,6 +51,10 @@ public class Task {
     public void setPlayers(int players) {
         this.players = players;
     }
+
+    public void setTmpDbConn(DBConnection tmpDbConn) {
+        this.tmpDbConn = tmpDbConn;
+    }
     
     public Task(String name, String dbName, boolean dbMem) {
         this.name = name;
@@ -62,7 +67,7 @@ public class Task {
         String[] variables = new String[1];
         variables[0] = name;
         
-        String[][] result = dbConn.executeSQLSelectPreparedStatement("", "", selectStatement, variables);
+        String[][] result = fixDbConn.executeSQLSelectPreparedStatement("", "", selectStatement, variables);
         this.name = result[0][1];
         this.dbName = result[1][1];
         this.dbMem = Boolean.parseBoolean(result[2][1]);
@@ -77,23 +82,27 @@ public class Task {
         variables[3] = this.name;
         String updateStatement = "UPDATE Task SET db_name = ?, db_mem = ?, players = ? WHERE name = ?";
 
-        dbConn.executeSQLUpdatePreparedStatement("", "", updateStatement, variables);
+        fixDbConn.executeSQLUpdatePreparedStatement("", "", updateStatement, variables);
     }
     
     public void createTask() {
         String insertStatement = "INSERT INTO Task VALUES('" + this.name + "', '" + this.dbName + "', " + this.dbMem + ", " + this.players + ")";
         
-        dbConn.executeSQLUpdateStatement("", "", insertStatement);
+        fixDbConn.executeSQLUpdateStatement("", "", insertStatement);
+        
+        tmpDbConn = new DBConnection("./dbs", this.dbName);
+        this.setTmpDbConn(tmpDbConn);
     }
     
     public void closeTask() {
-        if (this.players == 1) {
-            String deleteStatement = "DELETE FROM Task WHERE id = ?";
-            String[] variables = new String[1];
-            variables[0] = this.name;
-            
-            dbConn.executeSQLUpdatePreparedStatement("", "", deleteStatement, variables);
-        }
+        String deleteStatement = "DELETE FROM Task WHERE name = ?";
+        String[] variables = new String[1];
+        variables[0] = this.name;
+        
+        //Delete the database for the task
+        DeleteDbFiles.execute("./dbs", this.dbName, true);
+        
+        fixDbConn.executeSQLUpdatePreparedStatement("", "", deleteStatement, variables);
     }
     
     public boolean checkTask(String taskName) {
@@ -101,7 +110,7 @@ public class Task {
         String[] variables = new String[1];
         variables[0] = taskName;
         
-        String[][] result = dbConn.executeSQLSelectPreparedStatement("", "", selectStatement, variables);
+        String[][] result = fixDbConn.executeSQLSelectPreparedStatement("", "", selectStatement, variables);
         return result[0][0] != null;
     }
 }
