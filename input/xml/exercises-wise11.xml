@@ -173,12 +173,13 @@
         </tasktexts>
         <solution>
           <referencestatement>
-          	SELECT g.genre,
+          	SELECT hg.genre,
 				COUNT(m.mid)
 			FROM
 				has_genre hg
 				LEFT OUTER JOIN movie m
 					ON hg.movie = m.mid
+                                        GROUP BY hg.genre
           </referencestatement>
           <evaluationstrategy>SET</evaluationstrategy>
         </solution>
@@ -254,8 +255,7 @@
 			FROM movie m
 			WHERE m.box_office_takings > (
           		SELECT Avg(box_office_takings) average
-				FROM movie
-				GROUP BY mid)
+				FROM movie)
           </referencestatement>
           <evaluationstrategy>SET</evaluationstrategy>
         </solution>
@@ -272,14 +272,12 @@
         </tasktexts>
         <solution>
           <referencestatement>
-          	SELECT p.NAME,
-				MAX(co.nom) maxmov
-			FROM person p,
-				(SELECT ps.person,
-					COUNT(ps.movie) nom
-				FROM plays ps
-				GROUP BY ps.person) co
-			WHERE p.pid = co.person
+          	WITH RECURSIVE co (name, nom) AS (SELECT p.name name,  COUNT(ps.movie) nom
+                        FROM plays ps
+                        JOIN person p WHERE p.pid = ps.person
+                        GROUP BY ps.person)
+                SELECT co.name, co.nom FROM co
+                        WHERE (SELECT MAX(co.nom) FROM co) = co.nom
           </referencestatement>
           <evaluationstrategy>SET</evaluationstrategy>
         </solution>

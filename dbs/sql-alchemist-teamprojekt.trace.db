@@ -1317,3 +1317,9 @@ Caused by: org.h2.jdbc.JdbcSQLException: Die Datenbank-Verbindung wurde nicht ex
 The connection was not closed by the application and is garbage collected [90018-176]
 	at org.h2.message.DbException.getJdbcSQLException(DbException.java:344)
 	... 26 more
+04-22 16:44:52 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Tabelle "MOVIE" nicht gefunden
+Table "MOVIE" not found; SQL statement:
+SELECT Avg(box_office_takings) average
+				FROM movie
+				GROUP BY mid [42102-176]
