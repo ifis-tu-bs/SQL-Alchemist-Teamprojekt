@@ -22,26 +22,62 @@ import org.xml.sax.helpers.DefaultHandler;
  */
 public class MySAXParser extends DefaultHandler {
 
-    List myrelation;
-    List myheader;
-    List mytask;
+    private List myrelation;
+    private List myheader;
+    private List mytask;
 
     //to maintain context
     private Header tempheader;
     private Relation temprelation;
     private Task temptask;
+    
+    private DBConnection dbConn;
+    
+    /**
+     * Setter for myrelation.
+     * 
+     * @return List
+     */
+    public List getMyrelation() {
+        return myrelation;
+    }
+    
+    /**
+     * Setter for myheader
+     * 
+     * @return List
+     */
+    public List getMyheader() {
+        return myheader;
+    }
+    
+    /**
+     * Setter for mytask.
+     * 
+     * @return List
+     */
+    public List getMytask() {
+        return mytask;
+    }
+    
     /**
      * buffer for the XML-lines
      */
     StringBuffer sb = new StringBuffer();
 
     /**
-     * constructor create empty lists
+     * Constructor MySAXParser.
+     * 
+     * Create empty lists.
+     * 
+     * @param dbConn
      */
-    public MySAXParser() {
+    public MySAXParser(DBConnection dbConn) {
         myrelation = new ArrayList();
         mytask = new ArrayList();
         myheader = new ArrayList();
+        
+        this.dbConn = dbConn;
     }
 
     /**
@@ -49,11 +85,9 @@ public class MySAXParser extends DefaultHandler {
      *
      * @param exercise
      */
-    public void runExample(String exercise) {
+    public void parseAndCreateDb(String exercise) {
         this.parseDocument(exercise);
-        this.printData();
         this.insertToDb();
-        this.selectFromDb();
     }
 
     /**
@@ -71,19 +105,15 @@ public class MySAXParser extends DefaultHandler {
             //parse the file and also register this class for call backs
             sp.parse("input/xml/" + exercise, this);
 
-        } catch (SAXException se) {
+        } catch (SAXException | ParserConfigurationException | IOException se) {
             se.printStackTrace();
-        } catch (ParserConfigurationException pce) {
-            pce.printStackTrace();
-        } catch (IOException ie) {
-            ie.printStackTrace();
         }
     }
 
     /**
      * Iterate through the list and print the contents of the xml-file
      */
-    private void printData() {
+    public void printData() {
 
         System.out.println("No of Relations '" + myrelation.size() + "'.");
 
@@ -113,22 +143,19 @@ public class MySAXParser extends DefaultHandler {
      */
     public void insertToDb() {
         Iterator it = myrelation.iterator();
-        String path = "./dbs";
-        String databaseName = "sql-alchemist-teamprojekt";
 
         //Database credentials
         String user = "";
         String pass = "";
 
-        DBConnection dbconn = new DBConnection(path, databaseName);
         while (it.hasNext()) {
             Relation s = (Relation) it.next();
             String[] a = s.getTuple();
             for (int i = 0; i < a.length; i++) {
                 a[i] = a[i].replace('\"', '\'');
             }
-            dbconn.executeSQLUpdateStatement(user, pass, s.getIntension());
-            dbconn.executeSQLUpdateStatement(user, pass, a);
+            this.dbConn.executeSQLUpdateStatement(user, pass, s.getIntension());
+            this.dbConn.executeSQLUpdateStatement(user, pass, a);
         }
     }
 
@@ -138,18 +165,15 @@ public class MySAXParser extends DefaultHandler {
      */
     public void selectFromDb() {
         Iterator it = mytask.iterator();
-        String path = "./dbs";
-        String databaseName = "sql-alchemist-teamprojekt";
 
         //Database credentials
         String user = "";
         String pass = "";
-
-        DBConnection dbconn = new DBConnection(path, databaseName);
+        
         while (it.hasNext()) {
             Task select = (Task) it.next();
             String selectString = select.getReferencestatement().replace('\"', '\'');
-            dbconn.executeSQLSelectStatement(user, pass, selectString);
+            this.dbConn.executeSQLSelectStatement(user, pass, selectString);
         }
     }
 
@@ -163,6 +187,7 @@ public class MySAXParser extends DefaultHandler {
      * @param attributes
      * @throws SAXException
      */
+    @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
         //reset
         sb.setLength(0);
@@ -187,6 +212,7 @@ public class MySAXParser extends DefaultHandler {
      * @param length
      * @throws SAXException
      */
+    @Override
     public void characters(char[] ch, int start, int length) throws SAXException {
 
         sb.append(ch, start, length);
@@ -200,6 +226,7 @@ public class MySAXParser extends DefaultHandler {
      * @param qName
      * @throws SAXException
      */
+    @Override
     public void endElement(String uri, String localName, String qName) throws SAXException {
 
         if (qName.equalsIgnoreCase("relation")) {

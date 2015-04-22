@@ -2,6 +2,8 @@ package sandbox;
 
 import dbconnection.*;
 import org.h2.tools.DeleteDbFiles;
+import xmlparse.MySAXParser;
+import xmlparse.XMLSyntaxCheck;
 
 /**
  *
@@ -13,8 +15,9 @@ public class Task {
     private boolean dbMem = false;
     private int players = 0;
     
+    private MySAXParser mySaxParser;
     private DBConnection tmpDbConn;
-    private final DBConnection fixDbConn = new DBConnection("./dbs", "sql-alchemist-teamprojekt");
+    private final DBConnection fixDbConn = new DBConnection("jdbc:h2:./dbs/sql-alchemist-teamprojekt");
     
     /**
      * Getter for name.
@@ -62,6 +65,15 @@ public class Task {
     }
     
     /**
+     * Getter for mysaxp.
+     * 
+     * @return mySaxParser
+     */
+    public MySAXParser getMySaxParser() {
+        return mySaxParser;
+    }
+    
+    /**
      * Setter for name.
      * 
      * @param name String
@@ -104,6 +116,15 @@ public class Task {
      */
     public void setTmpDbConn(DBConnection tmpDbConn) {
         this.tmpDbConn = tmpDbConn;
+    }
+    
+    /**
+     * Setter for mysaxp.
+     * 
+     * @param mySaxParser MySaxParser
+     */
+    public void setMySaxParser(MySAXParser mySaxParser) {
+        this.mySaxParser = mySaxParser;
     }
     
     /**
@@ -168,8 +189,18 @@ public class Task {
         
         fixDbConn.executeSQLUpdateStatement("", "", insertStatement);
         
-        tmpDbConn = new DBConnection("./dbs", this.dbName);
+        String dbUrl = "jdbc:h2:./dbs/" + this.dbName;
+        tmpDbConn = new DBConnection(dbUrl);
         this.setTmpDbConn(tmpDbConn);
+        
+        //Make the xml-sructure-check
+        XMLSyntaxCheck sych = new XMLSyntaxCheck();
+        sych.checkxml(this.name + ".xml");
+        
+        //Parse the xml-file und build the db-tables
+        MySAXParser msp = new MySAXParser(this.tmpDbConn);
+        msp.parseAndCreateDb(this.name + ".xml");
+        this.mySaxParser = msp;
     }
     
     /**

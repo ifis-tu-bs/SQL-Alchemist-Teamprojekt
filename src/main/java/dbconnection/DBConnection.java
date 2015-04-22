@@ -37,11 +37,10 @@ public class DBConnection {
      *
      * Declare some Variables and register jdbc-driver.
      *
-     * @param path String, path
-     * @param databaseName String, databasename
+     * @param dbURL String, url for the db
      */
-    public DBConnection(String path, String databaseName) {
-        this.dbURL = "jdbc:h2:" + path + "/" + databaseName;
+    public DBConnection(String dbURL) {
+        this.dbURL = dbURL;
         try {
             Class.forName(this.driver);
         } catch (ClassNotFoundException ex) {
