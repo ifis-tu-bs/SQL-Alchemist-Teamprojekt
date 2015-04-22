@@ -1,18 +1,16 @@
 package dbconnection;
 
 import java.sql.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
- * Class DB-Connection.
+ * Class DBConnection.
  *
- * Establishing a connection to a database and executing SQL-Statements.
+ * Establishing a connection to a database and giving the possibility to execute
+ * SQL-Statements.
  *
  * @author Tobias Gruenhagen
  */
 public class DBConnection {
-
     private final String driver = "org.h2.Driver";
     private String dbURL;
 

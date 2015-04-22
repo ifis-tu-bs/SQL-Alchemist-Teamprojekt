@@ -11,7 +11,7 @@ import xmlparse.*;
 public class Test {
     
     /**
-     * Constructor Test.
+     * Constructor.
      */
     public Test() {
         //Nothing to do.

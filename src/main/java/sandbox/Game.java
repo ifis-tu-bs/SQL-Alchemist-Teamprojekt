@@ -13,11 +13,10 @@ import dbconnection.DBConnection;
 public class Game {
     
     /**
-     * Constructor.
-     * 
-     * Nothing to do.
+     * Constructor Game.
      */
     public Game() {
+        //Nothing to do.
     }
     
     
