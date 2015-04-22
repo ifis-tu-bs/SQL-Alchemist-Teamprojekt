@@ -18,12 +18,16 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 /**
  *
  * @author Philips
  */
 public class XMLSyntaxCheck {
 
+    private static final Logger logger = LogManager.getLogger(XMLSyntaxCheck.class.getName());
     /**
      * @param args the command line arguments
      */
@@ -54,7 +58,7 @@ public class XMLSyntaxCheck {
             StringBuffer sb = new StringBuffer();
             sb.append(e.toString());
             StringTokenizer st = new StringTokenizer(sb.toString(), "\n");
-            System.out.println("Die Fehlermeldung lautet: " + st.nextToken());
+            logger.error(st.nextToken());
         }
     }
 }

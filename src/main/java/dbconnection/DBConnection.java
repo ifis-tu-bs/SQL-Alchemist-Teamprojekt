@@ -2,6 +2,9 @@ package dbconnection;
 
 import java.sql.*;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 /**
  * Class DBConnection.
  *
@@ -13,7 +16,7 @@ import java.sql.*;
 public class DBConnection {
     private final String driver = "org.h2.Driver";
     private String dbURL;
-
+    private static final Logger logger = LogManager.getLogger(DBConnection.class.getName());
     /**
      * Getter for dbURL.
      * 
@@ -46,7 +49,7 @@ public class DBConnection {
             Class.forName(this.driver);
         } catch (ClassNotFoundException ex) {
             //Handle errors for Class.forName
-            System.out.println("Fehler beim Registrieren des Datenbanktreibers (Class.forName())!");
+            logger.error("Fehler beim Registrieren des Datenbanktreibers (Class.forName())!");
         }
     }
 
@@ -233,7 +236,7 @@ public class DBConnection {
         //Handle errors for SQLException
         StringBuffer sb = new StringBuffer();
         sb.append(se.toString());
-        System.out.println("Die Fehlermeldung lautet: " + sb.toString());
+        logger.error(sb.toString());
     }
 
     /**

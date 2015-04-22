@@ -3,7 +3,8 @@ package exception;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.ErrorHandler;
-
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 /**
  * Class MyParserException.
  * 
@@ -17,6 +18,7 @@ import org.xml.sax.ErrorHandler;
 // @todo also, ihr Fangt in diesem ErrorHanlder SAX fehler ein, und gebt die in Form von sinnigen Exceptions wieder raus.
 public class MyParserExceptionHandler implements ErrorHandler {
     
+    private static final Logger logger = LogManager.getLogger(MyParserExceptionHandler.class.getName());
     /**
      * Constructor MyParserException.
      */
@@ -35,8 +37,8 @@ public class MyParserExceptionHandler implements ErrorHandler {
     public void warning(SAXParseException e) throws SAXException {
         int zeile = e.getLineNumber();
         int spalte = e.getColumnNumber();
-        System.out.println("Achtung! Warnung: Überprüfe Zeile " + zeile + ", Spalte " + spalte);
-        System.out.println(e.getMessage());
+        logger.warn("Achtung! Warnung: Überprüfe Zeile " + zeile + ", Spalte " + spalte);
+        logger.warn(e.getMessage());
     }
     
     /**
@@ -50,8 +52,8 @@ public class MyParserExceptionHandler implements ErrorHandler {
     public void error(SAXParseException e) throws SAXException {
         int zeile = e.getLineNumber();
         int spalte = e.getColumnNumber();
-        System.out.println("Achtung! Fehler in Zeile " + zeile + ", Spalte " + spalte);
-        System.out.println(e.getMessage());
+        logger.error("Achtung! Fehler in Zeile " + zeile + ", Spalte " + spalte);
+        logger.error(e.getMessage());
     }
     
     /**
@@ -65,7 +67,7 @@ public class MyParserExceptionHandler implements ErrorHandler {
     public void fatalError(SAXParseException e) throws SAXException {
         int zeile = e.getLineNumber();
         int spalte = e.getColumnNumber();
-        System.out.println("Achtung! Fataler Fehler in Zeile " + zeile + ", Spalte " + spalte);
-        System.out.println(e.getMessage());
+        logger.error("Achtung! Fataler Fehler in Zeile " + zeile + ", Spalte " + spalte);
+        logger.error(e.getMessage());
     }
 }
