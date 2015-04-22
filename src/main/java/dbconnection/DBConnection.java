@@ -1,7 +1,6 @@
 package dbconnection;
 
 import java.sql.*;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -17,6 +16,7 @@ public class DBConnection {
     private final String driver = "org.h2.Driver";
     private String dbURL;
     private static final Logger logger = LogManager.getLogger(DBConnection.class.getName());
+    
     /**
      * Getter for dbURL.
      * 

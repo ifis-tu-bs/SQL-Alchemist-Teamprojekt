@@ -1,6 +1,8 @@
 package sandbox;
 
 import dbconnection.DBConnection;
+import xmlparse.MySAXParser;
+import xmlparse.XMLSyntaxCheck;
 
 /**
  * Class Game.
@@ -19,7 +21,6 @@ public class Game {
         //Nothing to do.
     }
     
-    
     /**
      * Method startGame.
      * 
@@ -35,12 +36,22 @@ public class Game {
         
         if (newTask.checkTask(taskName)) {
             newTask.loadTask(taskName);
-            DBConnection tmpDbConn = new DBConnection("./dbs", taskName);
+            DBConnection tmpDbConn = new DBConnection("jdbc:h2:./dbs/" + taskName);
             newTask.setTmpDbConn(tmpDbConn);
+            
+            //Make the xml-sructure-check
+            XMLSyntaxCheck sych = new XMLSyntaxCheck();
+            sych.checkxml(taskName + ".xml");
+
+            //Parse the xml-file und build the db-tables
+            MySAXParser msp = new MySAXParser(tmpDbConn);
+            msp.parseAndCreateDb(taskName + ".xml");
+            newTask.setMySaxParser(msp);
             
             //Update #players
             int players = newTask.getPlayers() + 1;
             newTask.setPlayers(players);
+            
             newTask.updateTask(taskName);
         } else {
             newTask.setName(taskName);
@@ -52,7 +63,6 @@ public class Game {
         
         return newTask;
     }
-    
     
     /**
      * Method endGame.
