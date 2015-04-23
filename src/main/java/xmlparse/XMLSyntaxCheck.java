@@ -63,7 +63,7 @@ public class XMLSyntaxCheck {
             System.out.println("Datei ist valide.");
         } catch (SAXException | ParserConfigurationException | IOException e) {
             StringTokenizer st = new StringTokenizer(e.toString(), "\n");
-            throw new MySQLAlchemistException(st.toString());
+            throw new MySQLAlchemistException(st.toString(), e);
         }
     }
 }

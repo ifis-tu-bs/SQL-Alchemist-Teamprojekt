@@ -48,7 +48,7 @@ public class DBConnection {
             Class.forName(this.driver);
         } catch (ClassNotFoundException ex) {
             //Handle errors for Class.forName
-            throw new MySQLAlchemistException("Fehler beim Registrieren des Datenbanktreibers (Class.forName())!");
+            throw new MySQLAlchemistException("Fehler beim Registrieren des Datenbanktreibers (Class.forName())! ", ex);
         }
     }
 
@@ -63,7 +63,8 @@ public class DBConnection {
      * @param sqlStatement String, SQL-Statement to be executed
      * @return String[][], multidimensional Stringarray containing the name of
      * the DB-table and the associated value
-     * @throws exception.MySQLAlchemistException, SQLException se
+     * @throws exception.MySQLAlchemistException Exception for the
+     * SQLSelectStatement
      */
     public String[][] executeSQLSelectStatement(String user, String pass, String sqlStatement) throws MySQLAlchemistException {
         Connection conn = null;
@@ -85,7 +86,7 @@ public class DBConnection {
             stmt.close();
             conn.close();
         } catch (SQLException se) {
-            throw new MySQLAlchemistException("Fehler beim Ausführen vom SQL-SELECT-Statement" + sqlStatement);
+            throw new MySQLAlchemistException("Fehler beim Ausführen vom SQL-SELECT-Statement ", se);
         }
 
         return result;
@@ -100,7 +101,8 @@ public class DBConnection {
      * @param user String, username
      * @param pass String, password for user
      * @param sqlStatement String, SQL-Statement to be executed
-     * @throws exception.MySQLAlchemistException, SQLException se
+     * @throws exception.MySQLAlchemistException Exception for the
+     * SQLUpdateStatement
      */
     public void executeSQLUpdateStatement(String user, String pass, String sqlStatement) throws MySQLAlchemistException {
         Connection conn = null;
@@ -118,7 +120,7 @@ public class DBConnection {
             stmt.close();
             conn.close();
         } catch (SQLException se) {
-            throw new MySQLAlchemistException("Fehler beim Ausführen vom SQL-UPDATE-Statement" + sqlStatement);
+            throw new MySQLAlchemistException("Fehler beim Ausführen vom SQL-UPDATE-Statement ", se);
         }
     }
 
@@ -131,7 +133,8 @@ public class DBConnection {
      * @param user String, username
      * @param pass String, password for user
      * @param sqlStatement String[], SQL-Statements to be executed
-     * @throws exception.MySQLAlchemistException, SQLException se
+     * @throws exception.MySQLAlchemistException Exception for the
+     * SQLUpdateStatement
      */
     public void executeSQLUpdateStatement(String user, String pass, String[] sqlStatement) throws MySQLAlchemistException {
         Connection conn = null;
@@ -151,7 +154,7 @@ public class DBConnection {
             stmt.close();
             conn.close();
         } catch (SQLException se) {
-            throw new MySQLAlchemistException("Fehler beim Ausführen vom SQL-UPDATE-Statement");
+            throw new MySQLAlchemistException("Fehler beim Ausführen vom SQL-UPDATE-Statement ", se);
         }
     }
     
@@ -167,7 +170,8 @@ public class DBConnection {
      * @param variables String[], Variables to be passed in the prepared Statement
      * @return String[][], multidimensional Stringarray containing
      *                     the name of the DB-table and the associated value
-     * @throws exception.MySQLAlchemistException, SQLException se
+     * @throws exception.MySQLAlchemistException Exception for the
+     * SQLSelectStatement
      */
     public String[][] executeSQLSelectPreparedStatement(String user, String pass, String preparedSqlStatement, String[] variables) throws MySQLAlchemistException {
         Connection conn;
@@ -191,7 +195,7 @@ public class DBConnection {
             pStmt.close();
             conn.close();
         } catch (SQLException se) {
-            throw new MySQLAlchemistException("Fehler beim Ausführen vom SQL-Statement" + preparedSqlStatement);
+            throw new MySQLAlchemistException("Fehler beim Ausführen vom SQL-Statement ", se);
         }
         
         return result;
@@ -208,7 +212,8 @@ public class DBConnection {
      * @param preparedSqlStatement String, SQL-PreparedStatement to be executed
      * @param variables String[], Variables to be passed in the
      *                            prepared Statement
-     * @throws exception.MySQLAlchemistException, SQLException se
+     * @throws exception.MySQLAlchemistException Exception for the
+     * SQLUpdateStatement
      */
     public void executeSQLUpdatePreparedStatement(String user, String pass, String preparedSqlStatement, String[] variables) throws MySQLAlchemistException {
         Connection conn;
@@ -229,7 +234,7 @@ public class DBConnection {
             pStmt.close();
             conn.close();
         } catch (SQLException se) {
-            throw new MySQLAlchemistException("Fehler beim Ausführen vom SQL-Statement" + preparedSqlStatement);
+            throw new MySQLAlchemistException("Fehler beim Ausführen vom SQL-Statement ", se);
         }
     }
 
@@ -244,7 +249,7 @@ public class DBConnection {
      * @throws java.sql.SQLException, SQLException se
      */
     private String[][] transformResultSet(ResultSet rs) throws SQLException {
-        String[][] result = null;
+        String[][] result;
 
         ResultSetMetaData rsmd = rs.getMetaData();
         int columnsNumber = rsmd.getColumnCount();
