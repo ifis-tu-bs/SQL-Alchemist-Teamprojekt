@@ -245,7 +245,6 @@ public class Task {
         msp.parseAndCreateDb(this.name + ".xml");
         this.mySaxParser = msp;
         }catch(MySQLAlchemistException se){
-            closeTask();
             throw new MySQLAlchemistException("Fehler beim erstellen der Task ", se);
         }
     }
