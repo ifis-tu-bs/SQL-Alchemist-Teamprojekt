@@ -1,6 +1,7 @@
 package xmlparse;
 
 import dbconnection.*;
+import exception.MySQLAlchemistException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -90,7 +91,7 @@ public class MySAXParser extends DefaultHandler {
      *
      * @param exercise
      */
-    public void parseAndCreateDb(String exercise) {
+    public void parseAndCreateDb(String exercise) throws MySQLAlchemistException{
         this.parseDocument(exercise);
         this.insertToDb();
     }
@@ -98,7 +99,7 @@ public class MySAXParser extends DefaultHandler {
     /**
      * method to parse the XML-File
      */
-    public void parseDocument(String exercise) {
+    public void parseDocument(String exercise) throws MySQLAlchemistException {
 
         //get a factory
         SAXParserFactory spf = SAXParserFactory.newInstance();
@@ -111,7 +112,7 @@ public class MySAXParser extends DefaultHandler {
             sp.parse("input/xml/" + exercise, this);
 
         } catch (SAXException | ParserConfigurationException | IOException se) {
-            logger.error(se.getStackTrace()); 
+            throw new MySQLAlchemistException("Fehler beim Parsen des Dokuments");
         }
     }
 
@@ -146,7 +147,7 @@ public class MySAXParser extends DefaultHandler {
      * Iterate through the list and insert the contents of the xml-file to the
      * database
      */
-    public void insertToDb() {
+    public void insertToDb() throws MySQLAlchemistException{
         Iterator it = myrelation.iterator();
 
         //Database credentials
@@ -168,7 +169,7 @@ public class MySAXParser extends DefaultHandler {
      * Iterate through the list and execute the Statements of the xml-file in
      * the database
      */
-    public void selectFromDb() {
+    public void selectFromDb() throws MySQLAlchemistException{
         Iterator it = mytask.iterator();
 
         //Database credentials
