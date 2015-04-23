@@ -5,20 +5,18 @@ import org.xml.sax.SAXParseException;
 import org.xml.sax.ErrorHandler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
 /**
  * Class MyParserException.
  * 
  * Handles Errors and Exceptions that could arrise during the XML-syntaxcheck
  * 
- * @author Philip Holzhüter
+ * @author Philip Holzhueter
  */
-
-// @todo Bennennt den Krams mal gescheit!
-// @todo Warum ist denn Eure Exception gar keine Exception sondern n Error Hanlder??
-// @todo also, ihr Fangt in diesem ErrorHanlder SAX fehler ein, und gebt die in Form von sinnigen Exceptions wieder raus.
 public class MyParserExceptionHandler implements ErrorHandler {
     
     private static final Logger logger = LogManager.getLogger(MyParserExceptionHandler.class.getName());
+    
     /**
      * Constructor MyParserException.
      */
@@ -28,6 +26,7 @@ public class MyParserExceptionHandler implements ErrorHandler {
     
     /**
      * Method warning.
+     * 
      * Print the warning with the line number, if the xml-file is not correct
      * 
      * @param e SAXParseException
@@ -43,6 +42,7 @@ public class MyParserExceptionHandler implements ErrorHandler {
     
     /**
      * Method error.
+     * 
      * Print the error with the line number, if the xml-file is not correct
      * 
      * @param e SAXParseException
@@ -58,6 +58,7 @@ public class MyParserExceptionHandler implements ErrorHandler {
     
     /**
      * Method fatalError.
+     * 
      * Print the fatal error with the line number, if the xml-file is not correct
      * 
      * @param e SAXParseException

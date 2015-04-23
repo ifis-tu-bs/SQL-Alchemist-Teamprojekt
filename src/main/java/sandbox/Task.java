@@ -6,10 +6,15 @@ import xmlparse.MySAXParser;
 import xmlparse.XMLSyntaxCheck;
 
 /**
- *
+ * Class Task.
+ * 
+ * Manage a task (create task, close task, update DB, load from DB,
+ * check existence)
+ * 
  * @author Tobias
  */
 public class Task {
+    
     private String name = "";
     private String dbName = "";
     private boolean dbMem = false;
@@ -180,6 +185,52 @@ public class Task {
     }
     
     /**
+     * Method startGame.
+     * 
+     * Start a new game with a given task. It is now checked whether the task
+     * already exists or not. If the is a task, the taskoptions are loaded. If
+     * not, a new task and a new db is created.
+     * 
+     * @param fileName String, name of the given file the player wants to play
+     *                         (without ending [.xml])
+     * @return Task, loaded or created task
+     */
+    public Task startTask(String fileName) {
+        if (this.checkTask(fileName)) {
+            this.loadTask(fileName);
+            
+            String dbUrl = "jdbc:h2:./dbs/" + this.dbName;
+            this.tmpDbConn = new DBConnection(dbUrl);
+            this.setTmpDbConn(tmpDbConn);
+            DBConnection tmpDbConn = new DBConnection("jdbc:h2:./dbs/" + fileName);
+            this.setTmpDbConn(tmpDbConn);
+            
+            //Make the xml-sructure-check
+            XMLSyntaxCheck sych = new XMLSyntaxCheck();
+            sych.checkxml(fileName + ".xml");
+
+            //Parse the xml-file und build the db-tables
+            MySAXParser msp = new MySAXParser(tmpDbConn);
+            msp.parseDocument(fileName + ".xml");
+            this.setMySaxParser(msp);
+            
+            //Update #players
+            int playerNum = this.getPlayers() + 1;
+            this.setPlayers(playerNum);
+            
+            this.updateTask(fileName);
+        } else {
+            this.name = fileName;
+            this.setDbName(fileName);
+            this.setDbMem(false);
+            this.setPlayers(1);
+            this.createTask();
+        }
+        
+        return this;
+    }
+    
+    /**
      * Method createTask.
      * 
      * Insert a new task-entry into the db and build up a new dbconnection.
@@ -187,10 +238,10 @@ public class Task {
     public void createTask() {
         String insertStatement = "INSERT INTO Task VALUES('" + this.name + "', '" + this.dbName + "', " + this.dbMem + ", " + this.players + ")";
         
-        fixDbConn.executeSQLUpdateStatement("", "", insertStatement);
+        this.fixDbConn.executeSQLUpdateStatement("", "", insertStatement);
         
         String dbUrl = "jdbc:h2:./dbs/" + this.dbName;
-        tmpDbConn = new DBConnection(dbUrl);
+        this.tmpDbConn = new DBConnection(dbUrl);
         this.setTmpDbConn(tmpDbConn);
         
         //Make the xml-sructure-check

@@ -22,15 +22,15 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- *
+ * Class XMLSyntaxCheck.
+ * 
+ * Check the syntax of a xml-file.
+ * 
  * @author Philips
  */
 public class XMLSyntaxCheck {
 
     private static final Logger logger = LogManager.getLogger(XMLSyntaxCheck.class.getName());
-    /**
-     * @param args the command line arguments
-     */
     
     /** 
      * checks if the given parameter s (e.g. tasks.xml) is a valid XML-file

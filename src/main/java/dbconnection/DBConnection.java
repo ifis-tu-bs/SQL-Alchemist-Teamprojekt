@@ -13,6 +13,7 @@ import org.apache.logging.log4j.Logger;
  * @author Tobias Gruenhagen
  */
 public class DBConnection {
+    
     private final String driver = "org.h2.Driver";
     private String dbURL;
     private static final Logger logger = LogManager.getLogger(DBConnection.class.getName());
@@ -38,7 +39,7 @@ public class DBConnection {
     /**
      * Constructor DBConnection.
      *
-     * Declare some Variables and register jdbc-driver.
+     * Declare db-url and register jdbc-driver.
      *
      * @param dbURL String, url for the db
      */
@@ -56,7 +57,7 @@ public class DBConnection {
      * Method executeSQLSelectStatement.
      *
      * Building a connection to a database. Executing a SQL-Statement. The
-     * ResultSet of a SELECT-Statement is printed out,
+     * ResultSet of a SELECT-Statement is returned.
      *
      * @param user String, username
      * @param pass String, password for user
@@ -84,7 +85,7 @@ public class DBConnection {
             stmt.close();
             conn.close();
         } catch (SQLException se) {
-            this.printMySQLException(se);
+            logger.error(se.toString());
         }
 
         return result;
@@ -94,7 +95,7 @@ public class DBConnection {
      * Method executeSQLUpdateStatement.
      *
      * Building a connection to a database. Executing a SQL-Statement and
-     * updating the database
+     * updating the database.
      *
      * @param user String, username
      * @param pass String, password for user
@@ -116,7 +117,7 @@ public class DBConnection {
             stmt.close();
             conn.close();
         } catch (SQLException se) {
-            this.printMySQLException(se);
+            logger.error(se.toString());
         }
     }
 
@@ -124,11 +125,11 @@ public class DBConnection {
      * Method executeSQLUpdateStatement.
      *
      * Building a connection to a database. Executing a SQL-Statement and
-     * updating the database
+     * updating the database.
      *
      * @param user String, username
      * @param pass String, password for user
-     * @param sqlStatement String, SQL-Statement to be executed
+     * @param sqlStatement String[], SQL-Statements to be executed
      */
     public void executeSQLUpdateStatement(String user, String pass, String[] sqlStatement) {
         Connection conn = null;
@@ -148,7 +149,7 @@ public class DBConnection {
             stmt.close();
             conn.close();
         } catch (SQLException se) {
-            this.printMySQLException(se);
+            logger.error(se.toString());
         }
     }
     
@@ -156,6 +157,7 @@ public class DBConnection {
      * Method executeSQLSelectPreparedStatement.
      * 
      * Building a connection to a database. Executing a SQL-PreparedStatement.
+     * The ResultSet of a SELECT-Statement is returned.
      * 
      * @param user String, username
      * @param pass String, password for user
@@ -186,7 +188,7 @@ public class DBConnection {
             pStmt.close();
             conn.close();
         } catch (SQLException se) {
-            this.printMySQLException(se);
+            logger.error(se.toString());
         }
         
         return result;
@@ -195,12 +197,14 @@ public class DBConnection {
     /**
      * Method executeSQLPreparedStatement.
      * 
-     * Building a connection to a database. Executing a SQL-PreparedStatement.
+     * Building a connection to a database. Executing a SQL-PreparedStatement
+     * and updating the database.
      * 
      * @param user String, username
      * @param pass String, password for user
      * @param preparedSqlStatement String, SQL-PreparedStatement to be executed
-     * @param variables String[], Variables to be passed in the prepared Statement
+     * @param variables String[], Variables to be passed in the
+     *                            prepared Statement
      */
     public void executeSQLUpdatePreparedStatement(String user, String pass, String preparedSqlStatement, String[] variables) {
         Connection conn;
@@ -221,22 +225,8 @@ public class DBConnection {
             pStmt.close();
             conn.close();
         } catch (SQLException se) {
-            this.printMySQLException(se);
+            logger.error(se.toString());
         }
-    }
-
-    /**
-     * Method printMySQLException.
-     *
-     * Prints own Error-Message for SQLException.
-     *
-     * @param se SQLException
-     */
-    public void printMySQLException(SQLException se) {
-        //Handle errors for SQLException
-        StringBuffer sb = new StringBuffer();
-        sb.append(se.toString());
-        logger.error(sb.toString());
     }
 
     /**
@@ -246,7 +236,7 @@ public class DBConnection {
      *
      * @param rs ResultSet, ResultSet of a SELECT-statement
      * @return String[][], multidimensional Stringarray containing the name of
-     * the DB-table and the associated value
+     *                     the DB-table and the associated value
      * @throws java.sql.SQLException
      */
     private String[][] transformResultSet(ResultSet rs) throws SQLException {
