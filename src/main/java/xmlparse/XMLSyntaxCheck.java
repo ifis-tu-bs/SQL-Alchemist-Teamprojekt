@@ -6,6 +6,7 @@
 package xmlparse;
 
 import exception.MyParserExceptionHandler;
+import exception.MySQLAlchemistException;
 import java.io.IOException;
 import java.util.StringTokenizer;
 import javax.xml.parsers.ParserConfigurationException;
@@ -37,7 +38,7 @@ public class XMLSyntaxCheck {
      * regarding XML-schema tasks.xsd
      * @param s name of the xml-file you want to validate (like "tasks.xml")
      */
-    public void checkxml(String s) {
+    public void checkxml(String s) throws MySQLAlchemistException{
         try {
             SAXParserFactory factory = SAXParserFactory.newInstance();
             factory.setValidating(false);
@@ -58,7 +59,7 @@ public class XMLSyntaxCheck {
             StringBuffer sb = new StringBuffer();
             sb.append(e.toString());
             StringTokenizer st = new StringTokenizer(sb.toString(), "\n");
-            logger.error(st.nextToken());
+            throw new MySQLAlchemistException(st.toString());
         }
     }
 }
