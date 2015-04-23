@@ -5,6 +5,8 @@
  */
 package xmlparse;
 
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigFactory;
 import exception.MyParserExceptionHandler;
 import exception.MySQLAlchemistException;
 import java.io.IOException;
@@ -28,6 +30,8 @@ import org.xml.sax.XMLReader;
  */
 public class XMLSyntaxCheck {
     
+    private final Config conf = ConfigFactory.load();
+    
     /**
      * Method ckeckxml.
      * 
@@ -47,7 +51,7 @@ public class XMLSyntaxCheck {
 
             factory.setSchema(schemaFactory.newSchema(
                 //source of xml-schema-file
-                new Source[] {new StreamSource("input/xml/tasks.xsd")})
+                new Source[] {new StreamSource(conf.getString("input.xmlValidate"))})
             );
 
             SAXParser parser = factory.newSAXParser();
@@ -56,7 +60,7 @@ public class XMLSyntaxCheck {
             reader.setErrorHandler(new MyParserExceptionHandler());
             reader.parse(
                 //source of xml-file
-                new InputSource("input/xml/" + s)
+                new InputSource(conf.getString("input.xml") + s)
             );
             
             //If this line is executed, the file is valid.

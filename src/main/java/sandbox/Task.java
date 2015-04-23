@@ -1,5 +1,7 @@
 package sandbox;
 
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigFactory;
 import dbconnection.*;
 import exception.MySQLAlchemistException;
 import org.h2.tools.DeleteDbFiles;
@@ -23,6 +25,8 @@ public class Task {
     private MySAXParser mySaxParser;
     private DBConnection tmpDbConn;
     private final DBConnection fixDbConn;
+    
+    private final Config conf = ConfigFactory.load();
 
     /**
      * Getter for name.
@@ -125,7 +129,7 @@ public class Task {
     public Task(String name, String dbName) throws MySQLAlchemistException {
         this.name = name;
         this.dbName = dbName;
-        this.fixDbConn = new DBConnection("jdbc:h2:./dbs/sql-alchemist-teamprojekt");
+        this.fixDbConn = new DBConnection(this.conf.getString("input.fixDb"));
     }
 
     /**
@@ -142,7 +146,7 @@ public class Task {
         String[] variables = new String[1];
         variables[0] = this.name;
 
-        String[][] result = fixDbConn.executeSQLSelectPreparedStatement("", "", selectStatement, variables);
+        String[][] result = fixDbConn.executeSQLSelectPreparedStatement(this.conf.getString("auth.user"), this.conf.getString("auth.pass"), selectStatement, variables);
         this.name = result[0][1];
         this.dbName = result[1][1];
         this.players = Integer.parseInt(result[2][1]);
@@ -164,7 +168,7 @@ public class Task {
         variables[2] = this.name;
         String updateStatement = "UPDATE Task SET db_name = ?, players = ? WHERE name = ?";
 
-        fixDbConn.executeSQLUpdatePreparedStatement("", "", updateStatement, variables);
+        fixDbConn.executeSQLUpdatePreparedStatement(this.conf.getString("auth.user"), this.conf.getString("auth.pass"), updateStatement, variables);
     }
 
     /**
@@ -184,7 +188,7 @@ public class Task {
             this.loadTask();
 
             //Set db for task
-            String dbUrl = "jdbc:h2:./dbs/" + this.dbName;
+            String dbUrl = this.conf.getString("input.driverDbs") + this.dbName;
             this.tmpDbConn = new DBConnection(dbUrl);
             this.setTmpDbConn(this.tmpDbConn);
 
@@ -225,10 +229,10 @@ public class Task {
         try{
         String insertStatement = "INSERT INTO Task VALUES('" + this.name + "', '" + this.dbName + "', " + this.players + ")";
 
-        this.fixDbConn.executeSQLUpdateStatement("", "", insertStatement);
+        this.fixDbConn.executeSQLUpdateStatement(this.conf.getString("auth.user"), this.conf.getString("auth.pass"), insertStatement);
 
         //Set db for task
-        String dbUrl = "jdbc:h2:./dbs/" + this.dbName;
+        String dbUrl = this.conf.getString("input.driverDbs") + this.dbName;
         this.tmpDbConn = new DBConnection(dbUrl);
         this.setTmpDbConn(this.tmpDbConn);
 
@@ -268,9 +272,9 @@ public class Task {
             variables[0] = this.name;
 
             //Delete the database for the task
-            DeleteDbFiles.execute("./dbs", this.dbName, true);
+            DeleteDbFiles.execute(this.conf.getString("input.dbs"), this.dbName, true);
 
-            fixDbConn.executeSQLUpdatePreparedStatement("", "", deleteStatement, variables);
+            fixDbConn.executeSQLUpdatePreparedStatement(this.conf.getString("auth.user"), this.conf.getString("auth.pass"), deleteStatement, variables);
         }
     }
 
@@ -288,7 +292,7 @@ public class Task {
         String[] variables = new String[1];
         variables[0] = this.name;
 
-        String[][] result = fixDbConn.executeSQLSelectPreparedStatement("", "", selectStatement, variables);
+        String[][] result = fixDbConn.executeSQLSelectPreparedStatement(this.conf.getString("auth.user"), this.conf.getString("auth.pass"), selectStatement, variables);
         return result[0][0] != null;
     }
 }

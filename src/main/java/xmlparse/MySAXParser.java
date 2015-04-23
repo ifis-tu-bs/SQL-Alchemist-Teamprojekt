@@ -16,9 +16,6 @@ import org.xml.sax.SAXException;
 
 import org.xml.sax.helpers.DefaultHandler;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import com.typesafe.config.*;
 
 /**

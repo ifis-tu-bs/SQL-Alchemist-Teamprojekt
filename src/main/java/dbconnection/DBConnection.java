@@ -1,5 +1,7 @@
 package dbconnection;
 
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigFactory;
 import exception.MySQLAlchemistException;
 import java.sql.*;
 
@@ -13,7 +15,6 @@ import java.sql.*;
  */
 public class DBConnection {
     
-    private final String driver = "org.h2.Driver";
     private String dbURL;
     
     /**
@@ -44,8 +45,10 @@ public class DBConnection {
      */
     public DBConnection(String dbURL) throws MySQLAlchemistException {
         this.dbURL = dbURL;
+        
         try {
-            Class.forName(this.driver);
+            Config conf = ConfigFactory.load();
+            Class.forName(conf.getString("input.driver"));
         } catch (ClassNotFoundException ex) {
             //Handle errors for Class.forName
             throw new MySQLAlchemistException("Fehler beim Registrieren des Datenbanktreibers (Class.forName())! ", ex);
