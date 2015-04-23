@@ -22,22 +22,20 @@ public class Test {
      * @param args unused 
      */
     public static void main(String[] args) {
-        Game test = new Game();
+        sandbox.Task test1 = new sandbox.Task("alchemy-task", "alchemy-task");
+        test1.startTask();
+        test1.closeTask();
         
-        sandbox.Task task1 = test.startGame("alchemy-task");
-        task1.getMySaxParser().selectFromDb();
-        //test.endGame(task1);
+        sandbox.Task test2 = new sandbox.Task("exam-wise13", "exam-wise13");
+        test2.startTask();
+        test2.closeTask();
         
-        sandbox.Task task2 = test.startGame("exam-wise13");
-        task2.getMySaxParser().selectFromDb();
-        //test.endGame(task2);
+        sandbox.Task test3 = new sandbox.Task("exercises-wise11", "exercises-wise11");
+        test3.startTask();
+        test3.closeTask();
         
-        sandbox.Task task3 = test.startGame("exercises-wise11");
-        task3.getMySaxParser().selectFromDb();
-        //test.endGame(task3);
-        
-        sandbox.Task task4 = test.startGame("exercises-wise13");
-        task4.getMySaxParser().selectFromDb();
-        //test.endGame(task4);
+        sandbox.Task test4 = new sandbox.Task("exercises-wise13", "exercises-wise13");
+        test4.startTask();
+        test4.closeTask();
     }
 }

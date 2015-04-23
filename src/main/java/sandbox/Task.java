@@ -17,7 +17,6 @@ public class Task {
     
     private String name = "";
     private String dbName = "";
-    private boolean dbMem = false;
     private int players = 0;
     
     private MySAXParser mySaxParser;
@@ -40,15 +39,6 @@ public class Task {
      */
     public String getDbName() {
         return dbName;
-    }
-    
-    /**
-     * Getter for dbMem.
-     * 
-     * @return boolean
-     */
-    public boolean isDbMem() {
-        return dbMem;
     }
     
     /**
@@ -97,15 +87,6 @@ public class Task {
     }
     
     /**
-     * Setter for dbMem.
-     * 
-     * @param dbMem boolean
-     */
-    public void setDbMem(boolean dbMem) {
-        this.dbMem = dbMem;
-    }
-    
-    /**
      * Setter for players.
      * 
      * @param players int
@@ -137,32 +118,27 @@ public class Task {
      * 
      * @param name String, name of the task
      * @param dbName String, name of the db
-     * @param dbMem boolean, true if it is a memorydb
      */
-    public Task(String name, String dbName, boolean dbMem) {
+    public Task(String name, String dbName) {
         this.name = name;
         this.dbName = dbName;
-        this.dbMem = dbMem;
     }
     
     /**
      * Method loadTask.
      * 
-     * Load a task and its properties from db depending on the given taskname.
+     * Load a task and its properties from db depending on the taskname.
      * Save the properties in the local attributes.
-     * 
-     * @param name String, name of the task 
      */
-    public void loadTask(String name) {
+    public void loadTask() {
         String selectStatement = "SELECT * FROM Task WHERE name = ?";
         String[] variables = new String[1];
-        variables[0] = name;
+        variables[0] = this.name;
         
         String[][] result = fixDbConn.executeSQLSelectPreparedStatement("", "", selectStatement, variables);
         this.name = result[0][1];
         this.dbName = result[1][1];
-        this.dbMem = Boolean.parseBoolean(result[2][1]);
-        this.players = Integer.parseInt(result[3][1]);
+        this.players = Integer.parseInt(result[2][1]);
     }
     
     /**
@@ -170,60 +146,51 @@ public class Task {
      * 
      * Update the properties of the given task in the db with the values of
      * the local attributes.
-     * 
-     * @param name String, name of the task
      */
-    public void updateTask(String name) {
-        String[] variables = new String[4];
+    public void updateTask() {
+        String[] variables = new String[3];
         variables[0] = this.dbName;
-        variables[1] = "" + this.dbMem;
-        variables[2] = "" + this.players;
-        variables[3] = this.name;
-        String updateStatement = "UPDATE Task SET db_name = ?, db_mem = ?, players = ? WHERE name = ?";
+        variables[1] = "" + this.players;
+        variables[2] = this.name;
+        String updateStatement = "UPDATE Task SET db_name = ?, players = ? WHERE name = ?";
 
         fixDbConn.executeSQLUpdatePreparedStatement("", "", updateStatement, variables);
     }
     
     /**
-     * Method startGame.
+     * Method startTask.
      * 
-     * Start a new game with a given task. It is now checked whether the task
-     * already exists or not. If the is a task, the taskoptions are loaded. If
-     * not, a new task and a new db is created.
+     * Start a new task with a given filename. It is now checked whether the
+     * task already exists or not. If there is a task, the taskoptions are
+     * loaded. If not, a new task and a new db is created.
      * 
-     * @param fileName String, name of the given file the player wants to play
-     *                         (without ending [.xml])
      * @return Task, loaded or created task
      */
-    public Task startTask(String fileName) {
-        if (this.checkTask(fileName)) {
-            this.loadTask(fileName);
+    public Task startTask() {
+        if (this.checkTask()) {
+            this.loadTask();
             
+            //Set db for task
             String dbUrl = "jdbc:h2:./dbs/" + this.dbName;
             this.tmpDbConn = new DBConnection(dbUrl);
-            this.setTmpDbConn(tmpDbConn);
-            DBConnection tmpDbConn = new DBConnection("jdbc:h2:./dbs/" + fileName);
-            this.setTmpDbConn(tmpDbConn);
+            this.setTmpDbConn(this.tmpDbConn);
             
             //Make the xml-sructure-check
             XMLSyntaxCheck sych = new XMLSyntaxCheck();
-            sych.checkxml(fileName + ".xml");
+            sych.checkxml(this.name + ".xml");
 
             //Parse the xml-file und build the db-tables
             MySAXParser msp = new MySAXParser(tmpDbConn);
-            msp.parseDocument(fileName + ".xml");
+            msp.parseDocument(this.name + ".xml");
             this.setMySaxParser(msp);
             
             //Update #players
             int playerNum = this.getPlayers() + 1;
             this.setPlayers(playerNum);
             
-            this.updateTask(fileName);
+            this.updateTask();
         } else {
-            this.name = fileName;
-            this.setDbName(fileName);
-            this.setDbMem(false);
-            this.setPlayers(1);
+            this.players = 1;
             this.createTask();
         }
         
@@ -235,14 +202,15 @@ public class Task {
      * 
      * Insert a new task-entry into the db and build up a new dbconnection.
      */
-    public void createTask() {
-        String insertStatement = "INSERT INTO Task VALUES('" + this.name + "', '" + this.dbName + "', " + this.dbMem + ", " + this.players + ")";
+    private void createTask() {
+        String insertStatement = "INSERT INTO Task VALUES('" + this.name + "', '" + this.dbName + "', " + this.players + ")";
         
         this.fixDbConn.executeSQLUpdateStatement("", "", insertStatement);
         
+        //Set db for task
         String dbUrl = "jdbc:h2:./dbs/" + this.dbName;
         this.tmpDbConn = new DBConnection(dbUrl);
-        this.setTmpDbConn(tmpDbConn);
+        this.setTmpDbConn(this.tmpDbConn);
         
         //Make the xml-sructure-check
         XMLSyntaxCheck sych = new XMLSyntaxCheck();
@@ -257,17 +225,26 @@ public class Task {
     /**
      * Method closeTask.
      * 
-     * Delete the actual task from the db and delete the associated task-db.
+     * Close a task and increment the number of players playing the given task.
+     * If it was the last player that played the task, the taskentry in the db
+     * is deleted.
      */
     public void closeTask() {
-        String deleteStatement = "DELETE FROM Task WHERE name = ?";
-        String[] variables = new String[1];
-        variables[0] = this.name;
+        int playerNum = this.players - 1;
+        this.players = playerNum;
+        this.updateTask();
         
-        //Delete the database for the task
-        DeleteDbFiles.execute("./dbs", this.dbName, true);
-        
-        fixDbConn.executeSQLUpdatePreparedStatement("", "", deleteStatement, variables);
+        //Delete taskentry in DB if #players = 0
+        if (this.players == 0) {
+            String deleteStatement = "DELETE FROM Task WHERE name = ?";
+            String[] variables = new String[1];
+            variables[0] = this.name;
+
+            //Delete the database for the task
+            DeleteDbFiles.execute("./dbs", this.dbName, true);
+
+            fixDbConn.executeSQLUpdatePreparedStatement("", "", deleteStatement, variables);
+        }
     }
     
     /**
@@ -275,13 +252,12 @@ public class Task {
      * 
      * Check whether the given task already exists in the db or not.
      * 
-     * @param taskName String, name of the task
      * @return boolean, true if the given task exists 
      */
-    public boolean checkTask(String taskName) {
+    public boolean checkTask() {
         String selectStatement = "SELECT * FROM Task WHERE name = ?";
         String[] variables = new String[1];
-        variables[0] = taskName;
+        variables[0] = this.name;
         
         String[][] result = fixDbConn.executeSQLSelectPreparedStatement("", "", selectStatement, variables);
         return result[0][0] != null;
