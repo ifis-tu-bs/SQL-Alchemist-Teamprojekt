@@ -11,14 +11,30 @@ package exception;
 public class MySQLAlchemistException extends Exception {
 
     Exception exception;
+    String message;
 
     /**
      * Constructor for the exception
      *
      * @param message detailed message from the error
+     * @param exception catched Exception
      */
-    public MySQLAlchemistException(String message) {
+    public MySQLAlchemistException(String message, Exception exception) {
 
-        super();
+        this.message = message;
+        this.exception = exception;
+    }
+
+    /**
+     * Getter for the message of this exception and the wrapped exception
+     *
+     * @return string from the message
+     */
+    public String getMyMessage() {
+        if (exception.getClass() == MySQLAlchemistException.class) {
+            MySQLAlchemistException ex = (MySQLAlchemistException) exception;
+            return message + ex.getMyMessage();
+        }
+        return message + exception.getMessage();
     }
 }

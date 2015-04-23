@@ -5,7 +5,7 @@ package xmlparse;
  *
  * @author Tobias
  */
-public class Task {
+public class Exercise {
 
     private String[] tasktexts;
     private String referencestatement;
@@ -17,7 +17,7 @@ public class Task {
     /**
      * constructor without parameters
      */
-    public Task() {
+    public Exercise() {
         this.tasktexts = new String[0];
         this.term = new String[0];
     }
