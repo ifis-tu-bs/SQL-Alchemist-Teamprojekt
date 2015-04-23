@@ -19,6 +19,8 @@ import org.xml.sax.helpers.DefaultHandler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.typesafe.config.*;
+
 /**
  * class to parse the XML-File into java
  *
@@ -109,7 +111,8 @@ public class MySAXParser extends DefaultHandler {
             SAXParser sp = spf.newSAXParser();
 
             //parse the file and also register this class for call backs
-            sp.parse("input/xml/" + exercise, this);
+            Config conf = ConfigFactory.load();
+            sp.parse(conf.getString("input.xml") + exercise, this);
 
         } catch (SAXException | ParserConfigurationException | IOException se) {
             throw new MySQLAlchemistException("Fehler beim Parsen des Dokuments");
