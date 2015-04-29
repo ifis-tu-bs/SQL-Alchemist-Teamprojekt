@@ -8,5 +8,8 @@ libraryDependencies ++= Seq(
   "com.h2database" % "h2" % "1.3.176",
   "org.apache.logging.log4j" % "log4j-core" % "2.2",
   "org.apache.logging.log4j" % "log4j-api" % "2.2",
-  "com.typesafe" % "config" % "1.3.0-M3"
+  "com.typesafe" % "config" % "1.3.0-M3",
+  "com.novocode" % "junit-interface" % "0.10-M1" % "test"
 )
+
+testOptions += Tests.Argument(TestFrameworks.JUnit, "-q", "-v")
