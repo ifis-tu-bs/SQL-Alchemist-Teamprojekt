@@ -19,17 +19,6 @@ public class Relation {
     }
 
     /**
-     * constructor with parameters
-     *
-     * @param intension
-     * @param tuple
-     */
-    public Relation(String intension, String[] tuple) {
-        this.intension = intension;
-        this.tuple = tuple;
-    }
-
-    /**
      * get-method for the create-table-statement
      *
      * @return intension
@@ -41,7 +30,7 @@ public class Relation {
     /**
      * set-method for the create-table-statement
      *
-     * @param intension
+     * @param intension String, the create-table-statement
      */
     public void setIntension(String intension) {
         this.intension = intension;
@@ -50,7 +39,7 @@ public class Relation {
     /**
      * get-method for the insert-into-statements as a list
      *
-     * @return tuple
+     * @return tuple as an array
      */
     public String[] getTuple() {
         return this.tuple;
@@ -59,7 +48,7 @@ public class Relation {
     /**
      * get-method for the insert-statements as a string
      *
-     * @return tuple
+     * @return tuple as a string
      */
     public String getTupleAsString() {
         String s = "";
@@ -73,7 +62,7 @@ public class Relation {
     /**
      * set-method for the insert-into-statements
      *
-     * @param tuple
+     * @param tuple the insert-into-statements
      */
     public void setTuple(String tuple) {
         String[] temp = new String[this.tuple.length + 1];
@@ -87,7 +76,7 @@ public class Relation {
     /**
      * method to make a string of the relations
      *
-     * @return string
+     * @return string with all content
      */
     public String toString() {
         StringBuffer sb = new StringBuffer();
