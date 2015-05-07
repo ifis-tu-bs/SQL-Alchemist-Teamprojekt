@@ -1,4 +1,5 @@
 import exception.MySQLAlchemistException;
+import java.util.Iterator;
 import sandbox.*;
 
 /**
@@ -24,8 +25,16 @@ public class Test {
      */
     public static void main(String[] args) {
         try {
-            InputFile test = new InputFile("alchemy-task");
-            test.getTasks();
+            InputFile test = new InputFile("exercises-wise11");
+            Iterator it = test.getTasks().iterator();
+        
+            while (it.hasNext()) {
+               Task task = (Task) it.next();
+               task.startTask();
+               task.printData();
+               //task.insertToDb();
+               //task.closeTask();
+        }
             /*Task test1 = new Task("alchemy-task", "alchemy-task");
             test1.startTask();
             

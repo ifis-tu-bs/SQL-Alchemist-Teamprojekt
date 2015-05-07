@@ -17,6 +17,8 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 import com.typesafe.config.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import sandbox.Task;
 
 /**
@@ -127,32 +129,6 @@ public class MySAXParser extends DefaultHandler {
         }
     }
 
-    /**
-     * Iterate through the list and print the contents of the xml-file
-     */
-    public void printData() {
-
-        System.out.println("No of Relations '" + myrelation.size() + "'.");
-
-        Iterator it = myrelation.iterator();
-
-        while (it.hasNext()) {
-            System.out.println(it.next().toString());
-        }
-
-        System.out.println("No of Exercises '" + myexercise.size() + "'.");
-
-        it = myexercise.iterator();
-        while (it.hasNext()) {
-            System.out.println(it.next().toString());
-        }
-        System.out.println("No of Header '" + myheader.size() + "'.");
-
-        it = myheader.iterator();
-        while (it.hasNext()) {
-            System.out.println(it.next().toString());
-        }
-    }
 
     /**
      * Iterate through the list and insert the contents of the xml-file to the
@@ -278,7 +254,11 @@ public class MySAXParser extends DefaultHandler {
         if (qName.equalsIgnoreCase("task")) {
             //add it to the list
             myheader.add(tempheader);
-            tempTask = new Task(tempheader.getTaskId(), myheader, myrelation, myexercise);
+            try {
+                tempTask = new Task(tempheader.getTaskId(), myheader, myrelation, myexercise);
+            } catch (MySQLAlchemistException ex) {
+                Logger.getLogger(MySAXParser.class.getName()).log(Level.SEVERE, null, ex);
+            }
             myTasks.add(tempTask);
             myheader = new ArrayList();
             myexercise = new ArrayList();

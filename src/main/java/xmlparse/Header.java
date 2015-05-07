@@ -33,7 +33,7 @@ public class Header {
      return taskId;
      }
 
-     public void setTaskId(String task) {
+     public void setTaskId(String taskId) {
      this.taskId = taskId;
      }
 

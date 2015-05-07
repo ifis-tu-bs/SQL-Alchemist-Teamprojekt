@@ -7,8 +7,10 @@ import exception.MySQLAlchemistException;
 import java.util.Iterator;
 import java.util.List;
 import org.h2.tools.DeleteDbFiles;
+import xmlparse.Exercise;
 import xmlparse.Header;
 import xmlparse.MySAXParser;
+import xmlparse.Relation;
 import xmlparse.XMLSyntaxCheck;
 
 /**
@@ -30,7 +32,7 @@ public class Task {
     private List myExercise;
     
     private DBConnection tmpDbConn;
-    private final DBConnection fixDbConn;
+    private DBConnection fixDbConn;
     
     private final Config conf = ConfigFactory.load();
 
@@ -138,18 +140,14 @@ public class Task {
      * @throws exception.MySQLAlchemistException Exception for the new database
      * connection
      */
-    public Task(String name, String dbName) throws MySQLAlchemistException {
-        this.name = name;
-        this.dbName = dbName;
-        this.fixDbConn = new DBConnection(this.conf.getString("input.fixDb"));
-    }
     
-    public Task(String name, List myHeader, List myRelation, List myExercise) {
+    public Task(String name, List myHeader, List myRelation, List myExercise) throws MySQLAlchemistException {
         this.name = name;
+        this.dbName = name;
         this.myHeader = myHeader;
         this.myRelation = myRelation;
         this.myExercise = myExercise;
-        this.fixDbConn = null;
+
     }
 
     /**
@@ -204,25 +202,25 @@ public class Task {
      */
     public Task startTask() throws MySQLAlchemistException {
         try{
-        if (this.checkTask()) {
-            this.loadTask();
+            this.fixDbConn = new DBConnection(this.conf.getString("input.fixDb"));
+            if (this.checkTask()) {
+                this.loadTask();
 
-            //Set db for task
-            String dbUrl = this.conf.getString("input.driverDbs") + this.dbName;
-            this.tmpDbConn = new DBConnection(dbUrl);
-            this.setTmpDbConn(this.tmpDbConn);
+                //Set db for task
+                String dbUrl = this.conf.getString("input.driverDbs") + this.dbName;
+                this.tmpDbConn = new DBConnection(dbUrl);
 
-            
 
-            //Update #players
-            int playerNum = this.getPlayers() + 1;
-            this.setPlayers(playerNum);
 
-            this.updateTask();
-        } else {
-            this.players = 1;
-            this.createTask();
-        }
+                //Update #players
+                int playerNum = this.getPlayers() + 1;
+                this.setPlayers(playerNum);
+
+                this.updateTask();
+            } else {
+                this.players = 1;
+                this.createTask();
+            }
         }catch(MySQLAlchemistException se){
             closeTask();
             throw new MySQLAlchemistException("Fehler beim starten der Task ", se);
@@ -247,7 +245,6 @@ public class Task {
         //Set db for task
         String dbUrl = this.conf.getString("input.driverDbs") + this.dbName;
         this.tmpDbConn = new DBConnection(dbUrl);
-        this.setTmpDbConn(this.tmpDbConn);
         
         }catch(MySQLAlchemistException se){
             throw new MySQLAlchemistException("Fehler beim erstellen der Task ", se);
@@ -299,4 +296,76 @@ public class Task {
         String[][] result = fixDbConn.executeSQLSelectPreparedStatement(this.conf.getString("auth.user"), this.conf.getString("auth.pass"), selectStatement, variables);
         return result[0][0] != null;
     }
+    
+        /**
+     * Iterate through the list and insert the contents of the xml-file to the
+     * database
+     * @throws exception.MySQLAlchemistException Exception for the
+     * SQLUpdateStatement
+     */
+    public void insertToDb() throws MySQLAlchemistException{
+        Iterator it = myRelation.iterator();
+
+        //Database credentials
+        String user = "";
+        String pass = "";
+
+        while (it.hasNext()) {
+            Relation s = (Relation) it.next();
+            String[] a = s.getTuple();
+            for (int i = 0; i < a.length; i++) {
+                a[i] = a[i].replace('\"', '\'');
+            }
+            this.fixDbConn.executeSQLUpdateStatement(user, pass, s.getIntension());
+            this.fixDbConn.executeSQLUpdateStatement(user, pass, a);
+        }
+    }
+
+    /**
+     * Iterate through the list and execute the Statements of the xml-file in
+     * the database
+     * @throws exception.MySQLAlchemistException Exception for the
+     * SQLSelectStatement
+     */
+    public void selectFromDb() throws MySQLAlchemistException{
+        Iterator it = myExercise.iterator();
+
+        //Database credentials
+        String user = "";
+        String pass = "";
+        
+        while (it.hasNext()) {
+            Exercise select = (Exercise) it.next();
+            String selectString = select.getReferencestatement().replace('\"', '\'');
+            this.fixDbConn.executeSQLSelectStatement(user, pass, selectString);
+        }
+    }
+    
+     /**
+     * Iterate through the list and print the contents of the xml-file
+     */
+    public void printData() {
+
+        System.out.println("No of Relations '" + myRelation.size() + "'.");
+
+        Iterator it = myRelation.iterator();
+
+        while (it.hasNext()) {
+            System.out.println(it.next().toString());
+        }
+
+        System.out.println("No of Exercises '" + myExercise.size() + "'.");
+
+        it = myExercise.iterator();
+        while (it.hasNext()) {
+            System.out.println(it.next().toString());
+        }
+        System.out.println("No of Header '" + myHeader.size() + "'.");
+
+        it = myHeader.iterator();
+        while (it.hasNext()) {
+            System.out.println(it.next().toString());
+        }
+    }
+
 }
