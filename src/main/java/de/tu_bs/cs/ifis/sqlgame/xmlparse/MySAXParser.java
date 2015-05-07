@@ -160,7 +160,7 @@ public class MySAXParser extends DefaultHandler {
      * string if qualified names are not available.
      * @param attributes The attributes attached to the element. If there are no
      * attributes, it shall be an empty Attributes object.
-     * @throws SAXException, exception from parsing the document
+     * @throws SAXException exception from parsing the document
      */
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
@@ -189,7 +189,7 @@ public class MySAXParser extends DefaultHandler {
      * @param ch The characters.
      * @param start The start position in the character array.
      * @param length The number of characters to use from the character array.
-     * @throws SAXException, exception from parsing the document
+     * @throws SAXException exception from parsing the document
      */
     @Override
     public void characters(char[] ch, int start, int length) throws SAXException {
@@ -210,7 +210,7 @@ public class MySAXParser extends DefaultHandler {
      *        performed.
      * @param qName The qualified name (with prefix), or the
      *        empty string if qualified names are not available.
-     * @throws SAXException, exception from parsing the document
+     * @throws SAXException exception from parsing the document
      */
     @Override
     public void endElement(String uri, String localName, String qName) throws SAXException {
