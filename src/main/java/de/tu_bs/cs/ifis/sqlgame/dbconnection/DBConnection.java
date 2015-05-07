@@ -72,13 +72,16 @@ public class DBConnection {
         switch (dbType) {
             case "local": {
                 dbTypeH2 = "";
+                break;
             }
             case "server": {
                 //TODO: add server-IP
                 dbTypeH2 = "";
+                break;
             }
             case "memory": {
                 dbTypeH2 = "mem:";
+                break;
             }
         }
         
@@ -277,7 +280,7 @@ public class DBConnection {
             pStmt.close();
             conn.close();
         } catch (SQLException se) {
-            throw new MySQLAlchemistException("Fehler beim Ausführen vom SQL-Statement ", se);
+            throw new MySQLAlchemistException("Fehler beim Ausführen vom SQL-Statement " + dbURL, se);
         }
     }
 
