@@ -8,7 +8,9 @@ organization := "de.tu_bs.cs.ifis.sqlgame"
 
 publishTo := Some(Resolver.file("mvn-repository", new File("./mvn-repository/")))
 
-scalacOptions ++= Seq("-deprecation", "-encoding", "UTF-8")
+scalacOptions ++= Seq("-encoding", "UTF-8")
+
+javacOptions ++= Seq("-encoding", "UTF-8")
 
 libraryDependencies ++= Seq(
   "com.h2database" % "h2" % "1.3.176",
