@@ -1383,3 +1383,11 @@ SELECT FDFEWdf [42122-176]
 	at sbt.Logger$$anon$4.apply(Logger.scala:90)
 	at sbt.TrapExit$App.run(TrapExit.scala:244)
 	at java.lang.Thread.run(Thread.java:745)
+05-07 18:33:11 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Tabelle "MOVIE" nicht gefunden
+Table "MOVIE" not found; SQL statement:
+INSERT INTO Movie VALUES (1, 'The Godfather', 1972, 'USA', 10000000, 'cinema'); [42102-176]
+05-07 18:35:16 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Tabelle "MOVIE" nicht gefunden
+Table "MOVIE" not found; SQL statement:
+INSERT INTO Movie VALUES (1, 'The Godfather', 1972, 'USA', 10000000, 'cinema'); [42102-176]

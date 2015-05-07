@@ -44,6 +44,6 @@ public class InputFile {
         //Parse the xml-file und build the db-tables
         MySAXParser msp = new MySAXParser();
         msp.parseDocument(this.filename + ".xml");
-        tasks = msp.getMyTasks();
+        this.tasks = msp.getMyTasks();
     }
 }

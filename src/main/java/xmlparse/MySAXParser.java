@@ -1,10 +1,8 @@
 package xmlparse;
 
-import dbconnection.*;
 import exception.MySQLAlchemistException;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -13,261 +11,245 @@ import javax.xml.parsers.SAXParserFactory;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
-
 import org.xml.sax.helpers.DefaultHandler;
 
 import com.typesafe.config.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import dbconnection.DBConnection;
+import java.util.Iterator;
 import sandbox.Task;
 
 /**
- * class to parse the XML-File into java
+ * Class MySAXParser.
  *
- * @author Tobias
+ * Class to parse a xml and put the information into java-task-objects.
+ *
+ * @author Tobias Runge
  */
 public class MySAXParser extends DefaultHandler {
 
-    private List myrelation;
-    private List myheader;
-    private List myexercise;
+    private List myRelation;
+    private List myHeader;
+    private List myExercise;
     private List myTasks;
 
-    //to maintain context
-    private Header tempheader;
-    private Relation temprelation;
-    private Exercise tempexercise;
-    private Task tempTask;
-    
-    
+    private Header tempHeader;
+    private Relation tempRelation;
+    private Exercise tempExercise;
+
+    private final StringBuffer sb;
+
     /**
-     * Setter for myrelation.
-     * 
-     * @return List
+     * Getter for myRelation.
+     *
+     * @return List, list with relationinformation
      */
-    public List getMyrelation() {
-        return myrelation;
-    }
-    
-    /**
-     * Setter for myheader
-     * 
-     * @return List
-     */
-    public List getMyheader() {
-        return myheader;
-    }
-    
-    /**
-     * Setter for myexercise.
-     * 
-     * @return List
-     */
-    public List getMyexercise() {
-        return myexercise;
+    public List getMyRelation() {
+        return this.myRelation;
     }
 
+    /**
+     * Getter for myHeader
+     *
+     * @return List, list with headerinformation
+     */
+    public List getMyHeader() {
+        return this.myHeader;
+    }
+
+    /**
+     * Getter for myExercise.
+     *
+     * @return List, list with exerciseinformation
+     */
+    public List getMyExercise() {
+        return this.myExercise;
+    }
+
+    /**
+     * Getter for myTask.
+     *
+     * @return List, list with tasks
+     */
     public List getMyTasks() {
-        return myTasks;
+        return this.myTasks;
     }
 
+    /**
+     * Setter for myTask.
+     *
+     * @param myTasks List, list with tasks
+     */
     public void setMyTasks(List myTasks) {
         this.myTasks = myTasks;
     }
-    
-    /**
-     * buffer for the XML-lines
-     */
-    StringBuffer sb = new StringBuffer();
 
     /**
      * Constructor MySAXParser.
-     * 
-     * Create empty lists.
+     *
+     * Create empty lists and define default variables.
      */
     public MySAXParser() {
-        myrelation = new ArrayList();
-        myexercise = new ArrayList();
-        myheader = new ArrayList();
-        myTasks = new ArrayList();
-        
+        this.myRelation = new ArrayList();
+        this.myExercise = new ArrayList();
+        this.myHeader = new ArrayList();
+        this.myTasks = new ArrayList();
+        this.sb = new StringBuffer();
     }
 
     /**
-     * run-method parse the document and print the result
+     * Method parseDocument.
      *
-     * @param exercise the xml-file
-     * @throws exception.MySQLAlchemistException Exception for the parsing of 
-     * the document
-     */
-    public void parseAndCreateDb(String exercise) throws MySQLAlchemistException{
-        this.parseDocument(exercise);
-        //this.insertToDb();
-    }
-
-    /**
-     * method to parse the XML-File
-     * @param exercise the xml-file that is parsed
-     * @throws exception.MySQLAlchemistException Exception from parsing the 
+     * Parse the XML-File.
+     *
+     * @param exercise String, the xml-file that is parsed
+     * @throws exception.MySQLAlchemistException, exception from parsing the
      * document
      */
     public void parseDocument(String exercise) throws MySQLAlchemistException {
-
-        //get a factory
         SAXParserFactory spf = SAXParserFactory.newInstance();
         try {
-
-            //get a new instance of parser
+            //New instance of a parser
             SAXParser sp = spf.newSAXParser();
-
-            //parse the file and also register this class for call backs
+            
+            //Parse the file and register this class for call backs
             Config conf = ConfigFactory.load();
             sp.parse(conf.getString("input.xml") + exercise, this);
+            
+            /* //Check SQL-syntax
+            dbconnection.DBConnection dbcnn = new DBConnection(conf.getString("input.fixDb"));
+            Iterator it0 = this.myTasks.iterator();
+            while (it0.hasNext()) {
+                Task t = (Task) it0.next();
+                
+                //Check CREATE-TABLE and INSERT-INTO statements
+                Iterator it1 = t.getMyRelation().iterator();
+                while (it1.hasNext()) {
+                    Relation r = (Relation) it1.next();
+                    dbcnn.checkSQLSyntax(r.getIntension());
+                    String[] s = r.getTuple();
+                    for (String se : s) {
+                        dbcnn.checkSQLSyntax(se);
+                    }
+                }
 
+                //Check referencestatements
+                Iterator it2 = t.getMyExercise().iterator();
+                while (it2.hasNext()) {
+                    Exercise e = (Exercise) it2.next();
+                    dbcnn.checkSQLSyntax(e.getReferencestatement());
+                }
+            }
+            */
         } catch (SAXException | ParserConfigurationException | IOException se) {
             throw new MySQLAlchemistException("Fehler beim Parsen des Dokuments ", se);
         }
     }
 
-
     /**
-     * Iterate through the list and insert the contents of the xml-file to the
-     * database
-     * @throws exception.MySQLAlchemistException Exception for the
-     * SQLUpdateStatement
-     */
-    /*public void insertToDb() throws MySQLAlchemistException{
-        Iterator it = myrelation.iterator();
-
-        //Database credentials
-        String user = "";
-        String pass = "";
-
-        while (it.hasNext()) {
-            Relation s = (Relation) it.next();
-            String[] a = s.getTuple();
-            for (int i = 0; i < a.length; i++) {
-                a[i] = a[i].replace('\"', '\'');
-            }
-            this.dbConn.executeSQLUpdateStatement(user, pass, s.getIntension());
-            this.dbConn.executeSQLUpdateStatement(user, pass, a);
-        }
-    }
-*/
-    /**
-     * Iterate through the list and execute the Statements of the xml-file in
-     * the database
-     * @throws exception.MySQLAlchemistException Exception for the
-     * SQLSelectStatement
-     */
- /*   public void selectFromDb() throws MySQLAlchemistException{
-        Iterator it = myexercise.iterator();
-
-        //Database credentials
-        String user = "";
-        String pass = "";
-        
-        while (it.hasNext()) {
-            Exercise select = (Exercise) it.next();
-            String selectString = select.getReferencestatement().replace('\"', '\'');
-            this.dbConn.executeSQLSelectStatement(user, pass, selectString);
-        }
-    }
-*/
-    //Event Handlers
-    /**
-     * Helper-method to parse the document
+     * Method startElement. Event Handler
      *
-     * @param uri
-     * @param localName
-     * @param qName
-     * @param attributes
-     * @throws SAXException
+     * Helper-method to parse the document, take specific actions at the start
+     * of each element.
+     *
+     * @param uri String, the Namespace URI, or the empty string if the element
+     * has no Namespace URI or if Namespace processing is not being performed.
+     * @param localName String, the local name (without prefix), or the empty
+     * string if Namespace processing is not being performed.
+     * @param qName String, the qualified name (with prefix), or the empty
+     * string if qualified names are not available.
+     * @param attributes The attributes attached to the element. If there are no
+     * attributes, it shall be an empty Attributes object.
+     * @throws SAXException, exception from parsing the document
      */
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
         //reset
-        sb.setLength(0);
+        this.sb.setLength(0);
         if (qName.equalsIgnoreCase("Relation")) {
             //create a new instance
-            temprelation = new Relation();
+            this.tempRelation = new Relation();
             //temprelation.setType(attributes.getValue("type"));
         }
         if (qName.equalsIgnoreCase("Task")) {
-            tempheader = new Header();
-            tempheader.setTaskId(attributes.getValue("taskid"));
+            this.tempHeader = new Header();
+            this.tempHeader.setTaskId(attributes.getValue("taskid"));
         }
         if (qName.equalsIgnoreCase("subtask")) {
-            tempexercise = new Exercise();
+            this.tempExercise = new Exercise();
         }
     }
 
     /**
-     * Helper-method to parse the document
+     * Method characters. Event Handler
+     * 
+     * Helper-method to parse the document, take specific actions for each chunk
+     * of character data.
      *
-     * @param ch
-     * @param start
-     * @param length
-     * @throws SAXException
+     * @param ch The characters.
+     * @param start The start position in the character array.
+     * @param length The number of characters to use from the character array.
+     * @throws SAXException, exception from parsing the document
      */
     @Override
     public void characters(char[] ch, int start, int length) throws SAXException {
-
-        sb.append(ch, start, length);
+        this.sb.append(ch, start, length);
     }
 
     /**
-     * Helper-method to parse the document
+     * Method endElement. Event Handler
+     * 
+     * Helper-method to parse the document, take specific actions at the end of
+     * each element.
      *
-     * @param uri
-     * @param localName
-     * @param qName
-     * @throws SAXException
+     * @param uri The Namespace URI, or the empty string if the
+     *        element has no Namespace URI or if Namespace
+     *        processing is not being performed.
+     * @param localName The local name (without prefix), or the
+     *        empty string if Namespace processing is not being
+     *        performed.
+     * @param qName The qualified name (with prefix), or the
+     *        empty string if qualified names are not available.
+     * @throws SAXException, exception from parsing the document
      */
     @Override
     public void endElement(String uri, String localName, String qName) throws SAXException {
-
         if (qName.equalsIgnoreCase("relation")) {
             //add it to the list
-            myrelation.add(temprelation);
+            this.myRelation.add(this.tempRelation);
         } else if (qName.equalsIgnoreCase("intension")) {
-            temprelation.setIntension(sb.toString());
+            String intension = this.sb.toString();
+            this.tempRelation.setIntension(intension);
         } else if (qName.equalsIgnoreCase("tuple")) {
-            temprelation.setTuple(sb.toString());
+            this.tempRelation.setTuple(this.sb.toString());
+            
         }
 
         if (qName.equalsIgnoreCase("subtask")) {
             //add it to the list
-            myexercise.add(tempexercise);
+            this.myExercise.add(this.tempExercise);
         } else if (qName.equalsIgnoreCase("tasktext")) {
-            tempexercise.setTasktexts(sb.toString());
+            this.tempExercise.setTasktexts(this.sb.toString());
         } else if (qName.equalsIgnoreCase("referencestatement")) {
-            tempexercise.setReferencestatement(sb.toString());
+            this.tempExercise.setReferencestatement(this.sb.toString());
         } else if (qName.equalsIgnoreCase("evaluationstrategy")) {
-            tempexercise.setEvaluationstrategy(sb.toString());
+            this.tempExercise.setEvaluationstrategy(this.sb.toString());
         } else if (qName.equalsIgnoreCase("term")) {
-            tempexercise.setTerm(sb.toString());
+            this.tempExercise.setTerm(this.sb.toString());
         } else if (qName.equalsIgnoreCase("points")) {
-            tempexercise.setPoints(Integer.parseInt(sb.toString()));
+            this.tempExercise.setPoints(Integer.parseInt(this.sb.toString()));
         }
 
         if (qName.equalsIgnoreCase("task")) {
             //add it to the list
-            myheader.add(tempheader);
-            try {
-                tempTask = new Task(tempheader.getTaskId(), myheader, myrelation, myexercise);
-            } catch (MySQLAlchemistException ex) {
-                Logger.getLogger(MySAXParser.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            myTasks.add(tempTask);
-            myheader = new ArrayList();
-            myexercise = new ArrayList();
-            myrelation = new ArrayList();
+            this.myHeader.add(this.tempHeader);
+            this.myTasks.add(new Task(this.tempHeader.getTaskId(), this.myHeader, this.myRelation, this.myExercise));
+            this.myHeader = new ArrayList();
+            this.myExercise = new ArrayList();
+            this.myRelation = new ArrayList();
         } else if (qName.equalsIgnoreCase("title")) {
-            tempheader.setTitle(sb.toString());
+            this.tempHeader.setTitle(this.sb.toString());
         } else if (qName.equalsIgnoreCase("flufftext")) {
-            tempheader.setFlufftext(sb.toString());
+            this.tempHeader.setFlufftext(this.sb.toString());
         }
-
     }
 }

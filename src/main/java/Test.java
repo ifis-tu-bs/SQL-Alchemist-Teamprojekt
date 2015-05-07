@@ -30,21 +30,15 @@ public class Test {
         try {
 
             InputFile test = new InputFile("exercises-wise11");
-            Iterator it = test.getTasks().iterator();
+            /*Iterator it = test.getTasks().iterator();
         
             while (it.hasNext()) {
-               Task task = (Task) it.next();
-               task.startTask();
-               task.printData();
-               //task.insertToDb();
-               //task.closeTask();
-        }
-
-            Config conf = ConfigFactory.load();
-            dbconnection.DBConnection dbcnn = new DBConnection(conf.getString("input.driverDbs") + "test");
-            dbcnn.checkSQLSyntax("SELECT FDFEWdf");
-            //InputFile test = new InputFile("alchemy-task");
-            //test.getTasks();
+                Task task = (Task) it.next();
+                task.startTask();
+                task.printData();
+                //task.insertToDb();
+                //task.closeTask();
+            }
 
             /*Task test1 = new Task("alchemy-task", "alchemy-task");
             test1.startTask();

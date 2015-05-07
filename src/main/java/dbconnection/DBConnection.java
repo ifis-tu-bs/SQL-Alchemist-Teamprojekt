@@ -70,7 +70,7 @@ public class DBConnection {
     public boolean checkSQLSyntax(String SQLStatement) throws MySQLAlchemistException {
         Connection conn = null;
         PreparedStatement pStmt = null;
-        
+        System.out.println(SQLStatement);
         try {
             //Open connection and create prepared Statement
             Config conf = ConfigFactory.load();

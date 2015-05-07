@@ -8,10 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 import org.h2.tools.DeleteDbFiles;
 import xmlparse.Exercise;
-import xmlparse.Header;
-import xmlparse.MySAXParser;
 import xmlparse.Relation;
-import xmlparse.XMLSyntaxCheck;
 
 /**
  * Class Task.
@@ -137,11 +134,9 @@ public class Task {
      *
      * @param name String, name of the task
      * @param dbName String, name of the db
-     * @throws exception.MySQLAlchemistException Exception for the new database
-     * connection
      */
     
-    public Task(String name, List myHeader, List myRelation, List myExercise) throws MySQLAlchemistException {
+    public Task(String name, List myHeader, List myRelation, List myExercise) {
         this.name = name;
         this.dbName = name;
         this.myHeader = myHeader;
@@ -297,7 +292,7 @@ public class Task {
         return result[0][0] != null;
     }
     
-        /**
+    /**
      * Iterate through the list and insert the contents of the xml-file to the
      * database
      * @throws exception.MySQLAlchemistException Exception for the
@@ -306,18 +301,14 @@ public class Task {
     public void insertToDb() throws MySQLAlchemistException{
         Iterator it = myRelation.iterator();
 
-        //Database credentials
-        String user = "";
-        String pass = "";
-
         while (it.hasNext()) {
             Relation s = (Relation) it.next();
             String[] a = s.getTuple();
             for (int i = 0; i < a.length; i++) {
                 a[i] = a[i].replace('\"', '\'');
             }
-            this.fixDbConn.executeSQLUpdateStatement(user, pass, s.getIntension());
-            this.fixDbConn.executeSQLUpdateStatement(user, pass, a);
+            this.fixDbConn.executeSQLUpdateStatement(this.conf.getString("auth.user"), this.conf.getString("auth.pass"), s.getIntension());
+            this.fixDbConn.executeSQLUpdateStatement(this.conf.getString("auth.user"), this.conf.getString("auth.pass"), a);
         }
     }
 
@@ -329,15 +320,11 @@ public class Task {
      */
     public void selectFromDb() throws MySQLAlchemistException{
         Iterator it = myExercise.iterator();
-
-        //Database credentials
-        String user = "";
-        String pass = "";
         
         while (it.hasNext()) {
             Exercise select = (Exercise) it.next();
             String selectString = select.getReferencestatement().replace('\"', '\'');
-            this.fixDbConn.executeSQLSelectStatement(user, pass, selectString);
+            this.fixDbConn.executeSQLSelectStatement(this.conf.getString("auth.user"), this.conf.getString("auth.pass"), selectString);
         }
     }
     
