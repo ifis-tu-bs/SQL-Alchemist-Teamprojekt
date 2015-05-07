@@ -136,8 +136,7 @@ public class Task {
      * Constructor Task.
      *
      * @param name String, name of the task
-     * @param dbName String, name of the db
-     * @throws exception.MySQLAlchemistException Exception for the new database
+     * @throws de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException Exception for the new database
      * connection
      */
     
@@ -156,7 +155,7 @@ public class Task {
      * Load a task and its properties from db depending on the taskname. Save
      * the properties in the local attributes.
      *
-     * @throws exception.MySQLAlchemistException Exception for the
+     * @throws de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException Exception for the
      * SQLSelectStatement
      */
     public void loadTask() throws MySQLAlchemistException {
@@ -176,7 +175,7 @@ public class Task {
      * Update the properties of the given task in the db with the values of the
      * local attributes.
      *
-     * @throws exception.MySQLAlchemistException Exception for the
+     * @throws de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException Exception for the
      * SQLUpdateStatement
      */
     public void updateTask() throws MySQLAlchemistException {
@@ -197,7 +196,7 @@ public class Task {
      * loaded. If not, a new task and a new db is created.
      *
      * @return Task, loaded or created task
-     * @throws exception.MySQLAlchemistException Exception for the new database
+     * @throws de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException Exception for the new database
      * or the xml syntax check
      */
     public Task startTask() throws MySQLAlchemistException {
@@ -258,7 +257,7 @@ public class Task {
      * If it was the last player that played the task, the taskentry in the db
      * is deleted.
      *
-     * @throws exception.MySQLAlchemistException Exception for the
+     * @throws de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException Exception for the
      * SQLUpdateStatement
      */
     public void closeTask() throws MySQLAlchemistException {
@@ -285,7 +284,7 @@ public class Task {
      * Check whether the given task already exists in the db or not.
      *
      * @return boolean, true if the given task exist
-     * @throws exception.MySQLAlchemistException Exception for the
+     * @throws de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException Exception for the
      * SQLSelectStatement
      */
     public boolean checkTask() throws MySQLAlchemistException {
@@ -300,7 +299,7 @@ public class Task {
         /**
      * Iterate through the list and insert the contents of the xml-file to the
      * database
-     * @throws exception.MySQLAlchemistException Exception for the
+     * @throws de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException Exception for the
      * SQLUpdateStatement
      */
     public void insertToDb() throws MySQLAlchemistException{
@@ -324,7 +323,7 @@ public class Task {
     /**
      * Iterate through the list and execute the Statements of the xml-file in
      * the database
-     * @throws exception.MySQLAlchemistException Exception for the
+     * @throws de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException Exception for the
      * SQLSelectStatement
      */
     public void selectFromDb() throws MySQLAlchemistException{

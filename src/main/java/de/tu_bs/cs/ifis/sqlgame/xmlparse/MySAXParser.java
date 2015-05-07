@@ -97,7 +97,7 @@ public class MySAXParser extends DefaultHandler {
      * run-method parse the document and print the result
      *
      * @param exercise the xml-file
-     * @throws exception.MySQLAlchemistException Exception for the parsing of 
+     * @throws de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException Exception for the parsing of 
      * the document
      */
     public void parseAndCreateDb(String exercise) throws MySQLAlchemistException{
@@ -108,7 +108,7 @@ public class MySAXParser extends DefaultHandler {
     /**
      * method to parse the XML-File
      * @param exercise the xml-file that is parsed
-     * @throws exception.MySQLAlchemistException Exception from parsing the 
+     * @throws de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException Exception from parsing the 
      * document
      */
     public void parseDocument(String exercise) throws MySQLAlchemistException {
@@ -178,7 +178,7 @@ public class MySAXParser extends DefaultHandler {
     /**
      * Helper-method to parse the document
      *
-     * @param uri
+     * @param uri 
      * @param localName
      * @param qName
      * @param attributes

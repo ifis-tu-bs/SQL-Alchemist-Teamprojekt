@@ -39,7 +39,7 @@ public class XMLSyntaxCheck {
      * regarding XML-schema tasks.xsd.
      * 
      * @param s name of the xml-file you want to validate (like "tasks.xml")
-     * @throws exception.MySQLAlchemistException, SAXException ParserConfigurationException IOException e
+     * @throws de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException throwing MySQLAlchemistException
      */
     public void checkxml(String s) throws MySQLAlchemistException {
         try {

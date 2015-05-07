@@ -32,7 +32,7 @@ public class InputFile {
      * Constructor InputFile.
      * 
      * @param filename String, filenmae without
-     * @throws exception.MySQLAlchemistException
+     * @throws de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException throws MySQLAlchemistException
      */
     public InputFile(String filename) throws MySQLAlchemistException {
         this.filename = filename;
