@@ -54,6 +54,38 @@ public class DBConnection {
             throw new MySQLAlchemistException("Fehler beim Registrieren des Datenbanktreibers (Class.forName())! ", ex);
         }
     }
+    
+    /**
+     * Method checkSQLSyntax.
+     * 
+     * Checks the given statement if the SQL syntax is valid. Builds up a
+     * connection to the fix DB and creates a prepared statement. An exception
+     * is thrown if the syntax is not valid. Oherwise true is returned.
+     * 
+     * @param SQLStatement String, SQL statement to be checked
+     * @return boolean, true if the syntax is valid
+     * @throws exception.MySQLAlchemistException Exception for the
+     * SQL statement
+     */
+    public boolean checkSQLSyntax(String SQLStatement) throws MySQLAlchemistException {
+        Connection conn = null;
+        PreparedStatement pStmt = null;
+        
+        try {
+            //Open connection and create prepared Statement
+            Config conf = ConfigFactory.load();
+            conn = DriverManager.getConnection(conf.getString("input.fixDb"), conf.getString("auth.user"), conf.getString("auth.pass"));
+            pStmt = conn.prepareStatement(SQLStatement);
+            
+            //Close db-Connection
+            pStmt.close();
+            conn.close();
+        } catch (SQLException se) {
+            throw new MySQLAlchemistException("Fehler beim Ausführen vom SQL-Statement ", se);
+        }
+        
+        return true;
+    }
 
     /**
      * Method executeSQLSelectStatement.
@@ -191,7 +223,7 @@ public class DBConnection {
                 pStmt.setString(i, variables[i-1]);
             }
             ResultSet rs = pStmt.executeQuery();
-            result = this.transformResultSet(rs);            
+            result = this.transformResultSet(rs);
             
             //Close db-Connection
             rs.close();
