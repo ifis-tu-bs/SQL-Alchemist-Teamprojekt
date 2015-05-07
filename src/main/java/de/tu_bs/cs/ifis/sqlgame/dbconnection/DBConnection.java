@@ -1,8 +1,8 @@
-package dbconnection;
+package de.tu_bs.cs.ifis.sqlgame.dbconnection;
 
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
-import exception.MySQLAlchemistException;
+import de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException;
 import java.sql.*;
 
 /**

@@ -1,7 +1,7 @@
-package xmlparse;
+package de.tu_bs.cs.ifis.sqlgame.xmlparse;
 
-import dbconnection.*;
-import exception.MySQLAlchemistException;
+import de.tu_bs.cs.ifis.sqlgame.dbconnection.*;
+import de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -19,7 +19,7 @@ import org.xml.sax.helpers.DefaultHandler;
 import com.typesafe.config.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import sandbox.Task;
+import de.tu_bs.cs.ifis.sqlgame.sandbox.Task;
 
 /**
  * class to parse the XML-File into java

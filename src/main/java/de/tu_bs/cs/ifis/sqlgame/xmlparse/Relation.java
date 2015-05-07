@@ -1,4 +1,4 @@
-package xmlparse;
+package de.tu_bs.cs.ifis.sqlgame.xmlparse;
 
 /**
  * class for the tables and inserts of the tasks

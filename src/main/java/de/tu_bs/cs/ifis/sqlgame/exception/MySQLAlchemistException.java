@@ -1,4 +1,4 @@
-package exception;
+package de.tu_bs.cs.ifis.sqlgame.exception;
 
 /**
  * Class MySQLAlchemistException.

@@ -1,17 +1,17 @@
-package sandbox;
+package de.tu_bs.cs.ifis.sqlgame.sandbox;
 
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
-import dbconnection.*;
-import exception.MySQLAlchemistException;
+import de.tu_bs.cs.ifis.sqlgame.dbconnection.*;
+import de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException;
 import java.util.Iterator;
 import java.util.List;
 import org.h2.tools.DeleteDbFiles;
-import xmlparse.Exercise;
-import xmlparse.Header;
-import xmlparse.MySAXParser;
-import xmlparse.Relation;
-import xmlparse.XMLSyntaxCheck;
+import de.tu_bs.cs.ifis.sqlgame.xmlparse.Exercise;
+import de.tu_bs.cs.ifis.sqlgame.xmlparse.Header;
+import de.tu_bs.cs.ifis.sqlgame.xmlparse.MySAXParser;
+import de.tu_bs.cs.ifis.sqlgame.xmlparse.Relation;
+import de.tu_bs.cs.ifis.sqlgame.xmlparse.XMLSyntaxCheck;
 
 /**
  * Class Task.

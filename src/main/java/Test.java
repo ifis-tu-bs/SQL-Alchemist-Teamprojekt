@@ -1,9 +1,9 @@
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
-import dbconnection.DBConnection;
-import exception.MySQLAlchemistException;
+import de.tu_bs.cs.ifis.sqlgame.dbconnection.DBConnection;
+import de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException;
 import java.util.Iterator;
-import sandbox.*;
+import de.tu_bs.cs.ifis.sqlgame.sandbox.*;
 
 /**
  * Class Test.
@@ -41,7 +41,7 @@ public class Test {
         }
 
             Config conf = ConfigFactory.load();
-            dbconnection.DBConnection dbcnn = new DBConnection(conf.getString("input.driverDbs") + "test");
+            de.tu_bs.cs.ifis.sqlgame.dbconnection.DBConnection dbcnn = new DBConnection(conf.getString("input.driverDbs") + "test");
             dbcnn.checkSQLSyntax("SELECT FDFEWdf");
             //InputFile test = new InputFile("alchemy-task");
             //test.getTasks();

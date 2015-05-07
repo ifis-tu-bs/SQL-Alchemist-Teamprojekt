@@ -3,12 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package xmlparse;
+package de.tu_bs.cs.ifis.sqlgame.xmlparse;
 
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
-import exception.MyParserExceptionHandler;
-import exception.MySQLAlchemistException;
+import de.tu_bs.cs.ifis.sqlgame.exception.MyParserExceptionHandler;
+import de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException;
 import java.io.IOException;
 import java.util.StringTokenizer;
 import javax.xml.parsers.ParserConfigurationException;

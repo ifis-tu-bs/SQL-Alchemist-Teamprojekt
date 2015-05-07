@@ -1,4 +1,4 @@
-package xmlparse;
+package de.tu_bs.cs.ifis.sqlgame.xmlparse;
 
 /**
  * class for the subtasks in the exercise
