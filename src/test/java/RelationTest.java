@@ -9,8 +9,9 @@
  * @author Philip
  */
 
+import de.tu_bs.cs.ifis.sqlgame.xmlparse.Relation;
 import junit.framework.*;
-import xmlparse.Relation;
+
 
 public class RelationTest extends TestCase {
     
