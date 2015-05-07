@@ -29,7 +29,7 @@
           <tuple>INSERT INTO Movie VALUES (2, 'The Godfather 2', 1975, 'USA', 20000000, 'cinema');</tuple>
           <tuple>INSERT INTO Movie VALUES (3, 'The Godfather 3', 1979, 'USA', 10000000, 'cinema');</tuple>
           <tuple>INSERT INTO Movie VALUES (4, 'Fight Club', 1999, 'USA', 10000000, 'cinema');</tuple>
-          <tuple>INSERT INTOO Movie VALUES (5, 'Batman Returns', 1980, 'USA', 100000, 'TV');</tuple>
+          <tuple>INSERT INTO Movie VALUES (5, 'Batman Returns', 1980, 'USA', 100000, 'TV');</tuple>
           <tuple>INSERT INTO Movie VALUES (6, 'Titanic', 1990, 'USA', 90000000, 'cinema');</tuple>
         </extension>
       </relation>

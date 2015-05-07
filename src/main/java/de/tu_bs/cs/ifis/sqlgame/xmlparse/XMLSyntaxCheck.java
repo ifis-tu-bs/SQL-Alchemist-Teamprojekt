@@ -51,7 +51,7 @@ public class XMLSyntaxCheck {
 
             factory.setSchema(schemaFactory.newSchema(
                 //source of xml-schema-file
-                new Source[] {new StreamSource(conf.getString("input.xmlValidate"))})
+                new Source[] {new StreamSource(conf.getString("input.xmlValidatePath"))})
             );
 
             SAXParser parser = factory.newSAXParser();
@@ -60,7 +60,7 @@ public class XMLSyntaxCheck {
             reader.setErrorHandler(new MyParserExceptionHandler());
             reader.parse(
                 //source of xml-file
-                new InputSource(conf.getString("input.xml") + s)
+                new InputSource(conf.getString("input.xmlPath") + s)
             );
             
             //If this line is executed, the file is valid.

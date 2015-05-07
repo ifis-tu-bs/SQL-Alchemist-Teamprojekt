@@ -29,12 +29,12 @@ public class Test {
     public static void main(String[] args) {
         try {
 
-            InputFile test = new InputFile("exercises-wise11");
+            InputFile test = new InputFile("exam-wise13");
             Iterator it = test.getTasks().iterator();
         
             while (it.hasNext()) {
                 Task task = (Task) it.next();
-                task.startTask();
+                task.startTask("local");
                 task.printData();
                 //task.insertToDb();
                 //task.closeTask();

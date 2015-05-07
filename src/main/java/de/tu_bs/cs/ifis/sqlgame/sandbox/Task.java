@@ -131,23 +131,96 @@ public class Task {
 
     /**
      * Constructor Task.
-     *
+     * 
      * @param name String, name of the task
-<<<<<<< HEAD:src/main/java/sandbox/Task.java
-     * @param dbName String, name of the db
-=======
-     * @throws de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException Exception for the new database
-     * connection
->>>>>>> 9a687657d36ee48d5b35a46ac1e11b178f83ba03:src/main/java/de/tu_bs/cs/ifis/sqlgame/sandbox/Task.java
+     * @param myHeader
+     * @param myRelation
+     * @param myExercise 
      */
-    
     public Task(String name, List myHeader, List myRelation, List myExercise) {
         this.name = name;
         this.dbName = name;
         this.myHeader = myHeader;
         this.myRelation = myRelation;
         this.myExercise = myExercise;
+    }
+    
+    /**
+     * Method startTask.
+     *
+     * Start a new task. It is now checked whether the
+     * task already exists or not. If there is a task, the taskoptions are
+     * loaded. If not, a new task and a new db is created.
+     *
+     * @param dbType int, 0-local DB, 1-server DB, 2-in-memory DB
+     * @return Task, loaded or created task
+     * @throws de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException Exception for the new database
+     * or the xml syntax check
+     */
+    public Task startTask(String dbType) throws MySQLAlchemistException {
+        try {
+            this.fixDbConn = new DBConnection(dbType, this.conf.getString("input.fixDbPath"));
+            if (this.checkTask()) {
+                this.loadTask();
 
+                //Set db for task
+                String dbPath = this.conf.getString("input.dbsPath") + this.dbName;
+                this.tmpDbConn = new DBConnection(dbType, dbPath);
+
+                //Update #players
+                int playerNum = this.getPlayers() + 1;
+                this.setPlayers(playerNum);
+
+                this.updateTask();
+            } else {
+                this.players = 1;
+                this.createTask(dbType);
+            }
+        } catch(MySQLAlchemistException se){
+            this.closeTask();
+            throw new MySQLAlchemistException("Fehler beim starten der Task ", se);
+        }
+
+        return this;
+    }
+    
+    /**
+     * Method checkTask.
+     *
+     * Check whether the given task already exists in the db or not.
+     *
+     * @return boolean, true if the given task exist
+     * @throws de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException Exception for the
+     * SQLSelectStatement
+     */
+    private boolean checkTask() throws MySQLAlchemistException {
+        String selectStatement = "SELECT * FROM Task WHERE name = ?";
+        String[] variables = new String[1];
+        variables[0] = this.name;
+
+        String[][] result = this.fixDbConn.executeSQLSelectPreparedStatement(this.conf.getString("auth.user"), this.conf.getString("auth.pass"), selectStatement, variables);
+        return result[0][0] != null;
+    }
+
+    /**
+     * Method createTask.
+     *
+     * Insert a new task-entry into the db and build up a new dbconnection.
+     *
+     * @throws MySQLAlchemistException Exception for the new database connection
+     */
+    private void createTask(String dbType) throws MySQLAlchemistException {
+        try {
+            String insertStatement = "INSERT INTO Task VALUES('" + this.name + "', '" + this.dbName + "', " + this.players + ")";
+
+            this.fixDbConn.executeSQLUpdateStatement(this.conf.getString("auth.user"), this.conf.getString("auth.pass"), insertStatement);
+
+            //Set db for task
+            String dbPath = this.conf.getString("input.dbsPath") + this.dbName;
+            this.tmpDbConn = new DBConnection(dbType, dbPath);
+        } catch(MySQLAlchemistException se){
+            throw new MySQLAlchemistException("Fehler beim erstellen der Task ", se);
+        }
     }
 
     /**
@@ -159,7 +232,7 @@ public class Task {
      * @throws de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException Exception for the
      * SQLSelectStatement
      */
-    public void loadTask() throws MySQLAlchemistException {
+    private void loadTask() throws MySQLAlchemistException {
         String selectStatement = "SELECT * FROM Task WHERE name = ?";
         String[] variables = new String[1];
         variables[0] = this.name;
@@ -186,70 +259,8 @@ public class Task {
         variables[2] = this.name;
         String updateStatement = "UPDATE Task SET db_name = ?, players = ? WHERE name = ?";
 
-        fixDbConn.executeSQLUpdatePreparedStatement(this.conf.getString("auth.user"), this.conf.getString("auth.pass"), updateStatement, variables);
-    }
-
-    /**
-     * Method startTask.
-     *
-     * Start a new task with a given filename. It is now checked whether the
-     * task already exists or not. If there is a task, the taskoptions are
-     * loaded. If not, a new task and a new db is created.
-     *
-     * @return Task, loaded or created task
-     * @throws de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException Exception for the new database
-     * or the xml syntax check
-     */
-    public Task startTask() throws MySQLAlchemistException {
-        try{
-            this.fixDbConn = new DBConnection(this.conf.getString("input.fixDb"));
-            if (this.checkTask()) {
-                this.loadTask();
-
-                //Set db for task
-                String dbUrl = this.conf.getString("input.driverDbs") + this.dbName;
-                this.tmpDbConn = new DBConnection(dbUrl);
-
-
-
-                //Update #players
-                int playerNum = this.getPlayers() + 1;
-                this.setPlayers(playerNum);
-
-                this.updateTask();
-            } else {
-                this.players = 1;
-                this.createTask();
-            }
-        }catch(MySQLAlchemistException se){
-            closeTask();
-            throw new MySQLAlchemistException("Fehler beim starten der Task ", se);
-        }
-
-        return this;
-    }
-
-    /**
-     * Method createTask.
-     *
-     * Insert a new task-entry into the db and build up a new dbconnection.
-     *
-     * @throws MySQLAlchemistException Exception for the new database connection
-     */
-    private void createTask() throws MySQLAlchemistException {
-        try{
-        String insertStatement = "INSERT INTO Task VALUES('" + this.name + "', '" + this.dbName + "', " + this.players + ")";
-
-        this.fixDbConn.executeSQLUpdateStatement(this.conf.getString("auth.user"), this.conf.getString("auth.pass"), insertStatement);
-
-        //Set db for task
-        String dbUrl = this.conf.getString("input.driverDbs") + this.dbName;
-        this.tmpDbConn = new DBConnection(dbUrl);
-        
-        }catch(MySQLAlchemistException se){
-            throw new MySQLAlchemistException("Fehler beim erstellen der Task ", se);
-        }
-    }
+        this.fixDbConn.executeSQLUpdatePreparedStatement(this.conf.getString("auth.user"), this.conf.getString("auth.pass"), updateStatement, variables);
+    }    
 
     /**
      * Method closeTask.
@@ -273,28 +284,10 @@ public class Task {
             variables[0] = this.name;
 
             //Delete the database for the task
-            DeleteDbFiles.execute(this.conf.getString("input.dbs"), this.dbName, true);
+            DeleteDbFiles.execute(this.conf.getString("input.dbsPath"), this.dbName, true);
 
-            fixDbConn.executeSQLUpdatePreparedStatement(this.conf.getString("auth.user"), this.conf.getString("auth.pass"), deleteStatement, variables);
+            this.fixDbConn.executeSQLUpdatePreparedStatement(this.conf.getString("auth.user"), this.conf.getString("auth.pass"), deleteStatement, variables);
         }
-    }
-
-    /**
-     * Method checkTask.
-     *
-     * Check whether the given task already exists in the db or not.
-     *
-     * @return boolean, true if the given task exist
-     * @throws de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException Exception for the
-     * SQLSelectStatement
-     */
-    public boolean checkTask() throws MySQLAlchemistException {
-        String selectStatement = "SELECT * FROM Task WHERE name = ?";
-        String[] variables = new String[1];
-        variables[0] = this.name;
-
-        String[][] result = fixDbConn.executeSQLSelectPreparedStatement(this.conf.getString("auth.user"), this.conf.getString("auth.pass"), selectStatement, variables);
-        return result[0][0] != null;
     }
     
     /**
@@ -333,7 +326,7 @@ public class Task {
         }
     }
     
-     /**
+    /**
      * Iterate through the list and print the contents of the xml-file
      */
     public void printData() {
@@ -359,5 +352,4 @@ public class Task {
             System.out.println(it.next().toString());
         }
     }
-
 }

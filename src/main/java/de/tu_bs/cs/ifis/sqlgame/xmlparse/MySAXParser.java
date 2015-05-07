@@ -14,7 +14,10 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 import com.typesafe.config.*;
+import de.tu_bs.cs.ifis.sqlgame.dbconnection.DBConnection;
 import de.tu_bs.cs.ifis.sqlgame.sandbox.Task;
+import java.util.Iterator;
+import org.h2.tools.DeleteDbFiles;
 
 /**
  * Class MySAXParser.
@@ -96,28 +99,13 @@ public class MySAXParser extends DefaultHandler {
 
     /**
      * Method parseDocument.
-     *
-<<<<<<< HEAD:src/main/java/xmlparse/MySAXParser.java
-     * Parse the XML-File.
-     *
-     * @param exercise String, the xml-file that is parsed
-     * @throws exception.MySQLAlchemistException, exception from parsing the
-=======
-     * @param exercise the xml-file
-     * @throws de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException Exception for the parsing of 
-     * the document
-     */
-    public void parseAndCreateDb(String exercise) throws MySQLAlchemistException{
-        this.parseDocument(exercise);
-        //this.insertToDb();
-    }
-
-    /**
-     * method to parse the XML-File
+     * 
+     * Parse the XML-File and validate the syntax of the containung
+     * SQL-statements
+     * 
      * @param exercise the xml-file that is parsed
-     * @throws de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException Exception from parsing the 
->>>>>>> 9a687657d36ee48d5b35a46ac1e11b178f83ba03:src/main/java/de/tu_bs/cs/ifis/sqlgame/xmlparse/MySAXParser.java
-     * document
+     * @throws de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException
+     * Exception from parsing the document
      */
     public void parseDocument(String exercise) throws MySQLAlchemistException {
         SAXParserFactory spf = SAXParserFactory.newInstance();
@@ -127,10 +115,10 @@ public class MySAXParser extends DefaultHandler {
             
             //Parse the file and register this class for call backs
             Config conf = ConfigFactory.load();
-            sp.parse(conf.getString("input.xml") + exercise, this);
+            sp.parse(conf.getString("input.xmlPath") + exercise, this);
             
-            /* //Check SQL-syntax
-            dbconnection.DBConnection dbcnn = new DBConnection(conf.getString("input.fixDb"));
+            //Check SQL-syntax
+            DBConnection dbconn = new DBConnection("memory", conf.getString("input.testDbPath"));
             Iterator it0 = this.myTasks.iterator();
             while (it0.hasNext()) {
                 Task t = (Task) it0.next();
@@ -139,21 +127,20 @@ public class MySAXParser extends DefaultHandler {
                 Iterator it1 = t.getMyRelation().iterator();
                 while (it1.hasNext()) {
                     Relation r = (Relation) it1.next();
-                    dbcnn.checkSQLSyntax(r.getIntension());
-                    String[] s = r.getTuple();
-                    for (String se : s) {
-                        dbcnn.checkSQLSyntax(se);
-                    }
+                    dbconn.executeSQLUpdateStatement(conf.getString("auth.user"), conf.getString("auth.pass"), r.getIntension());
+                    dbconn.executeSQLUpdateStatement(conf.getString("auth.user"), conf.getString("auth.pass"), r.getTuple());
                 }
 
                 //Check referencestatements
                 Iterator it2 = t.getMyExercise().iterator();
                 while (it2.hasNext()) {
                     Exercise e = (Exercise) it2.next();
-                    dbcnn.checkSQLSyntax(e.getReferencestatement());
+                    dbconn.executeSQLSelectStatement(conf.getString("auth.user"), conf.getString("auth.pass"), e.getReferencestatement());
                 }
             }
-            */
+            
+            //Delete the in-memory-database
+            DeleteDbFiles.execute(conf.getString("input.dbsPath"), "test", true);
         } catch (SAXException | ParserConfigurationException | IOException se) {
             throw new MySQLAlchemistException("Fehler beim Parsen des Dokuments ", se);
         }
@@ -165,7 +152,6 @@ public class MySAXParser extends DefaultHandler {
      * Helper-method to parse the document, take specific actions at the start
      * of each element.
      *
-<<<<<<< HEAD:src/main/java/xmlparse/MySAXParser.java
      * @param uri String, the Namespace URI, or the empty string if the element
      * has no Namespace URI or if Namespace processing is not being performed.
      * @param localName String, the local name (without prefix), or the empty
@@ -175,13 +161,6 @@ public class MySAXParser extends DefaultHandler {
      * @param attributes The attributes attached to the element. If there are no
      * attributes, it shall be an empty Attributes object.
      * @throws SAXException, exception from parsing the document
-=======
-     * @param uri 
-     * @param localName
-     * @param qName
-     * @param attributes
-     * @throws SAXException
->>>>>>> 9a687657d36ee48d5b35a46ac1e11b178f83ba03:src/main/java/de/tu_bs/cs/ifis/sqlgame/xmlparse/MySAXParser.java
      */
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {

@@ -15,7 +15,28 @@ import java.sql.*;
  */
 public class DBConnection {
     
+    private int dbType;
     private String dbURL;
+    
+    private final Config conf;
+    
+    /**
+     * Getter for dbType.
+     * 
+     * @return String, db-type
+     */
+    public int getDbType() {
+        return dbType;
+    }
+    
+    /**
+     * Setter for dbType.
+     * 
+     * @param dbType String, db-type
+     */
+    public void setDbType(int dbType) {
+        this.dbType = dbType;
+    }
     
     /**
      * Getter for dbURL.
@@ -40,51 +61,39 @@ public class DBConnection {
      *
      * Declare db-url and register jdbc-driver.
      *
-     * @param dbURL String, url for the db
+     * @param dbType int, 0-local DB, 1-server DB, 2-in-memory DB
+     * @param dbPath String, path, where the db is located
      * @throws de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException
      */
-    public DBConnection(String dbURL) throws MySQLAlchemistException {
-        this.dbURL = dbURL;
+    public DBConnection(String dbType, String dbPath) throws MySQLAlchemistException {
+        this.conf = ConfigFactory.load();
+        
+        String dbTypeH2 = "";
+        switch (dbType) {
+            case "local": {
+                dbTypeH2 = "";
+            }
+            case "server": {
+                //TODO: add server-IP
+                dbTypeH2 = "";
+            }
+            case "memory": {
+                dbTypeH2 = "mem:";
+            }
+        }
+        
+        this.dbURL = "jdbc:h2:" + dbTypeH2 + dbPath;
+        
+        if (dbType.equals("memory")) {
+            this.dbURL = this.dbURL + ";DB_CLOSE_DELAY=-1";
+        }
         
         try {
-            Config conf = ConfigFactory.load();
-            Class.forName(conf.getString("input.driver"));
+            Class.forName(this.conf.getString("input.driver"));
         } catch (ClassNotFoundException ex) {
             //Handle errors for Class.forName
             throw new MySQLAlchemistException("Fehler beim Registrieren des Datenbanktreibers (Class.forName())! ", ex);
         }
-    }
-    
-    /**
-     * Method checkSQLSyntax.
-     * 
-     * Checks the given statement if the SQL syntax is valid. Builds up a
-     * connection to the fix DB and creates a prepared statement. An exception
-     * is thrown if the syntax is not valid. Oherwise true is returned.
-     * 
-     * @param SQLStatement String, SQL statement to be checked
-     * @return boolean, true if the syntax is valid
-     * @throws de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException Exception for the
-     * SQL statement
-     */
-    public boolean checkSQLSyntax(String SQLStatement) throws MySQLAlchemistException {
-        Connection conn = null;
-        PreparedStatement pStmt = null;
-        System.out.println(SQLStatement);
-        try {
-            //Open connection and create prepared Statement
-            Config conf = ConfigFactory.load();
-            conn = DriverManager.getConnection(conf.getString("input.fixDb"), conf.getString("auth.user"), conf.getString("auth.pass"));
-            pStmt = conn.prepareStatement(SQLStatement);
-            
-            //Close db-Connection
-            pStmt.close();
-            conn.close();
-        } catch (SQLException se) {
-            throw new MySQLAlchemistException("Fehler beim Ausführen vom SQL-Statement ", se);
-        }
-        
-        return true;
     }
 
     /**
@@ -113,7 +122,6 @@ public class DBConnection {
             //Execute a query
             stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(sqlStatement);
-            this.printResultSet(rs);
             result = this.transformResultSet(rs);
             
             //Close db-connection
