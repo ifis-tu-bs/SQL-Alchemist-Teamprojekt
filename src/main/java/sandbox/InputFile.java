@@ -6,6 +6,7 @@
 package sandbox;
 
 import exception.MySQLAlchemistException;
+import java.util.List;
 import xmlparse.MySAXParser;
 import xmlparse.XMLSyntaxCheck;
 
@@ -16,6 +17,16 @@ import xmlparse.XMLSyntaxCheck;
 public class InputFile {
     
     private String filename;
+    private List tasks;
+
+    public List getTasks() {
+        return tasks;
+    }
+
+    public void setTasks(List tasks) {
+        this.tasks = tasks;
+    }
+    
     
     /**
      * Constructor InputFile.
@@ -33,5 +44,6 @@ public class InputFile {
         //Parse the xml-file und build the db-tables
         MySAXParser msp = new MySAXParser();
         msp.parseDocument(this.filename + ".xml");
+        tasks = msp.getMyTasks();
     }
 }

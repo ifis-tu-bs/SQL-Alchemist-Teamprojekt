@@ -17,6 +17,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 import com.typesafe.config.*;
+import sandbox.Task;
 
 /**
  * class to parse the XML-File into java
@@ -28,13 +29,14 @@ public class MySAXParser extends DefaultHandler {
     private List myrelation;
     private List myheader;
     private List myexercise;
+    private List myTasks;
 
     //to maintain context
     private Header tempheader;
     private Relation temprelation;
     private Exercise tempexercise;
+    private Task tempTask;
     
-    private DBConnection dbConn;
     
     /**
      * Setter for myrelation.
@@ -62,6 +64,14 @@ public class MySAXParser extends DefaultHandler {
     public List getMyexercise() {
         return myexercise;
     }
+
+    public List getMyTasks() {
+        return myTasks;
+    }
+
+    public void setMyTasks(List myTasks) {
+        this.myTasks = myTasks;
+    }
     
     /**
      * buffer for the XML-lines
@@ -72,15 +82,13 @@ public class MySAXParser extends DefaultHandler {
      * Constructor MySAXParser.
      * 
      * Create empty lists.
-     * 
-     * @param dbConn
      */
-    public MySAXParser(DBConnection dbConn) {
+    public MySAXParser() {
         myrelation = new ArrayList();
         myexercise = new ArrayList();
         myheader = new ArrayList();
+        myTasks = new ArrayList();
         
-        this.dbConn = dbConn;
     }
 
     /**
@@ -92,7 +100,7 @@ public class MySAXParser extends DefaultHandler {
      */
     public void parseAndCreateDb(String exercise) throws MySQLAlchemistException{
         this.parseDocument(exercise);
-        this.insertToDb();
+        //this.insertToDb();
     }
 
     /**
@@ -152,7 +160,7 @@ public class MySAXParser extends DefaultHandler {
      * @throws exception.MySQLAlchemistException Exception for the
      * SQLUpdateStatement
      */
-    public void insertToDb() throws MySQLAlchemistException{
+    /*public void insertToDb() throws MySQLAlchemistException{
         Iterator it = myrelation.iterator();
 
         //Database credentials
@@ -169,14 +177,14 @@ public class MySAXParser extends DefaultHandler {
             this.dbConn.executeSQLUpdateStatement(user, pass, a);
         }
     }
-
+*/
     /**
      * Iterate through the list and execute the Statements of the xml-file in
      * the database
      * @throws exception.MySQLAlchemistException Exception for the
      * SQLSelectStatement
      */
-    public void selectFromDb() throws MySQLAlchemistException{
+ /*   public void selectFromDb() throws MySQLAlchemistException{
         Iterator it = myexercise.iterator();
 
         //Database credentials
@@ -189,7 +197,7 @@ public class MySAXParser extends DefaultHandler {
             this.dbConn.executeSQLSelectStatement(user, pass, selectString);
         }
     }
-
+*/
     //Event Handlers
     /**
      * Helper-method to parse the document
@@ -211,6 +219,7 @@ public class MySAXParser extends DefaultHandler {
         }
         if (qName.equalsIgnoreCase("Task")) {
             tempheader = new Header();
+            tempheader.setTaskId(attributes.getValue("taskid"));
         }
         if (qName.equalsIgnoreCase("subtask")) {
             tempexercise = new Exercise();
@@ -269,6 +278,11 @@ public class MySAXParser extends DefaultHandler {
         if (qName.equalsIgnoreCase("task")) {
             //add it to the list
             myheader.add(tempheader);
+            tempTask = new Task(tempheader.getTaskId(), myheader, myrelation, myexercise);
+            myTasks.add(tempTask);
+            myheader = new ArrayList();
+            myexercise = new ArrayList();
+            myrelation = new ArrayList();
         } else if (qName.equalsIgnoreCase("title")) {
             tempheader.setTitle(sb.toString());
         } else if (qName.equalsIgnoreCase("flufftext")) {

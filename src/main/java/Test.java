@@ -24,8 +24,11 @@ public class Test {
      */
     public static void main(String[] args) {
         try {
-            Task test1 = new Task("alchemy-task", "alchemy-task");
+            InputFile test = new InputFile("alchemy-task");
+            test.getTasks();
+            /*Task test1 = new Task("alchemy-task", "alchemy-task");
             test1.startTask();
+            
             test1.closeTask();
 
             Task test2 = new Task("exam-wise13", "exam-wise13");
@@ -38,7 +41,7 @@ public class Test {
 
             Task test4 = new Task("exercises-wise13", "exercises-wise13");
             test4.startTask();
-            test4.closeTask();
+            test4.closeTask();*/
         } catch (MySQLAlchemistException mse) {
             System.out.println(mse.getMyMessage());
         }

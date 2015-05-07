@@ -4,8 +4,10 @@ import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import dbconnection.*;
 import exception.MySQLAlchemistException;
+import java.util.Iterator;
 import java.util.List;
 import org.h2.tools.DeleteDbFiles;
+import xmlparse.Header;
 import xmlparse.MySAXParser;
 import xmlparse.XMLSyntaxCheck;
 
@@ -129,15 +131,6 @@ public class Task {
     }
 
     /**
-     * Setter for mysaxp.
-     *
-     * @param mySaxParser MySaxParser
-     */
-    public void setMySaxParser(MySAXParser mySaxParser) {
-        this.mySaxParser = mySaxParser;
-    }
-
-    /**
      * Constructor Task.
      *
      * @param name String, name of the task
@@ -149,6 +142,14 @@ public class Task {
         this.name = name;
         this.dbName = dbName;
         this.fixDbConn = new DBConnection(this.conf.getString("input.fixDb"));
+    }
+    
+    public Task(String name, List myHeader, List myRelation, List myExercise) {
+        this.name = name;
+        this.myHeader = myHeader;
+        this.myRelation = myRelation;
+        this.myExercise = myExercise;
+        this.fixDbConn = null;
     }
 
     /**
@@ -247,15 +248,7 @@ public class Task {
         String dbUrl = this.conf.getString("input.driverDbs") + this.dbName;
         this.tmpDbConn = new DBConnection(dbUrl);
         this.setTmpDbConn(this.tmpDbConn);
-
-        //Make the xml-sructure-check
-        XMLSyntaxCheck sych = new XMLSyntaxCheck();
-        sych.checkxml(this.name + ".xml");
-
-        //Parse the xml-file und build the db-tables
-        MySAXParser msp = new MySAXParser(this.tmpDbConn);
-        msp.parseAndCreateDb(this.name + ".xml");
-        this.mySaxParser = msp;
+        
         }catch(MySQLAlchemistException se){
             throw new MySQLAlchemistException("Fehler beim erstellen der Task ", se);
         }

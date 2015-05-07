@@ -8,7 +8,7 @@ package xmlparse;
 public class Header {
 
     //private String tasks;
-    //private String task;
+    private String taskId;
     private String[] title;
     private String[] flufftext;
     private String language;
@@ -28,15 +28,14 @@ public class Header {
      public void setTasks(String tasks) {
      this.tasks = tasks;
      }
-
-     public String getTask() {
-     return task;
+*/
+     public String getTaskId() {
+     return taskId;
      }
 
-     public void setTask(String task) {
-     this.task = task;
+     public void setTaskId(String task) {
+     this.taskId = taskId;
      }
-     */
 
     /**
      * get-method for the title of the exercise
