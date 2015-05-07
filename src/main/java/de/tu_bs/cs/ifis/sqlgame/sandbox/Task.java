@@ -68,27 +68,57 @@ public class Task {
     public DBConnection getTmpDbConn() {
         return tmpDbConn;
     }
-
+    
+    /**
+     * Getter for myHeader.
+     *
+     * @return List
+     */
     public List getMyHeader() {
         return myHeader;
     }
-
+    
+    /**
+     * Setter for myHeader.
+     *
+     * @param myHeader List
+     */
     public void setMyHeader(List myHeader) {
         this.myHeader = myHeader;
     }
-
+    
+    /**
+     * Getter for myRelation.
+     *
+     * @return List
+     */
     public List getMyRelation() {
         return myRelation;
     }
-
+    
+    /**
+     * Setter for myRelation.
+     *
+     * @param myRelation List
+     */
     public void setMyRelation(List myRelation) {
         this.myRelation = myRelation;
     }
-
+    
+    /**
+     * Getter for myExercise.
+     *
+     * @return List
+     */
     public List getMyExercise() {
         return myExercise;
     }
-
+    
+    /**
+     * Setter for myExercise.
+     *
+     * @param myExercise List
+     */
     public void setMyExercise(List myExercise) {
         this.myExercise = myExercise;
     }
@@ -291,8 +321,11 @@ public class Task {
     }
     
     /**
+     * Method insertToDb.
+     * 
      * Iterate through the list and insert the contents of the xml-file to the
-     * database
+     * database.
+     * 
      * @throws de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException Exception for the
      * SQLUpdateStatement
      */
@@ -311,8 +344,11 @@ public class Task {
     }
 
     /**
+     * Method selectFromDB.
+     * 
      * Iterate through the list and execute the Statements of the xml-file in
-     * the database
+     * the database.
+     * 
      * @throws de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException Exception for the
      * SQLSelectStatement
      */
@@ -327,7 +363,9 @@ public class Task {
     }
     
     /**
-     * Iterate through the list and print the contents of the xml-file
+     * Method printData.
+     * 
+     * Iterate through the list and print the contents of the xml-file.
      */
     public void printData() {
 
