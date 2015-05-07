@@ -4,7 +4,7 @@ This project provides important backend functions for the SQL-Alchemist-Game.
 
 ## Code Example
 
-Main function: Create a task - check, validate and parse the given xml-file and create a new taskinstance with an associated db. Furthermore the user can now mange the task with the given functions from class "Task":
+Main function: Create a task - check, validate and parse the given xml-file and create a new taskinstance with an associated db. Furthermore the user can now manage the task with the given functions from class "Task":
 
 Task test = new Task("alchemy-task", "alchemy-task");
 test.startTask();

@@ -4,6 +4,7 @@ import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import dbconnection.*;
 import exception.MySQLAlchemistException;
+import java.util.List;
 import org.h2.tools.DeleteDbFiles;
 import xmlparse.MySAXParser;
 import xmlparse.XMLSyntaxCheck;
@@ -22,7 +23,10 @@ public class Task {
     private String dbName = "";
     private int players = 0;
 
-    private MySAXParser mySaxParser;
+    private List myHeader;
+    private List myRelation;
+    private List myExercise;
+    
     private DBConnection tmpDbConn;
     private final DBConnection fixDbConn;
     
@@ -64,13 +68,28 @@ public class Task {
         return tmpDbConn;
     }
 
-    /**
-     * Getter for mysaxp.
-     *
-     * @return mySaxParser
-     */
-    public MySAXParser getMySaxParser() {
-        return mySaxParser;
+    public List getMyHeader() {
+        return myHeader;
+    }
+
+    public void setMyHeader(List myHeader) {
+        this.myHeader = myHeader;
+    }
+
+    public List getMyRelation() {
+        return myRelation;
+    }
+
+    public void setMyRelation(List myRelation) {
+        this.myRelation = myRelation;
+    }
+
+    public List getMyExercise() {
+        return myExercise;
+    }
+
+    public void setMyExercise(List myExercise) {
+        this.myExercise = myExercise;
     }
 
     /**
@@ -192,14 +211,7 @@ public class Task {
             this.tmpDbConn = new DBConnection(dbUrl);
             this.setTmpDbConn(this.tmpDbConn);
 
-            //Make the xml-sructure-check
-            XMLSyntaxCheck sych = new XMLSyntaxCheck();
-            sych.checkxml(this.name + ".xml");
-
-            //Parse the xml-file und build the db-tables
-            MySAXParser msp = new MySAXParser(tmpDbConn);
-            msp.parseDocument(this.name + ".xml");
-            this.setMySaxParser(msp);
+            
 
             //Update #players
             int playerNum = this.getPlayers() + 1;
