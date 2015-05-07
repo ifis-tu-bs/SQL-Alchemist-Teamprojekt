@@ -12,10 +12,18 @@
 import de.tu_bs.cs.ifis.sqlgame.xmlparse.Relation;
 import junit.framework.*;
 
-
+/**
+ * Class RelationTest
+ *
+ * Testclass for the class Relation
+ *
+ * @author Philip
+ */
 public class RelationTest extends TestCase {
     
-   
+    /**
+     * This method tests, if the intension can be set as intended.
+     */
     public void testIntension() {
         Relation myRelation = new Relation();
         
@@ -23,6 +31,9 @@ public class RelationTest extends TestCase {
         Assert.assertTrue(myRelation.getIntension().equals("testintension"));
     }
     
+    /**
+     * This method tests, if the tuples can be set as an Array
+     */
     public void testTupleAsArray() {
         Relation myRelation = new Relation();
         
@@ -40,6 +51,9 @@ public class RelationTest extends TestCase {
         }
     }
     
+    /**
+     * This method tests, if the tuples can be set as a String
+     */
     public void testTupleAsString() {
         Relation myRelation = new Relation();
         

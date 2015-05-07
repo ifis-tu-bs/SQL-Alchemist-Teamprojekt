@@ -16,10 +16,14 @@ import junit.framework.*;
  *
  * Testclass for the class Exercise
  *
- * @author Tobias
+ * @author Philip
  */
 public class ExerciseTest extends TestCase {
     
+    
+    /**
+     * This method tests, if the tasktexts can be set as intended.
+     */
     public void testTasktexts() {
         Exercise myExercise = new Exercise();
         
@@ -38,6 +42,9 @@ public class ExerciseTest extends TestCase {
       
     }
     
+    /**
+     * This method tests, if the referencestatement can be set as intended.
+     */
     public void testReferencestatement() {
         Exercise myExercise = new Exercise();
         
@@ -45,6 +52,9 @@ public class ExerciseTest extends TestCase {
         Assert.assertTrue(myExercise.getReferencestatement().equals("teststmt"));
     }
 
+    /**
+     * This method tests, if the evaluationstrategy can be set as intended.
+     */
     public void testEvaluationstrategy() {
         Exercise myExercise = new Exercise();
         
@@ -52,6 +62,9 @@ public class ExerciseTest extends TestCase {
         Assert.assertTrue(myExercise.getEvaluationstrategy().equals("teststrategy"));
     }
     
+    /**
+     * This method tests, if the terms can be set as intended.
+     */
     public void testTerm() {
         Exercise myExercise = new Exercise();
         
@@ -73,6 +86,9 @@ public class ExerciseTest extends TestCase {
       
     }
     
+    /**
+     * This method tests, if the points can be set as intended.
+     */
     public void testPoints() {
         Exercise myExercise = new Exercise();
         
@@ -80,6 +96,9 @@ public class ExerciseTest extends TestCase {
         Assert.assertEquals(5, myExercise.getPoints());
     }
 
+    /**
+     * This method tests, if the language can be set as intended.
+     */
     public void testLanguage() {
         Exercise myExercise = new Exercise();
         
