@@ -10,8 +10,19 @@ import junit.framework.*;
  /*
  * @author Philip
  */
+
+/**
+ * Class HeaderTest
+ *
+ * Testclass for the class Header
+ *
+ * @author Philip
+ */
 public class HeaderTest extends TestCase {
 
+    /**
+     * This method tests, if the title can be set as intended.
+     */
     public void testTitle() {
         Header myHeader = new Header();
         
@@ -29,6 +40,9 @@ public class HeaderTest extends TestCase {
         }
     }
     
+    /**
+     * This method tests, if the flufftext can be set as intended.
+     */
     public void testFlufftext() {
         Header myHeader = new Header();
         
@@ -45,12 +59,25 @@ public class HeaderTest extends TestCase {
             Assert.assertEquals(myHeader.getFlufftext()[i], temp[i]);
         }
     }
-       
+    
+    /**
+     * This method tests, if the language can be set as intended.
+     */
     public void testLanguage() {
         Header myHeader = new Header();
         
         myHeader.setLanguage("testlang");
         Assert.assertTrue(myHeader.getLanguage().equals("testlang"));
+    }
+    
+    /**
+     * This method tests, if the taskID can be set as intended.
+     */
+    public void testTaskId() {
+        Header myHeader = new Header();
+        
+        myHeader.setTaskId("testid");
+        Assert.assertTrue(myHeader.getTaskId().equals("testid"));
     }
 }
    

@@ -8,6 +8,8 @@ organization := "de.tu_bs.cs.ifis.sqlgame"
 
 publishTo := Some(Resolver.file("mvn-repository", new File("./mvn-repository/")))
 
+scalacOptions ++= Seq("-deprecation", "-encoding", "UTF-8")
+
 libraryDependencies ++= Seq(
   "com.h2database" % "h2" % "1.3.176",
   "org.apache.logging.log4j" % "log4j-core" % "2.2",
