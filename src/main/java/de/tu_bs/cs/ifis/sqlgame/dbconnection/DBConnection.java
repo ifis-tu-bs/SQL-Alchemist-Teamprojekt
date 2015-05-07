@@ -1,8 +1,8 @@
-package dbconnection;
+package de.tu_bs.cs.ifis.sqlgame.dbconnection;
 
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
-import exception.MySQLAlchemistException;
+import de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException;
 import java.sql.*;
 
 /**
@@ -41,7 +41,7 @@ public class DBConnection {
      * Declare db-url and register jdbc-driver.
      *
      * @param dbURL String, url for the db
-     * @throws exception.MySQLAlchemistException, ClassNotFoundException ex
+     * @throws de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException
      */
     public DBConnection(String dbURL) throws MySQLAlchemistException {
         this.dbURL = dbURL;
@@ -64,7 +64,7 @@ public class DBConnection {
      * 
      * @param SQLStatement String, SQL statement to be checked
      * @return boolean, true if the syntax is valid
-     * @throws exception.MySQLAlchemistException Exception for the
+     * @throws de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException Exception for the
      * SQL statement
      */
     public boolean checkSQLSyntax(String SQLStatement) throws MySQLAlchemistException {
@@ -98,7 +98,7 @@ public class DBConnection {
      * @param sqlStatement String, SQL-Statement to be executed
      * @return String[][], multidimensional Stringarray containing the name of
      * the DB-table and the associated value
-     * @throws exception.MySQLAlchemistException Exception for the
+     * @throws de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException Exception for the
      * SQLSelectStatement
      */
     public String[][] executeSQLSelectStatement(String user, String pass, String sqlStatement) throws MySQLAlchemistException {
@@ -136,7 +136,7 @@ public class DBConnection {
      * @param user String, username
      * @param pass String, password for user
      * @param sqlStatement String, SQL-Statement to be executed
-     * @throws exception.MySQLAlchemistException Exception for the
+     * @throws de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException Exception for the
      * SQLUpdateStatement
      */
     public void executeSQLUpdateStatement(String user, String pass, String sqlStatement) throws MySQLAlchemistException {
@@ -168,7 +168,7 @@ public class DBConnection {
      * @param user String, username
      * @param pass String, password for user
      * @param sqlStatement String[], SQL-Statements to be executed
-     * @throws exception.MySQLAlchemistException Exception for the
+     * @throws de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException Exception for the
      * SQLUpdateStatement
      */
     public void executeSQLUpdateStatement(String user, String pass, String[] sqlStatement) throws MySQLAlchemistException {
@@ -205,7 +205,7 @@ public class DBConnection {
      * @param variables String[], Variables to be passed in the prepared Statement
      * @return String[][], multidimensional Stringarray containing
      *                     the name of the DB-table and the associated value
-     * @throws exception.MySQLAlchemistException Exception for the
+     * @throws de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException Exception for the
      * SQLSelectStatement
      */
     public String[][] executeSQLSelectPreparedStatement(String user, String pass, String preparedSqlStatement, String[] variables) throws MySQLAlchemistException {
@@ -247,7 +247,7 @@ public class DBConnection {
      * @param preparedSqlStatement String, SQL-PreparedStatement to be executed
      * @param variables String[], Variables to be passed in the
      *                            prepared Statement
-     * @throws exception.MySQLAlchemistException Exception for the
+     * @throws de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException Exception for the
      * SQLUpdateStatement
      */
     public void executeSQLUpdatePreparedStatement(String user, String pass, String preparedSqlStatement, String[] variables) throws MySQLAlchemistException {

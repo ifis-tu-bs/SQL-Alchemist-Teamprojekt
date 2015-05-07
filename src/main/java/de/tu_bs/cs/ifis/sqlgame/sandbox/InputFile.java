@@ -3,12 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package sandbox;
+package de.tu_bs.cs.ifis.sqlgame.sandbox;
 
-import exception.MySQLAlchemistException;
+import de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException;
 import java.util.List;
-import xmlparse.MySAXParser;
-import xmlparse.XMLSyntaxCheck;
+import de.tu_bs.cs.ifis.sqlgame.xmlparse.MySAXParser;
+import de.tu_bs.cs.ifis.sqlgame.xmlparse.XMLSyntaxCheck;
 
 /**
  *
@@ -32,7 +32,7 @@ public class InputFile {
      * Constructor InputFile.
      * 
      * @param filename String, filenmae without
-     * @throws exception.MySQLAlchemistException
+     * @throws de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException throws MySQLAlchemistException
      */
     public InputFile(String filename) throws MySQLAlchemistException {
         this.filename = filename;

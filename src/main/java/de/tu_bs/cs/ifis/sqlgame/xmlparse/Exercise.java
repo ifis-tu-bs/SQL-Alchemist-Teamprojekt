@@ -1,4 +1,4 @@
-package xmlparse;
+package de.tu_bs.cs.ifis.sqlgame.xmlparse;
 
 /**
  * class for the subtasks in the exercise
@@ -36,7 +36,7 @@ public class Exercise {
      * set-method for the tasktext. The defintion of the problem, 
      * that has to be solved
      *
-     * @param tasktexts
+     * @param tasktexts String, the text of the task
      */
     public void setTasktexts(String tasktexts) {
         String[] temp = new String[this.tasktexts.length + 1];
@@ -59,7 +59,7 @@ public class Exercise {
     /**
      * set-method for the referencestatement (the solution of the task)
      *
-     * @param referencestatement
+     * @param referencestatement String, statement for the solution
      */
     public void setReferencestatement(String referencestatement) {
         this.referencestatement = referencestatement;
@@ -77,7 +77,7 @@ public class Exercise {
     /**
      * set-method for the evaluationstrategy (Set or List)
      *
-     * @param evaluationstrategy
+     * @param evaluationstrategy String with Set or List
      */
     public void setEvaluationstrategy(String evaluationstrategy) {
         this.evaluationstrategy = evaluationstrategy;
@@ -86,7 +86,7 @@ public class Exercise {
     /**
      * get-method for the requied terms, which the user need for this task
      *
-     * @return terms
+     * @return all terms as a string
      */
     public String getTerm() {
         String s = "";
@@ -100,7 +100,7 @@ public class Exercise {
     /**
      * set-method for the requied terms, which the user need for this task
      *
-     * @param term
+     * @param term String, the term that should be added to the array
      */
     public void setTerm(String term) {
         String[] temp = new String[this.term.length + 1];
@@ -123,7 +123,7 @@ public class Exercise {
     /**
      * set-method for the points of the task
      *
-     * @param points
+     * @param points int, the points of the task
      */
     public void setPoints(int points) {
         this.points = points;
@@ -132,7 +132,7 @@ public class Exercise {
     /**
      * get-method for the langugage of the task
      *
-     * @return language
+     * @return language of the task
      */
     public String getLanguage() {
         return language;
@@ -141,7 +141,7 @@ public class Exercise {
     /**
      * set-method for the language of the task
      *
-     * @param language
+     * @param language String, language of the tast
      */
     public void setLanguage(String language) {
         this.language = language;
@@ -150,7 +150,7 @@ public class Exercise {
     /**
      * method to make a string out of the tasks
      *
-     * @return string
+     * @return String with all content
      */
     public String toString() {
         StringBuffer sb = new StringBuffer();

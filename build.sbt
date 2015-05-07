@@ -4,6 +4,10 @@ version := "1.0"
 
 scalaVersion := "2.11.5"
 
+organization := "de.tu_bs.cs.ifis.sqlgame"
+
+publishTo := Some(Resolver.file("mvn-repository", new File("./mvn-repository/")))
+
 libraryDependencies ++= Seq(
   "com.h2database" % "h2" % "1.3.176",
   "org.apache.logging.log4j" % "log4j-core" % "2.2",

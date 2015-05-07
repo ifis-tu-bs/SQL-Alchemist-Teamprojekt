@@ -1,9 +1,9 @@
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
-import dbconnection.DBConnection;
-import exception.MySQLAlchemistException;
+import de.tu_bs.cs.ifis.sqlgame.dbconnection.DBConnection;
+import de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException;
 import java.util.Iterator;
-import sandbox.*;
+import de.tu_bs.cs.ifis.sqlgame.sandbox.*;
 
 /**
  * Class Test.
@@ -30,7 +30,7 @@ public class Test {
         try {
 
             InputFile test = new InputFile("exercises-wise11");
-            /*Iterator it = test.getTasks().iterator();
+            Iterator it = test.getTasks().iterator();
         
             while (it.hasNext()) {
                 Task task = (Task) it.next();
@@ -39,6 +39,12 @@ public class Test {
                 //task.insertToDb();
                 //task.closeTask();
             }
+
+            Config conf = ConfigFactory.load();
+            de.tu_bs.cs.ifis.sqlgame.dbconnection.DBConnection dbcnn = new DBConnection(conf.getString("input.driverDbs") + "test");
+            dbcnn.checkSQLSyntax("SELECT FDFEWdf");
+            //InputFile test = new InputFile("alchemy-task");
+            //test.getTasks();
 
             /*Task test1 = new Task("alchemy-task", "alchemy-task");
             test1.startTask();

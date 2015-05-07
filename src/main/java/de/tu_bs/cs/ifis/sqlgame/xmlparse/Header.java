@@ -1,4 +1,4 @@
-package xmlparse;
+package de.tu_bs.cs.ifis.sqlgame.xmlparse;
 
 /**
  * class for the title and other texts in the task
@@ -28,14 +28,25 @@ public class Header {
      public void setTasks(String tasks) {
      this.tasks = tasks;
      }
-*/
-     public String getTaskId() {
-     return taskId;
-     }
+     */
 
-     public void setTaskId(String taskId) {
-     this.taskId = taskId;
-     }
+    /**
+     * get-method for the taskid
+     *
+     * @return taskid
+     */
+    public String getTaskId() {
+        return taskId;
+    }
+
+    /**
+     * set-method for the taskid
+     *
+     * @param taskId String, the id of the task
+     */
+    public void setTaskId(String taskId) {
+        this.taskId = taskId;
+    }
 
     /**
      * get-method for the title of the exercise
@@ -49,7 +60,7 @@ public class Header {
     /**
      * set-method for the title of the exercise
      *
-     * @param title
+     * @param title String, title of the task
      */
     public void setTitle(String title) {
         String[] temp = new String[this.title.length + 1];
@@ -72,7 +83,7 @@ public class Header {
     /**
      * set-method for the introductiontext of the exercise
      *
-     * @param flufftext
+     * @param flufftext the introductiontext of the exercise
      */
     public void setFlufftext(String flufftext) {
         String[] temp = new String[this.flufftext.length + 1];
@@ -95,7 +106,7 @@ public class Header {
     /**
      * set-method for the language of the exercise
      *
-     * @param language
+     * @param language String, the language of the task
      */
     public void setLanguage(String language) {
         this.language = language;
@@ -104,7 +115,7 @@ public class Header {
     /**
      * method to make a string out of the header of the exercise sheet
      *
-     * @return string
+     * @return string with all content
      */
     @Override
     public String toString() {

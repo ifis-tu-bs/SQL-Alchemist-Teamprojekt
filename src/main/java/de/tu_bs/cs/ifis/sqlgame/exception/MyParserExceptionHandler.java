@@ -1,4 +1,4 @@
-package exception;
+package de.tu_bs.cs.ifis.sqlgame.exception;
 
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
