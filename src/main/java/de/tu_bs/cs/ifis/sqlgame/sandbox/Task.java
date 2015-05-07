@@ -7,16 +7,8 @@ import de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException;
 import java.util.Iterator;
 import java.util.List;
 import org.h2.tools.DeleteDbFiles;
-<<<<<<< HEAD:src/main/java/sandbox/Task.java
-import xmlparse.Exercise;
-import xmlparse.Relation;
-=======
 import de.tu_bs.cs.ifis.sqlgame.xmlparse.Exercise;
-import de.tu_bs.cs.ifis.sqlgame.xmlparse.Header;
-import de.tu_bs.cs.ifis.sqlgame.xmlparse.MySAXParser;
 import de.tu_bs.cs.ifis.sqlgame.xmlparse.Relation;
-import de.tu_bs.cs.ifis.sqlgame.xmlparse.XMLSyntaxCheck;
->>>>>>> 9a687657d36ee48d5b35a46ac1e11b178f83ba03:src/main/java/de/tu_bs/cs/ifis/sqlgame/sandbox/Task.java
 
 /**
  * Class Task.

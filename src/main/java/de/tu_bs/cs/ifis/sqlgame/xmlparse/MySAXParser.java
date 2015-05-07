@@ -1,11 +1,6 @@
 package de.tu_bs.cs.ifis.sqlgame.xmlparse;
 
-<<<<<<< HEAD:src/main/java/xmlparse/MySAXParser.java
-import exception.MySQLAlchemistException;
-=======
-import de.tu_bs.cs.ifis.sqlgame.dbconnection.*;
 import de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException;
->>>>>>> 9a687657d36ee48d5b35a46ac1e11b178f83ba03:src/main/java/de/tu_bs/cs/ifis/sqlgame/xmlparse/MySAXParser.java
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,15 +14,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 import com.typesafe.config.*;
-<<<<<<< HEAD:src/main/java/xmlparse/MySAXParser.java
-import dbconnection.DBConnection;
-import java.util.Iterator;
-import sandbox.Task;
-=======
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import de.tu_bs.cs.ifis.sqlgame.sandbox.Task;
->>>>>>> 9a687657d36ee48d5b35a46ac1e11b178f83ba03:src/main/java/de/tu_bs/cs/ifis/sqlgame/xmlparse/MySAXParser.java
 
 /**
  * Class MySAXParser.

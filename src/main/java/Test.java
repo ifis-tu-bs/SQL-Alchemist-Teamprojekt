@@ -39,10 +39,7 @@ public class Test {
                 //task.insertToDb();
                 //task.closeTask();
             }
-
-            Config conf = ConfigFactory.load();
-            de.tu_bs.cs.ifis.sqlgame.dbconnection.DBConnection dbcnn = new DBConnection(conf.getString("input.driverDbs") + "test");
-            dbcnn.checkSQLSyntax("SELECT FDFEWdf");
+            
             //InputFile test = new InputFile("alchemy-task");
             //test.getTasks();
 
