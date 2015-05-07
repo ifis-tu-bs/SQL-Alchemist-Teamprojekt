@@ -9,3 +9,5 @@ manifest.mf
 /target
 /project/target
 /project/project/target/
+.classpath_nb
+.classpath_nb

@@ -129,7 +129,7 @@ public class DBConnection {
             stmt.close();
             conn.close();
         } catch (SQLException se) {
-            throw new MySQLAlchemistException("Fehler beim Ausführen vom SQL-SELECT-Statement ", se);
+            throw new MySQLAlchemistException("Fehler beim AusfÃ¼hren vom SQL-SELECT-Statement ", se);
         }
 
         return result;
@@ -163,7 +163,7 @@ public class DBConnection {
             stmt.close();
             conn.close();
         } catch (SQLException se) {
-            throw new MySQLAlchemistException("Fehler beim Ausführen vom SQL-UPDATE-Statement ", se);
+            throw new MySQLAlchemistException("Fehler beim AusfÃ¼hren vom SQL-UPDATE-Statement ", se);
         }
     }
 
@@ -197,7 +197,7 @@ public class DBConnection {
             stmt.close();
             conn.close();
         } catch (SQLException se) {
-            throw new MySQLAlchemistException("Fehler beim Ausführen vom SQL-UPDATE-Statement ", se);
+            throw new MySQLAlchemistException("Fehler beim AusfÃ¼hren vom SQL-UPDATE-Statement ", se);
         }
     }
     
@@ -238,7 +238,7 @@ public class DBConnection {
             pStmt.close();
             conn.close();
         } catch (SQLException se) {
-            throw new MySQLAlchemistException("Fehler beim Ausführen vom SQL-Statement ", se);
+            throw new MySQLAlchemistException("Fehler beim AusfÃ¼hren vom SQL-Statement ", se);
         }
         
         return result;
@@ -277,7 +277,7 @@ public class DBConnection {
             pStmt.close();
             conn.close();
         } catch (SQLException se) {
-            throw new MySQLAlchemistException("Fehler beim Ausführen vom SQL-Statement ", se);
+            throw new MySQLAlchemistException("Fehler beim AusfÃ¼hren vom SQL-Statement ", se);
         }
     }
 
