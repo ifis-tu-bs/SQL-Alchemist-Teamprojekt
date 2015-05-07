@@ -4,7 +4,8 @@
  * and open the template in the editor.
  */
 
-import xmlparse.Header;
+
+import de.tu_bs.cs.ifis.sqlgame.xmlparse.Header;
 import junit.framework.*;
  /*
  * @author Philip

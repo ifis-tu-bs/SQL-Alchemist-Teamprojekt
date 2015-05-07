@@ -8,9 +8,16 @@
  *
  * @author Philip
  */
+import de.tu_bs.cs.ifis.sqlgame.xmlparse.Exercise;
 import junit.framework.*;
-import xmlparse.Exercise;
 
+/**
+ * Class ExerciseTest
+ *
+ * Testclass for the class Exercise
+ *
+ * @author Tobias
+ */
 public class ExerciseTest extends TestCase {
     
     public void testTasktexts() {
