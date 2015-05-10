@@ -4,6 +4,8 @@ import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Class DBConnection.
@@ -113,10 +115,10 @@ public class DBConnection {
      * @throws de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException Exception for the
      * SQLSelectStatement
      */
-    public String[][] executeSQLSelectStatement(String user, String pass, String sqlStatement) throws MySQLAlchemistException {
+    public List executeSQLSelectStatement(String user, String pass, String sqlStatement) throws MySQLAlchemistException {
         Connection conn = null;
         Statement stmt = null;
-        String[][] result = null;
+        List result = null;
 
         try {
             //Open connection
@@ -219,10 +221,10 @@ public class DBConnection {
      * @throws de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException Exception for the
      * SQLSelectStatement
      */
-    public String[][] executeSQLSelectPreparedStatement(String user, String pass, String preparedSqlStatement, String[] variables) throws MySQLAlchemistException {
+    public List executeSQLSelectPreparedStatement(String user, String pass, String preparedSqlStatement, String[] variables) throws MySQLAlchemistException {
         Connection conn;
         PreparedStatement pStmt;
-        String[][] result = null;
+        List result = null;
         
         try {
             //Open connection
@@ -280,7 +282,7 @@ public class DBConnection {
             pStmt.close();
             conn.close();
         } catch (SQLException se) {
-            throw new MySQLAlchemistException("Fehler beim Ausführen vom SQL-Statement " + dbURL, se);
+            throw new MySQLAlchemistException("Fehler beim Ausführen vom SQL-Statement ", se);
         }
     }
 
@@ -290,23 +292,32 @@ public class DBConnection {
      * Transforms a ResultSet into a multidimensional Stringarray.
      *
      * @param rs ResultSet, ResultSet of a SELECT-statement
-     * @return String[][], multidimensional Stringarray containing the name of
-     *                     the DB-table and the associated value
+     * @return List, List containing the name of
+     *               the DB-table-column and the associated value
      * @throws java.sql.SQLException, SQLException se
      */
-    private String[][] transformResultSet(ResultSet rs) throws SQLException {
-        String[][] result;
-
+    private List transformResultSet(ResultSet rs) throws SQLException {
+        List result;
+        List resultColumnName;
+        List resultContent;
         ResultSetMetaData rsmd = rs.getMetaData();
         int columnsNumber = rsmd.getColumnCount();
-        result = new String[columnsNumber][2];
-        while (rs.next()) {
+        result = new ArrayList();
+        resultColumnName = new ArrayList();
+        resultContent = new ArrayList();
+        if(rs.next()){
             for (int i = 0; i < columnsNumber; i++) {
-                result[i][0] = rsmd.getColumnName(i+1);
-                result[i][1] = rs.getString(i+1);
+                resultColumnName.add(rsmd.getColumnName(i+1));
+                resultContent.add(rs.getString(i+1));
             }
         }
-
+        while (rs.next()) {
+            for (int j = 0; j < columnsNumber; j++) {
+                resultContent.add(rs.getString(j+1));
+            }
+        }
+        result.add(resultColumnName);
+        result.add(resultContent);
         return result;
     }
 

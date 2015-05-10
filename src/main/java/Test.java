@@ -1,6 +1,7 @@
 import de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException;
 import java.util.Iterator;
 import de.tu_bs.cs.ifis.sqlgame.sandbox.*;
+import java.util.List;
 
 /**
  * Class Test.
@@ -26,13 +27,23 @@ public class Test {
     public static void main(String[] args) {
         try {
 
-            InputFile test = new InputFile("exam-wise13");
+            InputFile test = new InputFile("exercises-wise13");
             Iterator it = test.getTasks().iterator();
         
             while (it.hasNext()) {
                 Task task = (Task) it.next();
                 task.startTask("local");
-                task.printData();
+                //task.printData();
+                //task.insertToDb();
+                //task.selectFromDb();
+                List result = task.executeUserStatement("SELECT * FROM COMIC");
+                 for (int i = 0; i < result.size(); i++) {
+                        List tmpList = (List) result.get(i);
+                         for (int j = 0; j < tmpList.size(); j++) {
+                         System.out.println(tmpList.get(j));
+                         }
+
+                }
                 //task.insertToDb();
                 //task.closeTask();
             }

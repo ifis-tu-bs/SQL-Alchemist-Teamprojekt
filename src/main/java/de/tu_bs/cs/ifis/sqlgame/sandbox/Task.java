@@ -228,8 +228,9 @@ public class Task {
         String[] variables = new String[1];
         variables[0] = this.name;
 
-        String[][] result = this.fixDbConn.executeSQLSelectPreparedStatement(this.conf.getString("auth.user"), this.conf.getString("auth.pass"), selectStatement, variables);
-        return result[0][0] != null;
+        List result = this.fixDbConn.executeSQLSelectPreparedStatement(this.conf.getString("auth.user"), this.conf.getString("auth.pass"), selectStatement, variables);
+        List tmpList = (List) result.get(1);
+        return tmpList.get(0) != null;
     }
 
     /**
@@ -267,10 +268,11 @@ public class Task {
         String[] variables = new String[1];
         variables[0] = this.name;
 
-        String[][] result = fixDbConn.executeSQLSelectPreparedStatement(this.conf.getString("auth.user"), this.conf.getString("auth.pass"), selectStatement, variables);
-        this.name = result[0][1];
-        this.dbName = result[1][1];
-        this.players = Integer.parseInt(result[2][1]);
+        List result = fixDbConn.executeSQLSelectPreparedStatement(this.conf.getString("auth.user"), this.conf.getString("auth.pass"), selectStatement, variables);
+        List tmpList = (List) result.get(1);
+        this.name = (String) tmpList.get(0);
+        this.dbName = (String) tmpList.get(1);
+        this.players = Integer.parseInt((String) tmpList.get(2));
     }
 
     /**
@@ -338,8 +340,8 @@ public class Task {
             for (int i = 0; i < a.length; i++) {
                 a[i] = a[i].replace('\"', '\'');
             }
-            this.fixDbConn.executeSQLUpdateStatement(this.conf.getString("auth.user"), this.conf.getString("auth.pass"), s.getIntension());
-            this.fixDbConn.executeSQLUpdateStatement(this.conf.getString("auth.user"), this.conf.getString("auth.pass"), a);
+            this.tmpDbConn.executeSQLUpdateStatement(this.conf.getString("auth.user"), this.conf.getString("auth.pass"), s.getIntension());
+            this.tmpDbConn.executeSQLUpdateStatement(this.conf.getString("auth.user"), this.conf.getString("auth.pass"), a);
         }
     }
 
@@ -358,8 +360,26 @@ public class Task {
         while (it.hasNext()) {
             Exercise select = (Exercise) it.next();
             String selectString = select.getReferencestatement().replace('\"', '\'');
-            this.fixDbConn.executeSQLSelectStatement(this.conf.getString("auth.user"), this.conf.getString("auth.pass"), selectString);
+            this.tmpDbConn.executeSQLSelectStatement(this.conf.getString("auth.user"), this.conf.getString("auth.pass"), selectString);
         }
+    }
+    
+    /**
+     * Method executeUserStatement
+     * 
+     * Executes the select statement from the user
+     * and returns the result set
+     * 
+     * @param Statement the SQL user statement
+     * @return result list with two lists
+     *              first a list with the column names
+     *              second a list with the content
+     * @throws de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException Exception for the
+     * SQLSelectStatement
+     */
+    public List executeUserStatement(String Statement) throws MySQLAlchemistException{
+            List result = this.tmpDbConn.executeSQLSelectStatement(this.conf.getString("auth.user"), this.conf.getString("auth.pass"), Statement);
+            return result;
     }
     
     /**
