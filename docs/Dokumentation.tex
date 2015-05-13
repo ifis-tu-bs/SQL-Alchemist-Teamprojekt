@@ -1,0 +1,181 @@
+\documentclass[11pt]{report}
+\usepackage{ucs}
+\usepackage[utf8x]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[ngerman]{babel}
+\usepackage{amsthm,amsmath,amssymb,amstext}
+\usepackage{listings}
+\usepackage{color}  
+\usepackage[svgnames]{xcolor} 
+\usepackage{ulem}
+\usepackage{graphicx}
+\usepackage{stmaryrd}
+\usepackage{pdfpages}
+\usepackage{paralist}
+\usepackage{ae}
+\usepackage{lmodern,dsfont}
+\usepackage[]{hyperref}
+\hypersetup{%
+  colorlinks= true,  
+  linkcolor = black,  
+  citecolor = black,
+  urlcolor = black,  
+} 
+
+\title{\textbf{SQL-Alchemist-Teamprojekt} \\ API-Dokumentation}
+\author{Tobias Grünhagen, Philip Holzhüter, Tobias Runge}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\chapter{Allgemeines}
+
+Erläuterungen, etc. \ldots \\
+Erläuterungen, etc. \ldots\\
+Erläuterungen, etc. \ldots \\
+Erläuterungen, etc. \ldots\\
+ Erläuterungen, etc. \ldots \\
+Erläuterungen, etc. \ldots\\
+ Erläuterungen, etc. \ldots \\
+Erläuterungen, etc. \ldots\\
+ Erläuterungen, etc. \ldots \\
+Erläuterungen, etc. \ldots\\
+ Erläuterungen, etc. \ldots \\
+Erläuterungen, etc. \ldots\\
+ Erläuterungen, etc. \ldots \\
+Erläuterungen, etc. \ldots\\
+ Erläuterungen, etc. \ldots \\
+Erläuterungen, etc. \ldots\\
+ Erläuterungen, etc. \ldots \\
+Erläuterungen, etc. \ldots\\
+ Erläuterungen, etc. \ldots \\
+Erläuterungen, etc. \ldots\\
+ 
+
+\includepdf{Klassendiagramm.pdf}
+
+\chapter{Klassenerläuterungen}
+
+Im Folgenden werden die Funktionen der einzelnen Klassen erläutert.
+
+\section{InputFile.java}
+
+Diese Datei ist der Startpunkt, wenn man eine neue XML-Datei einlesen und einen neuen Task starten möchte. Der Konstruktor möchte als Parameter eine XML-Datei ohne die Endung \grqq .xml\grqq. Diese Datei wird ihre auf Syntax geprüft, geparst und für jeden Task innerhalb dieser Datei wird ein Task-Objekt erzeugt.
+
+\subsection*{Klassenvariablen}
+
+String \textit{filename}: Name der XML-Datei ohne die Dateiendung \grqq .xml\grqq\  \\
+List \textit{tasks}: Liste aller Tasks, die im Konstruktor erzeugt werden
+
+\subsection*{Konstruktor}
+
+Parameter: XML-Datei ohne die Dateiendung \grqq .xml\grqq\ \\
+Checkt und parst die Datei, dabei werden Fehler geworfen, falls die Datei nicht korrekt ist.
+Falls alles korrekt ist, wird für jeden Task in der Datei ein Task-Objekt erzeugt und in die Liste \textit{tasks} gespeichert.
+
+\section{Exercise.java}
+
+Hier finden sich alle Inhalte aus der XML-Datei, die unter \textit{subtasks} zu finden sind. In jedem Objekt ist immer ein Subtask gespeichert.
+
+\subsection*{Klassenvariablen}
+
+String[] \textit{tasktexts}: Die Aufgabenstellung der Aufgabe in Deutsch und Englisch, falls vorhanden \\
+String \textit{referencestatement}: Das Lösungsstatement der Aufgabe \\
+String \textit{evaluationstrategy}: Rückgabetyp der Aufgabe (Liste oder Menge) \\
+String \textit{term}: Die Terme, die für die Lösung der Aufgabe benötigt werden \\
+int \textit{points}: Die Punkte für die Aufgabe bzw. der Schwierigkeitsgrad \\
+String \textit{language}: Die Sprache für die Aufgabe (wird beim Parsen nicht gesetzt)
+
+\section{Header.java}
+
+Hier finden sich alle Inhalte aus der XML-Datei, die am Anfang jedes Tasks stehen.
+
+\subsection*{Klassenvariablen}
+
+String \textit{taskId}: Die eindeutige ID der Aufgabe \\
+String[] \textit{title}: Die Überschrift der Aufgabe \\
+String[] \textit{flufftext}: Die allgemeine Beschreibung der Aufgabe \\
+String \textit{language}: Die Sprache für die Aufgabe (wird beim Parsen nicht gesetzt)
+
+\section{Relation.java}
+
+Hier finden sich alle Inhalte aus der XML-Datei die unter \textit{schema} zu finden sind. In jedem Objekt ist immer eine Relation gespeichert.
+
+\subsection*{Klassenvariablen}
+String \textit{intension}: Ein Create-Table-Statement der Aufgabe \\
+String[] \textit{tuple}: Die zugehörigen Insert-Into-Statements der Aufgabe
+
+\section{Task.java}
+
+Diese Klasse enthält alle Methoden zum Verwalten von Tasks. Die Klassenvariablen sind zum einen Listen für sämtliche Inhalte des XML-Dokuments und zum Anderen die benötigten Datenbankverbindungen, für die Spielübersicht und für die einzelnen Tasks.
+
+\subsection*{Klassenvariablen}
+String \textit{name}: Name des Tasks \\
+String \textit{dbName}: Name der zum Task gehörenden Datenbank \\
+int \textit{players}: Anzahl der Spieler dieses Tasks \\
+List \textit{myHeader}: Liste der Header einer XML-Datei \\
+List \textit{myRelation}: Liste der Inhalte des XML-Dokuments im Bereich \textit{schema}. \\
+List \textit{myExercise}: Liste der Subtasks eines XML-Dokuments \\
+DBConnection \textit{tmpDbConn}: Datenbankverbindung zur zum Task gehörenden Datenbank \\
+DBConnection \textit{fixDbConn}: Datenbankverbindung zur Datenbank für die Spielübersicht
+
+\subsection*{Methoden}
+
+\subsubsection*{startTask(String dbType)}	
+
+Die Methode \textit{startTask} dient im Allgemeinen dazu, einen neuen Task zu starten, bzw. ihn zu laden, falls so ein Task noch nicht existiert.
+
+Der Parameter \textit{dbType} gibt den Datenbanktyp an. Dabei kann es sich entweder um eine lokale Datenbank, eine InMemory-Datenbank oder eine Online-Datenbank handeln.
+
+Zunächst wird die Methode \textit{checkTask()} aufgerufen. Wenn so ein Task noch nicht besteht, die Methode also den Wert \textit{false} liefert, wird die Spielerzahl dieses Tasks auf den Wert 1 gesetzt und die Methode \textit{createTask()} aufgerufen. Falls jedoch bereits ein solcher Task besteht, so wird dieser Task aus der Datenbank zur Spielübersicht geladen, die Spielerzahl um den Wert 1 erhöht, das XML-Dokument auf Syntaxfehler geprüft und dann schließlich geparst. Anschließend wird noch der Task aktualisiert indem \textit{updateTask()} aufgerufen wird.
+	
+\subsubsection*{checkTask()}
+
+Die Methode \textit{checkTask} soll prüfen ob der Task bereits existiert.
+
+Dazu wird auf der Datenbank zur Spielübersicht ein Prepared-Statement ausgeführt, welches alle Tasks mit dem aktuellen Namen liefert (entweder liefert es einen Eintrag oder eine leere Tabelle). Dadurch kann ein boolean-Wert zurückgegeben werden, ob der Task bereits existiert oder nicht.
+
+
+\subsubsection*{createTask(String dbType)}
+
+Die Methode \textit{createTask} erstellt im Allgemeinen einen neuen Task. 
+
+Der Parameter \textit{dbType} gibt den Datenbanktyp an (s. \textit{startTask}).
+Zunächst wird in der Datenbank zur Spielübersicht ein neuer Eintrag für diesen Task angelegt. Danach wird eine Datenbank für diesen Task angelegt, auf der nach dem XML-Syntax-Check und dem Parsen des Dokuments alle Statements ausgeführt werden können (alle dafür notwendigen  Tabellen werden erstellt etc.)
+
+\subsubsection*{loadTask()}
+
+Die Methode \textit{loadTask} lädt mittels Prepared-Statement einen bereits existierenden Task und eine Datenbank, auf der später alle Statements ausgeführt werden können.
+
+\subsubsection*{updateTask()}
+
+Die Methode \textit{updateTask} aktualisiert in der Datenbank zur Spielübersicht den Eintrag zum aktuellen Task (erhöhen bzw. erniedrigen der Spielerzahl).
+
+\subsubsection*{closeTask()}
+
+Die Methode \textit{closeTask} löscht einen Task und verringert dabei die aktuelle Spielerzahl um den Wert 1. Falls der aktuelle Task keine Spieler mehr hat, die Spielerzahl also den Wert 0 hat, wird die zum Task gehörige Datenbank mit all ihren Inhalten des Aufgabenblattes gelöscht.
+
+\subsubsection*{insertToDb()}
+
+Die Methode \textit{insertToDb} lädt alle Inhalte der Aufgabenblätter in die zugehörige Datenbank. 
+Dabei wird über die Liste der Relationen iteriert und jedes Element dann über ein Prepared-Statement in die Datenbank geladen.
+
+\subsubsection*{selectFromDb()}
+
+Die Methode \textit{selectFromDb} führt alle Reference-Statements des Aufgabenblattes aus, liefert dabei aber nicht die Ergebnisse dieser Statements zurück, sie dient primär dazu die Reference-Statements auf Ausführbarkeit zu prüfen.
+Dabei wird über die Liste der Exercises iteriert und jedes Element dann über ein Prepared-Statement auf der Datenbank ausgeführt.
+
+\subsubsection*{executeUserStatement(String statement)}
+
+Die Methode \textit{executeUserStatement} dient dazu ein User-Statement auszuführen und die Ergebnisse dieses Statements zurückzuliefern.
+Dabei wird das Statement (String) als Parameter an die Methode übergeben und dann auf der Datenbank ausgeführt. Das Ergebnis der Abfrage wird dann zurückgeliefert.
+
+\subsubsection*{printData()}
+
+Die Methode \textit{printData} gibt alle Inhalte des Aufgabenblattes aus.
+Es wird für jede der drei Listen nacheinander (für die Header, Relations und Exercises) die Anzahl der Elemente und anschließend die Elemente selbst ausgegeben.
+
+
+\end{document}
