@@ -13,6 +13,7 @@
 \usepackage{pdfpages}
 \usepackage{paralist}
 \usepackage{ae}
+\usepackage{anysize}
 \usepackage{lmodern,dsfont}
 \usepackage[]{hyperref}
 \hypersetup{%
@@ -21,6 +22,8 @@
   citecolor = black,
   urlcolor = black,  
 } 
+
+\marginsize{35mm}{30mm}{20mm}{20mm}
 
 \title{\textbf{SQL-Alchemist-Teamprojekt} \\ API-Dokumentation}
 \author{Tobias Grünhagen, Philip Holzhüter, Tobias Runge}
@@ -32,27 +35,11 @@
 
 \chapter{Allgemeines}
 
-Erläuterungen, etc. \ldots \\
-Erläuterungen, etc. \ldots\\
-Erläuterungen, etc. \ldots \\
-Erläuterungen, etc. \ldots\\
- Erläuterungen, etc. \ldots \\
-Erläuterungen, etc. \ldots\\
- Erläuterungen, etc. \ldots \\
-Erläuterungen, etc. \ldots\\
- Erläuterungen, etc. \ldots \\
-Erläuterungen, etc. \ldots\\
- Erläuterungen, etc. \ldots \\
-Erläuterungen, etc. \ldots\\
- Erläuterungen, etc. \ldots \\
-Erläuterungen, etc. \ldots\\
- Erläuterungen, etc. \ldots \\
-Erläuterungen, etc. \ldots\\
- Erläuterungen, etc. \ldots \\
-Erläuterungen, etc. \ldots\\
- Erläuterungen, etc. \ldots \\
-Erläuterungen, etc. \ldots\\
- 
+Die API für das SQL-Alchemist-Projekt des IFIS an der Technischen Universität Braunschweig im Sommersemester 2015 dient dazu wichtige Grundfunktionen, wie das Verwalten von Aufgaben und der Datenbankanfragen, für das SQL-Lernspiel bereitzustellen.
+
+Zuerst wird ein XML-File eingelesen, in dem die einzelnen Aufgaben bereitgestellt werden. Dabei wird die Struktur validiert und bereits der Aufbau der SQL-Statements gecheckt. Beim Parsen des Dokuments wird für jede Aufgabe ein neuer Task angelegt, über den die komplette Aufgabe verwaltet werden kann. Die für die Aufgabe nötigen Tabellen und Einträge werden in einer aufgabenspezifische Datenbank abgespeichert, die wieder gelöscht wird, falls sie nicht mehr benötigt wird. Anfragen an die Datenbank und auch der Zugriff auf einzelne Komponenten der Aufgabenstellung kann komplett über den Task verwaltet werden.
+
+Die Programmstruktur und die Programmzusammenhänge können in dem folgenden Klassendiagramm nachvollzogen werden. Bei Benutzung der API sollte ein InputFile-Objekt mit dem Namen des XML-Files erstellt werden. Hier wird im Konstruktor automatisch die Struktur durch die XMLSyntaxCheck-Klasse validiert und mit Hilfe der MySAXParser-Klasse das Dokument eingelesen. Im MySAXParser werden nach dem Parsen mit Hilfe der DBConnection-Klasse die einzelnen SQL-Statements gecheckt. Dann wird für jede Aufgabe ein neues Task-Objekt erstellt, in welchem jeweils ein Header-Objekt, ein Exercise-Objekt und Relation-Objekt gespeichert werden. In jedem Task wird beim starten der Aufgabe in einer festen Datenbank überprüft, ob der Task bereits gespielt wird. Ist dem so, wird für die Aufgabe die bereits bestehende aufgabenspezifische Datenbank benutzt, ansonsten wird eine neue Datenbank angelegt. Hierbei werden die CREATE-TABLE- und INSERT-Statements aus der Aufgabenstellung mit Hilfe von Exercise- und Relation-Objekten ausgeführt. Spielt am Ende der Bearbeitung einer Aufgabe kein Spieler mehr die Aufgabe, wird die aufgabenspezifische Datenbank gelöscht. So wird der Verbleib von Datenmüll und Datenleichen vermieden. In einem Task können während des Spielens SQL-Anfragen an die Datenbank gestellt werden, hierfür wird die DBConnection-Klasse verwendet.
 
 \includepdf{Klassendiagramm.pdf}
 
