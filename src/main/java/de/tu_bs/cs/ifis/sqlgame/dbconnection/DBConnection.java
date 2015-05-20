@@ -305,19 +305,22 @@ public class DBConnection {
         result = new ArrayList();
         resultColumnName = new ArrayList();
         resultContent = new ArrayList();
-        if(rs.next()){
+        if (rs.next()) {
             for (int i = 0; i < columnsNumber; i++) {
-                resultColumnName.add(rsmd.getColumnName(i+1));
-                resultContent.add(rs.getString(i+1));
+                resultColumnName.add(rsmd.getColumnName(i + 1));
+                resultContent.add(rs.getString(i + 1));
             }
-        }
-        while (rs.next()) {
-            for (int j = 0; j < columnsNumber; j++) {
-                resultContent.add(rs.getString(j+1));
+            while (rs.next()) {
+                for (int j = 0; j < columnsNumber; j++) {
+                    resultContent.add(rs.getString(j + 1));
+                }
             }
+            result.add(resultColumnName);
+            result.add(resultContent);
+        } else {
+            result = null;
         }
-        result.add(resultColumnName);
-        result.add(resultContent);
+
         return result;
     }
 
