@@ -76,8 +76,10 @@ public class InputFile {
                 Iterator it2 = task.getMyHeader().iterator();
                 if (it2.hasNext()) {
                     Header header = (Header) it2.next();
-                    String filename = header.getTaskId();
-                    newfile.renameTo(new File(path + filename + "neu.xml"));
+
+                    String fileName = header.getTaskId();
+                    this.filename = fileName;
+                    newfile.renameTo(new File(path + fileName + "neu.xml"));
                 }
                 //task.insertToDb();
                 //task.closeTask();
