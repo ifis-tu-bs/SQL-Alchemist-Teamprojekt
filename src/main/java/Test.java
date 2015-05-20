@@ -26,7 +26,6 @@ public class Test {
      */
     public static void main(String[] args) {
         try {
-
             InputFile test = new InputFile("exercises-wise13");
             Iterator it = test.getTasks().iterator();
         
