@@ -1,7 +1,9 @@
+import de.tu_bs.cs.ifis.sqlgame.datageneration.DataGenerator;
 import de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException;
 import java.util.Iterator;
 import de.tu_bs.cs.ifis.sqlgame.sandbox.*;
 import java.util.List;
+import org.fluttercode.datafactory.impl.DataFactory;
 
 /**
  * Class Test.
@@ -216,7 +218,7 @@ public class Test {
 "  </task>\n" +
 "  \n" +
 "</tasks>");
-
+/**
             Iterator it = test.getTasks().iterator();
         
             while (it.hasNext()) {
@@ -256,6 +258,11 @@ public class Test {
             Task test4 = new Task("exercises-wise13", "exercises-wise13");
             test4.startTask();
             test4.closeTask();*/
+            
+            DataGenerator df = new DataGenerator();
+            df.generateData("occupation", 30, "Student");
+            
+            
         } catch (MySQLAlchemistException mse) {
             System.out.println(mse.getMyMessage());
         }
