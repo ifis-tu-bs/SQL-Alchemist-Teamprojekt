@@ -3,12 +3,14 @@ package de.tu_bs.cs.ifis.sqlgame.sandbox;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException;
+import de.tu_bs.cs.ifis.sqlgame.xmlparse.Header;
 import java.util.List;
 import de.tu_bs.cs.ifis.sqlgame.xmlparse.MySAXParser;
 import de.tu_bs.cs.ifis.sqlgame.xmlparse.XMLSyntaxCheck;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Iterator;
 
 /**
  * Class InputFile
@@ -66,6 +68,20 @@ public class InputFile {
         MySAXParser msp = new MySAXParser();
         msp.parseDocument("newdata.xml");
         this.tasks = msp.getMyTasks();
+        
+        Iterator it = this.tasks.iterator();
+        
+            if (it.hasNext()) {
+                Task task = (Task) it.next();
+                Iterator it2 = task.getMyHeader().iterator();
+                if (it2.hasNext()) {
+                    Header header = (Header) it2.next();
+                    String filename = header.getTaskId();
+                    newfile.renameTo(new File(path + filename + "neu.xml"));
+                }
+                //task.insertToDb();
+                //task.closeTask();
+            }
     }
        
     /**
