@@ -1421,3 +1421,33 @@ SELECT FDFEWdf [42122-176]
 	at sbt.Logger$$anon$4.apply(Logger.scala:90)
 	at sbt.TrapExit$App.run(TrapExit.scala:244)
 	at java.lang.Thread.run(Thread.java:745)
+05-10 18:58:47 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Tabelle "COMIC" besteht bereits
+Table "COMIC" already exists; SQL statement:
+
+          CREATE TABLE Comic (
+            no INTEGER NOT NULL PRIMARY KEY,
+            title VARCHAR(255) NOT NULL,
+            pages INTEGER,
+            publisher VARCHAR(255)
+          );
+         [42101-176]
+05-10 19:04:15 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Tabelle "COMIC" besteht bereits
+Table "COMIC" already exists; SQL statement:
+
+          CREATE TABLE Comic (
+            no INTEGER NOT NULL PRIMARY KEY,
+            title VARCHAR(255) NOT NULL,
+            pages INTEGER,
+            publisher VARCHAR(255)
+          );
+         [42101-176]
+05-10 19:20:58 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Syntax Fehler in SQL Befehl "SELECT FROM COMIC"; erwartet "., (, AS, RIGHT, LEFT, FULL, INNER, JOIN, CROSS, NATURAL, ,, SELECT"
+Syntax error in SQL statement "SELECT FROM COMIC"; expected "., (, AS, RIGHT, LEFT, FULL, INNER, JOIN, CROSS, NATURAL, ,, SELECT"; SQL statement:
+SELECT FROM COMIC [42001-176]
+05-20 14:13:36 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Syntax Fehler in SQL Befehl "DROP TABLECOMIC[*] "; erwartet "TABLE, INDEX, USER, SEQUENCE, CONSTANT, TRIGGER, VIEW, ROLE, ALIAS, SCHEMA, ALL, DOMAIN, TYPE, DATATYPE, AGGREGATE"
+Syntax error in SQL statement "DROP TABLECOMIC[*] "; expected "TABLE, INDEX, USER, SEQUENCE, CONSTANT, TRIGGER, VIEW, ROLE, ALIAS, SCHEMA, ALL, DOMAIN, TYPE, DATATYPE, AGGREGATE"; SQL statement:
+Drop TableCOMIC [42001-186]
