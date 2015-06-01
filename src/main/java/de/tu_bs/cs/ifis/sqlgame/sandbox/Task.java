@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 import org.h2.tools.DeleteDbFiles;
 import de.tu_bs.cs.ifis.sqlgame.xmlparse.Exercise;
+import de.tu_bs.cs.ifis.sqlgame.xmlparse.Header;
 import de.tu_bs.cs.ifis.sqlgame.xmlparse.Relation;
 import java.util.ArrayList;
 
@@ -25,9 +26,9 @@ public class Task {
     private String dbName = "";
     private int players = 0;
 
-    private List myHeader;
-    private List myRelation;
-    private List myExercise;
+    private ArrayList<Header> myHeader;
+    private ArrayList<Relation> myRelation;
+    private ArrayList<Exercise> myExercise;
     
     private DBConnection tmpDbConn;
     private DBConnection fixDbConn;
@@ -75,7 +76,7 @@ public class Task {
      *
      * @return List
      */
-    public List getMyHeader() {
+    public ArrayList<Header> getMyHeader() {
         return myHeader;
     }
     
@@ -84,7 +85,7 @@ public class Task {
      *
      * @param myHeader List
      */
-    public void setMyHeader(List myHeader) {
+    public void setMyHeader(ArrayList<Header> myHeader) {
         this.myHeader = myHeader;
     }
     
@@ -93,7 +94,7 @@ public class Task {
      *
      * @return List
      */
-    public List getMyRelation() {
+    public ArrayList<Relation> getMyRelation() {
         return myRelation;
     }
     
@@ -102,7 +103,7 @@ public class Task {
      *
      * @param myRelation List
      */
-    public void setMyRelation(List myRelation) {
+    public void setMyRelation(ArrayList<Relation> myRelation) {
         this.myRelation = myRelation;
     }
     
@@ -111,7 +112,7 @@ public class Task {
      *
      * @return List
      */
-    public List getMyExercise() {
+    public ArrayList<Exercise> getMyExercise() {
         return myExercise;
     }
     
@@ -120,7 +121,7 @@ public class Task {
      *
      * @param myExercise List
      */
-    public void setMyExercise(List myExercise) {
+    public void setMyExercise(ArrayList<Exercise> myExercise) {
         this.myExercise = myExercise;
     }
 
@@ -168,7 +169,7 @@ public class Task {
      * @param myRelation
      * @param myExercise 
      */
-    public Task(String name, List myHeader, List myRelation, List myExercise) {
+    public Task(String name, ArrayList<Header> myHeader, ArrayList<Relation> myRelation, ArrayList<Exercise> myExercise) {
         this.name = name;
         this.dbName = name;
         this.myHeader = myHeader;
@@ -268,11 +269,11 @@ public class Task {
         String[] variables = new String[1];
         variables[0] = this.name;
 
-        List result = fixDbConn.executeSQLSelectPreparedStatement(this.conf.getString("auth.user"), this.conf.getString("auth.pass"), selectStatement, variables);
-        List tmpList = (List) result.get(1);
-        this.name = (String) tmpList.get(0);
-        this.dbName = (String) tmpList.get(1);
-        this.players = Integer.parseInt((String) tmpList.get(2));
+        ArrayList<ArrayList<String>> result = fixDbConn.executeSQLSelectPreparedStatement(this.conf.getString("auth.user"), this.conf.getString("auth.pass"), selectStatement, variables);
+        ArrayList<String> tmpList = result.get(1);
+        this.name = tmpList.get(0);
+        this.dbName = tmpList.get(1);
+        this.players = Integer.parseInt(tmpList.get(2));
     }
 
     /**
@@ -332,10 +333,10 @@ public class Task {
      * SQLUpdateStatement
      */
     public void insertToDb() throws MySQLAlchemistException{
-        Iterator it = myRelation.iterator();
+        Iterator<Relation> it = myRelation.iterator();
 
         while (it.hasNext()) {
-            Relation s = (Relation) it.next();
+            Relation s = it.next();
             ArrayList<String> a = s.getTuple();
             for (int i = 0; i < a.size(); i++) {
                 a.add(i, a.get(i).replace('\"', '\''));
@@ -355,10 +356,10 @@ public class Task {
      * SQLSelectStatement
      */
     public void selectFromDb() throws MySQLAlchemistException{
-        Iterator it = myExercise.iterator();
+        Iterator<Exercise> it = myExercise.iterator();
         
         while (it.hasNext()) {
-            Exercise select = (Exercise) it.next();
+            Exercise select = it.next();
             String selectString = select.getReferencestatement().replace('\"', '\'');
             this.tmpDbConn.executeSQLSelectStatement(this.conf.getString("auth.user"), this.conf.getString("auth.pass"), selectString);
         }
@@ -377,8 +378,8 @@ public class Task {
      * @throws de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException Exception for the
      * SQLSelectStatement
      */
-    public List executeUserStatement(String Statement) throws MySQLAlchemistException{
-            List result = this.tmpDbConn.executeSQLSelectStatement(this.conf.getString("auth.user"), this.conf.getString("auth.pass"), Statement);
+    public ArrayList<ArrayList<String>> executeUserStatement(String Statement) throws MySQLAlchemistException{
+            ArrayList<ArrayList<String>> result = this.tmpDbConn.executeSQLSelectStatement(this.conf.getString("auth.user"), this.conf.getString("auth.pass"), Statement);
             return result;
     }
     

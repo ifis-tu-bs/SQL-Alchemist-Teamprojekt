@@ -3,7 +3,6 @@ package de.tu_bs.cs.ifis.sqlgame.xmlparse;
 import de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
@@ -29,10 +28,10 @@ import org.h2.tools.DeleteDbFiles;
  */
 public class MySAXParser extends DefaultHandler {
 
-    private List myRelation;
-    private List myHeader;
-    private List myExercise;
-    private List myTasks;
+    private ArrayList<Relation> myRelation;
+    private ArrayList<Header> myHeader;
+    private ArrayList<Exercise> myExercise;
+    private ArrayList<Task> myTasks;
 
     private Header tempHeader;
     private Relation tempRelation;
@@ -45,7 +44,7 @@ public class MySAXParser extends DefaultHandler {
      *
      * @return List, list with relationinformation
      */
-    public List getMyRelation() {
+    public ArrayList<Relation> getMyRelation() {
         return this.myRelation;
     }
 
@@ -54,7 +53,7 @@ public class MySAXParser extends DefaultHandler {
      *
      * @return List, list with headerinformation
      */
-    public List getMyHeader() {
+    public ArrayList<Header> getMyHeader() {
         return this.myHeader;
     }
 
@@ -63,7 +62,7 @@ public class MySAXParser extends DefaultHandler {
      *
      * @return List, list with exerciseinformation
      */
-    public List getMyExercise() {
+    public ArrayList<Exercise> getMyExercise() {
         return this.myExercise;
     }
 
@@ -72,7 +71,7 @@ public class MySAXParser extends DefaultHandler {
      *
      * @return List, list with tasks
      */
-    public List getMyTasks() {
+    public ArrayList<Task> getMyTasks() {
         return this.myTasks;
     }
 
@@ -81,7 +80,7 @@ public class MySAXParser extends DefaultHandler {
      *
      * @param myTasks List, list with tasks
      */
-    public void setMyTasks(List myTasks) {
+    public void setMyTasks(ArrayList<Task> myTasks) {
         this.myTasks = myTasks;
     }
 
@@ -91,10 +90,10 @@ public class MySAXParser extends DefaultHandler {
      * Create empty lists and define default variables.
      */
     public MySAXParser() {
-        this.myRelation = new ArrayList();
-        this.myExercise = new ArrayList();
-        this.myHeader = new ArrayList();
-        this.myTasks = new ArrayList();
+        this.myRelation = new ArrayList<>();
+        this.myExercise = new ArrayList<>();
+        this.myHeader = new ArrayList<>();
+        this.myTasks = new ArrayList<>();
         this.sb = new StringBuffer();
     }
 

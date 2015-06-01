@@ -30,7 +30,7 @@ public class Exercise {
      *
      * @return tasktext
      */
-    public ArrayList getTasktexts() {
+    public ArrayList<String> getTasktexts() {
         return tasktexts;
     }
 

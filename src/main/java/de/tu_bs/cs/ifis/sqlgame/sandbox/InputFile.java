@@ -4,12 +4,12 @@ import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException;
 import de.tu_bs.cs.ifis.sqlgame.xmlparse.Header;
-import java.util.List;
 import de.tu_bs.cs.ifis.sqlgame.xmlparse.MySAXParser;
 import de.tu_bs.cs.ifis.sqlgame.xmlparse.XMLSyntaxCheck;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Iterator;
 
 /**
@@ -24,13 +24,13 @@ import java.util.Iterator;
 public class InputFile {
 
     private String filename;
-    private List tasks;
+    private ArrayList<Task> tasks;
 
-    public List getTasks() {
+    public ArrayList<Task> getTasks() {
         return tasks;
     }
 
-    public void setTasks(List tasks) {
+    public void setTasks(ArrayList<Task> tasks) {
         this.tasks = tasks;
     }
 
@@ -69,13 +69,13 @@ public class InputFile {
         msp.parseDocument("newdata.xml");
         this.tasks = msp.getMyTasks();
         
-        Iterator it = this.tasks.iterator();
+        Iterator<Task> it = this.tasks.iterator();
         
             if (it.hasNext()) {
-                Task task = (Task) it.next();
-                Iterator it2 = task.getMyHeader().iterator();
+                Task task = it.next();
+                Iterator<Header> it2 = task.getMyHeader().iterator();
                 if (it2.hasNext()) {
-                    Header header = (Header) it2.next();
+                    Header header = it2.next();
 
                     String fileName = header.getTaskId();
                     this.filename = fileName;

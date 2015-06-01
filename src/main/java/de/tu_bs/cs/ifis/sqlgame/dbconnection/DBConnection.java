@@ -115,10 +115,10 @@ public class DBConnection {
      * @throws de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException Exception for the
      * SQLSelectStatement
      */
-    public List executeSQLSelectStatement(String user, String pass, String sqlStatement) throws MySQLAlchemistException {
+    public ArrayList<ArrayList<String>> executeSQLSelectStatement(String user, String pass, String sqlStatement) throws MySQLAlchemistException {
         Connection conn = null;
         Statement stmt = null;
-        List result = null;
+        ArrayList<ArrayList<String>> result = null;
 
         try {
             //Open connection
@@ -255,10 +255,10 @@ public class DBConnection {
      * @throws de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException Exception for the
      * SQLSelectStatement
      */
-    public List executeSQLSelectPreparedStatement(String user, String pass, String preparedSqlStatement, String[] variables) throws MySQLAlchemistException {
+    public ArrayList<ArrayList<String>> executeSQLSelectPreparedStatement(String user, String pass, String preparedSqlStatement, String[] variables) throws MySQLAlchemistException {
         Connection conn;
         PreparedStatement pStmt;
-        List result = null;
+        ArrayList<ArrayList<String>> result = null;
         
         try {
             //Open connection
@@ -330,13 +330,13 @@ public class DBConnection {
      *               the DB-table-column and the associated value
      * @throws java.sql.SQLException, SQLException se
      */
-    private List transformResultSet(ResultSet rs) throws SQLException {
-        ArrayList result;
+    private ArrayList<ArrayList<String>> transformResultSet(ResultSet rs) throws SQLException {
+        ArrayList<ArrayList<String>> result;
         ArrayList<String> resultColumnName;
         ArrayList<String> resultContent;
         ResultSetMetaData rsmd = rs.getMetaData();
         int columnsNumber = rsmd.getColumnCount();
-        result = new ArrayList();
+        result = new ArrayList<>();
         resultColumnName = new ArrayList<>();
         resultContent = new ArrayList<>();
         if (rs.next()) {

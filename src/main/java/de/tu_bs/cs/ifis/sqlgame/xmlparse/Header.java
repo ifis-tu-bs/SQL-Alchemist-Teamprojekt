@@ -55,7 +55,7 @@ public class Header {
      *
      * @return title
      */
-    public ArrayList getTitle() {
+    public ArrayList<String> getTitle() {
         return title;
     }
 
@@ -73,7 +73,7 @@ public class Header {
      *
      * @return flufftext
      */
-    public ArrayList getFlufftext() {
+    public ArrayList<String> getFlufftext() {
         return flufftext;
     }
 
