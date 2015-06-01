@@ -17,6 +17,7 @@ import com.typesafe.config.*;
 import de.tu_bs.cs.ifis.sqlgame.dbconnection.DBConnection;
 import de.tu_bs.cs.ifis.sqlgame.sandbox.Task;
 import java.util.Iterator;
+import java.util.StringTokenizer;
 import org.h2.tools.DeleteDbFiles;
 
 /**
@@ -220,9 +221,18 @@ public class MySAXParser extends DefaultHandler {
         } else if (qName.equalsIgnoreCase("intension")) {
             String intension = this.sb.toString();
             this.tempRelation.setIntension(intension);
+            StringTokenizer t = new StringTokenizer(intension, " ");
+            t.nextToken();
+            t.nextToken();
+            this.tempRelation.setTableName(t.nextToken());
         } else if (qName.equalsIgnoreCase("tuple")) {
             this.tempRelation.setTuple(this.sb.toString());
-            
+        }
+         else if (qName.equalsIgnoreCase("datageneration")) {
+            this.tempRelation.setDataGeneration(this.sb.toString());
+        }
+        else if (qName.equalsIgnoreCase("primarykey")) {
+            this.tempRelation.setPrimaryKey(this.sb.toString());
         }
 
         if (qName.equalsIgnoreCase("subtask")) {

@@ -9,6 +9,7 @@ import java.util.List;
 import org.h2.tools.DeleteDbFiles;
 import de.tu_bs.cs.ifis.sqlgame.xmlparse.Exercise;
 import de.tu_bs.cs.ifis.sqlgame.xmlparse.Relation;
+import java.util.ArrayList;
 
 /**
  * Class Task.
@@ -335,9 +336,9 @@ public class Task {
 
         while (it.hasNext()) {
             Relation s = (Relation) it.next();
-            String[] a = s.getTuple();
-            for (int i = 0; i < a.length; i++) {
-                a[i] = a[i].replace('\"', '\'');
+            ArrayList<String> a = s.getTuple();
+            for (int i = 0; i < a.size(); i++) {
+                a.add(i, a.get(i).replace('\"', '\''));
             }
             this.tmpDbConn.executeSQLUpdateStatement(this.conf.getString("auth.user"), this.conf.getString("auth.pass"), s.getIntension());
             this.tmpDbConn.executeSQLUpdateStatement(this.conf.getString("auth.user"), this.conf.getString("auth.pass"), a);

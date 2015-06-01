@@ -1,5 +1,7 @@
 package de.tu_bs.cs.ifis.sqlgame.xmlparse;
 
+import java.util.ArrayList;
+
 /**
  * class for the subtasks in the exercise
  *
@@ -7,10 +9,10 @@ package de.tu_bs.cs.ifis.sqlgame.xmlparse;
  */
 public class Exercise {
 
-    private String[] tasktexts;
+    private ArrayList<String> tasktexts;
     private String referencestatement;
     private String evaluationstrategy;
-    private String[] term;
+    private ArrayList<String> term;
     private int points;
     private String language;
 
@@ -18,8 +20,8 @@ public class Exercise {
      * constructor without parameters
      */
     public Exercise() {
-        this.tasktexts = new String[0];
-        this.term = new String[0];
+        this.tasktexts = new ArrayList<>();
+        this.term = new ArrayList<>();
     }
 
     /**
@@ -28,7 +30,7 @@ public class Exercise {
      *
      * @return tasktext
      */
-    public String[] getTasktexts() {
+    public ArrayList getTasktexts() {
         return tasktexts;
     }
 
@@ -39,12 +41,7 @@ public class Exercise {
      * @param tasktexts String, the text of the task
      */
     public void setTasktexts(String tasktexts) {
-        String[] temp = new String[this.tasktexts.length + 1];
-        for (int i = 0; i < this.tasktexts.length; i++) {
-            temp[i] = this.tasktexts[i];
-        }
-        temp[temp.length - 1] = tasktexts;
-        this.tasktexts = temp;
+        this.tasktexts.add(tasktexts);
     }
 
     /**
@@ -90,9 +87,8 @@ public class Exercise {
      */
     public String getTerm() {
         String s = "";
-        for (int i = 0; i < this.term.length; i++) {
-
-            s += this.term[i] + "\n";
+        for (String term : this.term) {
+            s += term + "\n";
         }
         return s;
     }
@@ -103,12 +99,7 @@ public class Exercise {
      * @param term String, the term that should be added to the array
      */
     public void setTerm(String term) {
-        String[] temp = new String[this.term.length + 1];
-        for (int i = 0; i < this.term.length; i++) {
-            temp[i] = this.term[i];
-        }
-        temp[temp.length - 1] = term;
-        this.term = temp;
+        this.term.add(term);
     }
 
     /**
@@ -155,8 +146,8 @@ public class Exercise {
     public String toString() {
         StringBuffer sb = new StringBuffer();
         sb.append("Task \n");
-        for (int i = 0; i < this.getTasktexts().length; i++) {
-            sb.append("Tasktext:" + this.tasktexts[i] + "\n");
+        for (String taskText : this.tasktexts) {
+            sb.append("Tasktext:" + taskText + "\n");
         }
         sb.append("Referencestatement:" + this.getReferencestatement() + "\n");
         sb.append("Evaluationstrategy:" + this.getEvaluationstrategy() + "\n");

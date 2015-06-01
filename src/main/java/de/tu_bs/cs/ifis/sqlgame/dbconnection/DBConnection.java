@@ -206,6 +206,40 @@ public class DBConnection {
         }
     }
     
+        /**
+     * Method executeSQLUpdateStatement.
+     *
+     * Building a connection to a database. Executing a SQL-Statement and
+     * updating the database.
+     *
+     * @param user String, username
+     * @param pass String, password for user
+     * @param sqlStatement ArrayList, SQL-Statements to be executed
+     * @throws de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException Exception for the
+     * SQLUpdateStatement
+     */
+    public void executeSQLUpdateStatement(String user, String pass, ArrayList<String> sqlStatement) throws MySQLAlchemistException {
+        Connection conn = null;
+        Statement stmt = null;
+
+        try {
+            //Open connection
+            conn = DriverManager.getConnection(this.dbURL, user, pass);
+
+            //Execute queries
+            stmt = conn.createStatement();
+            for (String sqlStmt : sqlStatement) {
+                stmt.executeUpdate(sqlStmt);
+            }
+            
+            //Close db-connection
+            stmt.close();
+            conn.close();
+        } catch (SQLException se) {
+            throw new MySQLAlchemistException("Fehler beim Ausführen vom SQL-UPDATE-Statement ", se);
+        }
+    }
+    
     /**
      * Method executeSQLSelectPreparedStatement.
      * 
@@ -297,14 +331,14 @@ public class DBConnection {
      * @throws java.sql.SQLException, SQLException se
      */
     private List transformResultSet(ResultSet rs) throws SQLException {
-        List result;
-        List resultColumnName;
-        List resultContent;
+        ArrayList result;
+        ArrayList<String> resultColumnName;
+        ArrayList<String> resultContent;
         ResultSetMetaData rsmd = rs.getMetaData();
         int columnsNumber = rsmd.getColumnCount();
         result = new ArrayList();
-        resultColumnName = new ArrayList();
-        resultContent = new ArrayList();
+        resultColumnName = new ArrayList<>();
+        resultContent = new ArrayList<>();
         if (rs.next()) {
             for (int i = 0; i < columnsNumber; i++) {
                 resultColumnName.add(rsmd.getColumnName(i + 1));

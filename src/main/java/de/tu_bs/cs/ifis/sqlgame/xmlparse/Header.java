@@ -1,5 +1,7 @@
 package de.tu_bs.cs.ifis.sqlgame.xmlparse;
 
+import java.util.ArrayList;
+
 /**
  * class for the title and other texts in the task
  *
@@ -9,16 +11,16 @@ public class Header {
 
     //private String tasks;
     private String taskId;
-    private String[] title;
-    private String[] flufftext;
+    private ArrayList<String> title;
+    private ArrayList<String> flufftext;
     private String language;
 
     /**
      * constructor
      */
     public Header() {
-        this.title = new String[0];
-        this.flufftext = new String[0];
+        this.title = new ArrayList<>();
+        this.flufftext = new ArrayList<>();
     }
     /*
      public String getTasks() {
@@ -53,7 +55,7 @@ public class Header {
      *
      * @return title
      */
-    public String[] getTitle() {
+    public ArrayList getTitle() {
         return title;
     }
 
@@ -63,12 +65,7 @@ public class Header {
      * @param title String, title of the task
      */
     public void setTitle(String title) {
-        String[] temp = new String[this.title.length + 1];
-        for (int i = 0; i < this.title.length; i++) {
-            temp[i] = this.title[i];
-        }
-        temp[temp.length - 1] = title;
-        this.title = temp;
+        this.title.add(title);
     }
 
     /**
@@ -76,7 +73,7 @@ public class Header {
      *
      * @return flufftext
      */
-    public String[] getFlufftext() {
+    public ArrayList getFlufftext() {
         return flufftext;
     }
 
@@ -86,12 +83,7 @@ public class Header {
      * @param flufftext the introductiontext of the exercise
      */
     public void setFlufftext(String flufftext) {
-        String[] temp = new String[this.flufftext.length + 1];
-        for (int i = 0; i < this.flufftext.length; i++) {
-            temp[i] = this.flufftext[i];
-        }
-        temp[temp.length - 1] = flufftext;
-        this.flufftext = temp;
+        this.flufftext.add(flufftext);
     }
 
     /**
@@ -121,12 +113,12 @@ public class Header {
     public String toString() {
         StringBuffer sb = new StringBuffer();
         sb.append("Header \n");
-        for (int i = 0; i < this.getTitle().length; i++) {
+        for (String title : this.title) {
 
-            sb.append("Title:" + this.title[i] + "\n");
+            sb.append("Title:" + title + "\n");
         }
-        for (int i = 0; i < this.getFlufftext().length; i++) {
-            sb.append("text:" + this.flufftext[i] + "\n");
+        for (String flufftext : this.flufftext) {
+            sb.append("text:" + flufftext + "\n");
         }
         return sb.toString();
     }

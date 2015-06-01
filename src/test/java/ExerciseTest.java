@@ -37,7 +37,7 @@ public class ExerciseTest extends TestCase {
         temp[2] = "testtext 3";
         
         for(int i = 0; i < temp.length; i++) {
-            Assert.assertEquals(myExercise.getTasktexts()[i], temp[i]);
+            Assert.assertEquals(myExercise.getTasktexts().get(i), temp[i]);
         }
       
     }

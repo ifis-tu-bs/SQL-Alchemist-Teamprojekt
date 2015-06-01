@@ -36,7 +36,7 @@ public class HeaderTest extends TestCase {
         temp[2] = "testtitle 3";
         
         for(int i = 0; i < temp.length; i++) {
-            Assert.assertEquals(myHeader.getTitle()[i], temp[i]);
+            Assert.assertEquals(myHeader.getTitle().get(i), temp[i]);
         }
     }
     
@@ -56,7 +56,7 @@ public class HeaderTest extends TestCase {
         temp[2] = "testtext 3";
         
         for(int i = 0; i < temp.length; i++) {
-            Assert.assertEquals(myHeader.getFlufftext()[i], temp[i]);
+            Assert.assertEquals(myHeader.getFlufftext().get(i), temp[i]);
         }
     }
     

@@ -1,5 +1,7 @@
 package de.tu_bs.cs.ifis.sqlgame.xmlparse;
 
+import java.util.ArrayList;
+
 /**
  * class for the tables and inserts of the tasks
  *
@@ -8,13 +10,18 @@ package de.tu_bs.cs.ifis.sqlgame.xmlparse;
 public class Relation {
 
     private String intension;
-    private String[] tuple;
+    private String tableName;
+    private ArrayList<String> tuple;
+    private ArrayList<String> dataGeneration;
+    private ArrayList<String> primaryKey;
 
     /**
      * constructor without parameters
      */
     public Relation() {
-        this.tuple = new String[0];
+        this.tuple = new ArrayList<>();
+        this.dataGeneration = new ArrayList<>();
+        this.primaryKey = new ArrayList<>();
 
     }
 
@@ -35,13 +42,31 @@ public class Relation {
     public void setIntension(String intension) {
         this.intension = intension;
     }
+    
+        /**
+     * get-method for the name of the table
+     *
+     * @return tableName
+     */
+    public String getTableName() {
+        return tableName;
+    }
+
+    /**
+     * set-method for the name of the table
+     *
+     * @param name String, the name of the table
+     */
+    public void setTableName(String name) {
+        this.tableName = name;
+    }
 
     /**
      * get-method for the insert-into-statements as a list
      *
      * @return tuple as an array
      */
-    public String[] getTuple() {
+    public ArrayList getTuple() {
         return this.tuple;
     }
 
@@ -52,9 +77,9 @@ public class Relation {
      */
     public String getTupleAsString() {
         String s = "";
-        for (int i = 0; i < this.tuple.length; i++) {
-
-            s += this.tuple[i] + "\n";
+        
+        for (String item : tuple) {
+            s += item + "\n";
         }
         return s;
     }
@@ -65,12 +90,43 @@ public class Relation {
      * @param tuple the insert-into-statements
      */
     public void setTuple(String tuple) {
-        String[] temp = new String[this.tuple.length + 1];
-        for (int i = 0; i < this.tuple.length; i++) {
-            temp[i] = this.tuple[i];
-        }
-        temp[temp.length - 1] = tuple;
-        this.tuple = temp;
+        this.tuple.add(tuple);
+    }
+    
+    /**
+     * get-method for the contraint tuples
+     *
+     * @return dataGeneration tuples as an array
+     */
+    public ArrayList getDataGeneration() {
+        return this.dataGeneration;
+    }
+
+    /**
+     * set-method for the dataGeneration contraints
+     *
+     * @param data the dataGeneration tuple
+     */
+    public void setDataGeneration(String data) {
+        this.dataGeneration.add(data);
+    }
+    
+        /**
+     * get-method for the primary Keys
+     *
+     * @return primary Key as an array
+     */
+    public ArrayList getPrimaryKey() {
+        return this.primaryKey;
+    }
+
+    /**
+     * set-method for the dataGeneration contraints
+     *
+     * @param key the primary key
+     */
+    public void setPrimaryKey(String key) {
+        this.primaryKey.add(key);
     }
 
     /**

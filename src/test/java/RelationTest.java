@@ -47,7 +47,7 @@ public class RelationTest extends TestCase {
         temp[2] = "testtuple 3";
         
         for(int i = 0; i < temp.length; i++) {
-            Assert.assertEquals(myRelation.getTuple()[i], temp[i]);
+            Assert.assertEquals(myRelation.getTuple().get(i), temp[i]);
         }
     }
     
