@@ -13,6 +13,7 @@ import de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException;
 import de.tu_bs.cs.ifis.sqlgame.xmlparse.Relation;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.StringTokenizer;
 
 /**
@@ -63,47 +64,56 @@ public class DataGenerator {
                             this.conf.getString("auth.pass"),
                             selectStatement
                     );
+                    
                     int i = 0;
-                    for (String columnName : refTable.get(0)) {
-                        if (rel.getPrimaryKey().contains(columnName.toLowerCase())) {
-                            ArrayList<String> primaryKeyValues = new ArrayList<>();
-                            boolean hasMoreElements = true;
-                            int elementIndex = i;
-                            while (hasMoreElements) {
-                                primaryKeyValues.add(refTable.get(1).get(elementIndex));
-                                elementIndex = elementIndex + columns;
-                                if (refTable.get(1).get(elementIndex).isEmpty()) {
-                                    hasMoreElements = false;
+                    for (String columnValue : refTable.get(1)) {
+                        ArrayList<String> primaryKey = new ArrayList<>();
+                        if (i == 0) {
+                            int j = 0;
+                            for (String columnName : refTable.get(0)) {
+                                if (rel.getPrimaryKey().contains(columnName.toLowerCase())) {
+                                    primaryKey.add("" + j);
                                 }
+                                j++;
                             }
-                            primaryKeys.add(primaryKeyValues);
                         }
                         
-                        i++;
+                        if (i % columns == 0) {
+                            primaryKeys.add(primaryKey);
+                        } else {
+                            if (rel.getPrimaryKey().contains(refTable.get(0).get(i % columns).toLowerCase())) {
+                                primaryKey.add(columnValue);
+                            }
+                            i++;
+                        }
                     }
                 }
                 
                 switch (refType) {
                     case "none": {
-                        dataList = this.generateDataFromFunction(columnFunctions, dataList, numberFunction);
+                        dataList = this.generateDataFromFunction(true, null, null, columnFunctions, numberFunction, dataList);
                         break;
                     }
                     
                     case "refAll": {
-                        
+                        int i = 0;
+                        for (ArrayList<String> primaryKey : primaryKeys) {
+                            if (i >= 0) {
+                                dataList = this.generateDataFromFunction(true, primaryKeys.get(0), primaryKey, columnFunctions, numberFunction, dataList);
+                            }
+                            i++;
+                        }
                         break;
                     }
                     
-                    case "refOne": {
-                        
-                    }
-                    
                     case "refRandom": {
-                        
+                        Random rand = new Random();
+                        int randomNum = rand.nextInt(primaryKeys.get(0).size());
+                        dataList = this.generateDataFromFunction(true, primaryKeys.get(0), primaryKeys.get(randomNum), columnFunctions, numberFunction, dataList);
                     }
                 }
                 
-                this.generateAndExecuteInsertStatements(dataList);
+                this.generateAndExecuteInsertStatements(rel.getTableName(), dataList);
             }
         }
     }
@@ -114,20 +124,40 @@ public class DataGenerator {
         return st.countTokens() - 1;
     }
     
-    private ArrayList<ArrayList<String>> generateDataFromFunction(ArrayList<String> columnFunctions, ArrayList<ArrayList<String>> dataList, String numberFunction) {
-        for (String columnFunction : columnFunctions) {
-            StringTokenizer st = new StringTokenizer(columnFunction, "&");
-            String functionName = st.nextToken();
+    private ArrayList<ArrayList<String>> generateDataFromFunction(
+            boolean refTypeNone,
+            ArrayList<String> primaryKeyColumns,
+            ArrayList<String> primaryKey,
+            ArrayList<String> columnFunctions,
+            String numberFunction,
+            ArrayList<ArrayList<String>> dataList
+    ) {
+        int i = 0;
+        int number = this.generateNumber(numberFunction);
+        
+        if (refTypeNone) {
+            for (String columnFunction : columnFunctions) {
+                StringTokenizer st = new StringTokenizer(columnFunction, "&");
+                String functionName = st.nextToken();
 
-            StringTokenizer stt = new StringTokenizer(columnFunction, ",");
-            ArrayList<String> params = new ArrayList<>();
-            while (stt.hasMoreTokens()) {
-                params.add(stt.nextToken());                        
+                StringTokenizer stt = new StringTokenizer(columnFunction, ",");
+                ArrayList<String> params = new ArrayList<>();
+                while (stt.hasMoreTokens()) {
+                    params.add(stt.nextToken());                        
+                }
+                
+                dataList.add(this.findAndExecuteFunction(number, functionName, params));
+                i++;
             }
-
-            int number = this.generateNumber(numberFunction);
-            for (int i = 0; i < number; i++) {
-                dataList.get(i).add(this.findAndExecuteFunction(functionName, params));
+        } else {
+            ArrayList<String> values = new ArrayList<>();
+            for (String columnString : primaryKeyColumns) {
+                int column = Integer.parseInt(columnString);
+                for (int j = 0; j < number; j++) {
+                    values.add(primaryKey.get(i));
+                }
+                dataList.add(values);
+                i++;
             }
         }
         
@@ -135,19 +165,37 @@ public class DataGenerator {
     }
     
     private int generateNumber(String numberFunction) {
-        return 0;
+        return 5;
     }
     
-    private String findAndExecuteFunction(String functionName, ArrayList<String> params) {
+    private ArrayList<String> findAndExecuteFunction(int number, String functionName, ArrayList<String> params) {
         switch (functionName) {
             
         }
         
-        return "";
+        return null;
     }
     
-    private void generateAndExecuteInsertStatements(ArrayList<ArrayList<String>> dataList) {
-        
+    private void generateAndExecuteInsertStatements(String tableName, ArrayList<ArrayList<String>> dataList) throws MySQLAlchemistException {
+        ArrayList<String> insertStatements = new ArrayList<>();
+        for (ArrayList<String> row : dataList) {
+            int i = 0;
+            String insertedValues = "";
+            for (String value : row) {
+                if (i == 0) {
+                    insertedValues += value;
+                } else {
+                    insertedValues += ", " + value;
+                }
+                i++;
+            }
+            insertStatements.add("INSERT INTO " + tableName + " VALUES(" + insertedValues + ")");
+        }
+        this.dbConn.executeSQLUpdateStatement(
+                this.conf.getString("auth.user"),
+                this.conf.getString("auth.pass"),
+                insertStatements
+        );
     }
     
     public void generateFullname() {
