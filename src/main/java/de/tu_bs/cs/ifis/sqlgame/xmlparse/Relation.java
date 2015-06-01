@@ -66,7 +66,7 @@ public class Relation {
      *
      * @return tuple as an array
      */
-    public ArrayList getTuple() {
+    public ArrayList<String> getTuple() {
         return this.tuple;
     }
 
@@ -98,7 +98,7 @@ public class Relation {
      *
      * @return dataGeneration tuples as an array
      */
-    public ArrayList getDataGeneration() {
+    public ArrayList<String> getDataGeneration() {
         return this.dataGeneration;
     }
 
@@ -116,7 +116,7 @@ public class Relation {
      *
      * @return primary Key as an array
      */
-    public ArrayList getPrimaryKey() {
+    public ArrayList<String> getPrimaryKey() {
         return this.primaryKey;
     }
 

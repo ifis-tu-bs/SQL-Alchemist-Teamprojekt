@@ -2,6 +2,7 @@ package de.tu_bs.cs.ifis.sqlgame.sandbox;
 
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
+import de.tu_bs.cs.ifis.sqlgame.datageneration.DataGenerator;
 import de.tu_bs.cs.ifis.sqlgame.dbconnection.*;
 import de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException;
 import java.util.Iterator;
@@ -344,6 +345,18 @@ public class Task {
             this.tmpDbConn.executeSQLUpdateStatement(this.conf.getString("auth.user"), this.conf.getString("auth.pass"), s.getIntension());
             this.tmpDbConn.executeSQLUpdateStatement(this.conf.getString("auth.user"), this.conf.getString("auth.pass"), a);
         }
+    }
+    
+    /**
+     * Method generateData.
+     * 
+     * Generates insert statements for the task.
+     * 
+     * @throws de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException
+     */
+    public void generateData() throws MySQLAlchemistException {
+        DataGenerator dg = new DataGenerator(this.myRelation, this.tmpDbConn);
+        dg.generateData();
     }
 
     /**
