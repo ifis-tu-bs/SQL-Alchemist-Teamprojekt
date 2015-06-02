@@ -220,10 +220,6 @@ public class MySAXParser extends DefaultHandler {
         } else if (qName.equalsIgnoreCase("intension")) {
             String intension = this.sb.toString();
             this.tempRelation.setIntension(intension);
-            StringTokenizer t = new StringTokenizer(intension, " ");
-            t.nextToken();
-            t.nextToken();
-            this.tempRelation.setTableName(t.nextToken());
         } else if (qName.equalsIgnoreCase("tuple")) {
             this.tempRelation.setTuple(this.sb.toString());
         }
@@ -232,6 +228,9 @@ public class MySAXParser extends DefaultHandler {
         }
         else if (qName.equalsIgnoreCase("primarykey")) {
             this.tempRelation.setPrimaryKey(this.sb.toString());
+        }
+        else if (qName.equalsIgnoreCase("tablename")) {
+            this.tempRelation.setTableName(this.sb.toString());
         }
 
         if (qName.equalsIgnoreCase("subtask")) {
