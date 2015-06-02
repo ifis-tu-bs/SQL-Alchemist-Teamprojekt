@@ -255,6 +255,14 @@ public class DataGenerator {
                         result = generateDate();
                         break;
                     }
+                    case("business"):{
+                        result = generateBusinessName();
+                        break;
+                    }
+                    case("street"):{
+                        result = generateStreetName();
+                        break;
+                    }
                     case("city"):{
                         result = generateCity();
                         break;
@@ -321,6 +329,30 @@ public class DataGenerator {
                     }
                     case("double"):{
                         result = generateMaxDouble(para2);
+                        break;
+                    }
+                }
+                break;
+            }
+            
+            case("between"):{
+                String para1;
+                int para2;
+                int para3;
+                if(params.size() == 3){
+                para1 = params.get(0);
+                para2 = Integer.parseInt(params.get(1));
+                para3 = Integer.parseInt(params.get(2));
+                } else {
+                    throw new MySQLAlchemistException("3 Parameter werden bei between benötigt", new Exception());
+                }
+                switch(para1){
+                    case("int"):{
+                        result = generateBetweenInteger(para2, para3);
+                        break;
+                    }
+                    case("double"):{
+                        result = generateBetweenDouble(para2, para3);
                         break;
                     }
                 }
@@ -432,6 +464,18 @@ public class DataGenerator {
         return result;
     }
     
+    public String generateBusinessName() {
+        DataFactory df = new DataFactory();
+        String result = "'" + df.getBusinessName() + "'";
+        return result;
+    }
+    
+    public String generateStreetName() {
+        DataFactory df = new DataFactory();
+        String result = "'" + df.getStreetName() + "'";
+        return result;
+    }
+    
     public String generateCity() {
         DataFactory df = new DataFactory();
         String result = "'" + df.getCity() + "'";
@@ -471,6 +515,18 @@ public class DataGenerator {
     public String generateMaxDouble(int max) {
         DataFactory df = new DataFactory();
         String result = "" + df.getNumberUpTo(max) + "." + df.getNumberBetween(0, 99);
+        return result;
+    }
+    
+    public String generateBetweenInteger(int min, int max) {
+        DataFactory df = new DataFactory();
+        String result = "" + df.getNumberBetween(min, max);
+        return result;
+    }
+    
+    public String generateBetweenDouble(int min, int max) {
+        DataFactory df = new DataFactory();
+        String result = "" + df.getNumberBetween(min, max-1) + "." + df.getNumberBetween(0, 99);
         return result;
     }
     
