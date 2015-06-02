@@ -184,6 +184,14 @@ public class DataGenerator {
                         result = generateDouble(quantity);
                         break;
                     }
+                    case("string"):{
+                        int para2 = 5;
+                        if(params.size() == 2){
+                        para2 = Integer.parseInt(params.get(1));
+                        }
+                        result = generateString(quantity, para2);
+                        break;
+                    }
                     case("firstname"):{
                         result = generateFirstName(quantity);
                         break;
@@ -362,6 +370,15 @@ public class DataGenerator {
         ArrayList<String> result = new ArrayList<>();
         for (int i = 0; i < quantity; i++){
             result.add(df.getNumber() + "." + df.getNumberBetween(0, 99));
+        }
+        return result;
+    }
+    
+    public ArrayList<String> generateString(int quantity, int length) {
+        DataFactory df = new DataFactory();
+        ArrayList<String> result = new ArrayList<>();
+        for (int i = 0; i < quantity; i++){
+            result.add(df.getRandomChars(length));
         }
         return result;
     }
