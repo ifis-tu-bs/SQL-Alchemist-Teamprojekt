@@ -255,6 +255,10 @@ public class DataGenerator {
             case("random"): {
                 String para = params.get(0);
                 switch (para) {
+                    case("int+"):{
+                        result = generateIntegerPos();
+                        break;
+                    }
                     case("int"):{
                         result = generateInteger();
                         break;
@@ -474,6 +478,16 @@ public class DataGenerator {
     public String generateInteger() {
         Random r = new Random();
         String result = "" + r.nextInt();
+        return result;
+    }
+    
+    public String generateIntegerPos() {
+        Random r = new Random();
+        int i = r.nextInt();
+        if(i < 0){
+            i = i*(-1);
+        }
+        String result = "" + i;
         return result;
     }
     
