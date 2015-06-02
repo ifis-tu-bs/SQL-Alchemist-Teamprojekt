@@ -223,6 +223,7 @@ public class MySAXParser extends DefaultHandler {
             StringTokenizer t = new StringTokenizer(intension, " ");
             t.nextToken();
             t.nextToken();
+            t.nextToken();
             this.tempRelation.setTableName(t.nextToken());
         } else if (qName.equalsIgnoreCase("tuple")) {
             this.tempRelation.setTuple(this.sb.toString());

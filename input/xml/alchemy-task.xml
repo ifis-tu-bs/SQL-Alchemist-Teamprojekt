@@ -18,6 +18,10 @@
         <extension>
           <tuple>INSERT INTO Powders(id, pname, color) VALUES (1, 'Magic Glitter', 'red')</tuple>
         </extension>
+        <metadata>
+          <primaykey>id</primarykey>
+          <datageneration>5$none;max$1,int;random$string;random$string</datageneration>
+        </metadata>
       </relation>
       <relation>
       	<intension>CREATE TABLE Effects(id int not null primary key, ename varchar(100), description varchar(1000))</intension>

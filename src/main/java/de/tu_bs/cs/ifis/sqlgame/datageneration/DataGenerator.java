@@ -35,29 +35,24 @@ public class DataGenerator {
     
     public void generateData() throws MySQLAlchemistException {
         for (Relation rel : this.relations) {
-            int columns = this.calculateColumns(rel);
-            
-            ArrayList<ArrayList<String>> dataList = new ArrayList<>();
-            for (int i = 0; i < columns; i++) {
-                ArrayList<String> newArrayList = new ArrayList<>();
-                dataList.add(newArrayList);
+            if (rel.getDataGeneration().isEmpty()) {
+                break;
             }
+            int columns = this.calculateColumns(rel);
+            ArrayList<ArrayList<String>> dataList = new ArrayList<>();
             
             for (String dataConstraint : rel.getDataGeneration()) {
                 ArrayList<String> columnFunctions = new ArrayList<>();
                 StringTokenizer st = new StringTokenizer(dataConstraint, ";");
                 
-                String numberRefFunction = st.nextToken();
+                String numberFunction = st.nextToken();
+                String refType = st.nextToken();
                 while (st.hasMoreTokens()) {
                     columnFunctions.add(st.nextToken());
                 }
-                
-                StringTokenizer stt = new StringTokenizer(numberRefFunction, "&");
-                String numberFunction = stt.nextToken();
-                String refType = "none";
+
                 ArrayList<ArrayList<String>> primaryKeys = new ArrayList<>();
-                if (stt.hasMoreTokens()) {
-                    refType = stt.nextToken();
+                if (!refType.equals("none")) {
                     String selectStatement = "SELECT * FROM " + rel.getTableName();
                     ArrayList<ArrayList<String>> refTable = this.dbConn.executeSQLSelectStatement(
                             this.conf.getString("auth.user"),
@@ -131,19 +126,19 @@ public class DataGenerator {
             ArrayList<String> columnFunctions,
             String numberFunction,
             ArrayList<ArrayList<String>> dataList
-    ) {
+    ) throws MySQLAlchemistException {
         int i = 0;
         int number = this.generateNumber(numberFunction);
         
         if (refTypeNone) {
             for (String columnFunction : columnFunctions) {
-                StringTokenizer st = new StringTokenizer(columnFunction, "&");
+                StringTokenizer st = new StringTokenizer(columnFunction, "$");
                 String functionName = st.nextToken();
 
-                StringTokenizer stt = new StringTokenizer(columnFunction, ",");
+                StringTokenizer stt = new StringTokenizer(st.nextToken(), ",");
                 ArrayList<String> params = new ArrayList<>();
                 while (stt.hasMoreTokens()) {
-                    params.add(stt.nextToken());                        
+                    params.add(stt.nextToken());
                 }
                 
                 dataList.add(this.findAndExecuteFunction(number, functionName, params));
@@ -164,10 +159,36 @@ public class DataGenerator {
         return dataList;
     }
     
-    private int generateNumber(String numberFunction) {
-        return 5;
+    private int generateNumber(String numberFunction) throws MySQLAlchemistException {
+        StringTokenizer st = new StringTokenizer(numberFunction, "$");
+        String functionName = st.nextToken();
+        
+        int number = 5;
+        if (st.hasMoreTokens()) {
+            StringTokenizer stt = new StringTokenizer(st.nextToken(), ",");
+            ArrayList<String> params = new ArrayList<>();
+            while (stt.hasMoreTokens()) {
+                params.add(stt.nextToken());
+            }
+            switch(functionName) {
+                case "span": {
+                    if (params.size() == 2) {
+                        int param1 = Integer.parseInt(params.get(0));
+                        int param2 = Integer.parseInt(params.get(1));
+                        Random rand = new Random();
+                        number = rand.nextInt(param2) + param1;
+                    } else {
+                        throw new MySQLAlchemistException("Es werden zwei Parameter bei der Spannen-Funktion benötigt.", new Exception());
+                    }
+                    break;
+                }
+            }
+        } else {
+            number = Integer.parseInt(functionName);
+        }
+        
+        return number;
     }
-    
 
     private ArrayList<String> findAndExecuteFunction(int quantity, String functionName, ArrayList<String> params) throws MySQLAlchemistException{
         ArrayList<String> result = new ArrayList<>();

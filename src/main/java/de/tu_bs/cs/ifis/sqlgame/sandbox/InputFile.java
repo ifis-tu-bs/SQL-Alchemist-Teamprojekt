@@ -25,6 +25,8 @@ public class InputFile {
 
     private String filename;
     private ArrayList<Task> tasks;
+    
+    private final Config conf = ConfigFactory.load();
 
     public ArrayList<Task> getTasks() {
         return tasks;
@@ -38,61 +40,68 @@ public class InputFile {
      * Constructor InputFile.
      *
      * @param file String, the content of the file
+     * @param isFile
      * @throws de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException
      * Exception for the parsing of the document
      */
-    public InputFile(String file) throws MySQLAlchemistException {
+    public InputFile(String file, boolean isFile) throws MySQLAlchemistException {
+        String filePath = conf.getString("input.xmlPath");
+        File newfile = null;
         
-        Config conf = ConfigFactory.load();
-        String path = conf.getString("input.xmlPath");
-
-        String dat = path + "newdata.xml";
-        File newfile = new File(dat);
-        if (checkFile(newfile)) {
-            System.out.println(dat + " erzeugt");
-        }
-        try {
-            FileWriter writer = new FileWriter(newfile);
-            writer.write(file);
-            writer.flush();
-            writer.close();
-        } catch (IOException ex) {
-            throw new MySQLAlchemistException("Fehler beim Erstellen der Datei. ", ex);
+        //Proof if a fileString or a file is given
+        if (isFile) {
+            //A file is given
+            this.filename = file;
+        } else {
+            //A file string is given, so create a new file from it
+            this.filename = "newdata.xml";
+            String fullFilePath = filePath + this.filename;
+            newfile = new File(fullFilePath);
+            if (checkFile(newfile)) {
+                System.out.println(fullFilePath + " erzeugt");
+            }
+            try {
+                FileWriter writer = new FileWriter(newfile);
+                writer.write(file);
+                writer.flush();
+                writer.close();
+            } catch (IOException ex) {
+                throw new MySQLAlchemistException("Fehler beim Erstellen der Datei. ", ex);
+            }
         }
 
         //Make the xml-sructure-check
         XMLSyntaxCheck sych = new XMLSyntaxCheck();
-        sych.checkxml("newdata.xml");
+        //sych.checkxml(this.filename);
 
         //Parse the xml-file und build the db-tables
         MySAXParser msp = new MySAXParser();
-        msp.parseDocument("newdata.xml");
+        msp.parseDocument(this.filename);
         this.tasks = msp.getMyTasks();
         
-        Iterator<Task> it = this.tasks.iterator();
-        
+        if (!isFile) {
+            //Rename the new file from the file string
+            Iterator<Task> it = this.tasks.iterator();
             if (it.hasNext()) {
                 Task task = it.next();
                 Iterator<Header> it2 = task.getMyHeader().iterator();
                 if (it2.hasNext()) {
                     Header header = it2.next();
 
-                    String fileName = header.getTaskId();
-                    this.filename = fileName;
-                    newfile.renameTo(new File(path + fileName + "neu.xml"));
+                    this.filename = header.getTaskId();
+                    newfile.renameTo(new File(filePath + this.filename + ".xml"));
                 }
-                //task.insertToDb();
-                //task.closeTask();
             }
+        }
     }
        
     /**
-	 * check if the file can be created
-	 * 
-	 * @param file
-	 *            the file that should be created
-	 * @return boolean if it was possible
-	 */
+     * check if the file can be created
+     * 
+     * @param file
+     *            the file that should be created
+     * @return boolean if it was possible
+     */
     private boolean checkFile(File file) throws MySQLAlchemistException {
         if (file != null) {
             try {

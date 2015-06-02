@@ -59,6 +59,10 @@ public class Test {
 "          <tuple>INSERT INTO Comic(no, title, publisher) VALUES (18, 'Wonderboy Rocks', 'Marvel');</tuple>\n" +
 "          <tuple>INSERT INTO Comic(no, title, publisher) VALUES (21, 'Young Nastyman''s Revenge', 'Marvel');</tuple>\n" +
 "        </extension>\n" +
+"        <metadata>" +
+"          <primarykey>no</primarykey>" +
+"          <datageneration>5$none;max$1,int;random$string;max$1,int;random$string</datageneration>" +
+"        </metadata>" +
 "      </relation>\n" +
 "      <relation>\n" +
 "        <intension>\n" +
@@ -217,10 +221,15 @@ public class Test {
 "    \n" +
 "  </task>\n" +
 "  \n" +
-"</tasks>");
+"</tasks>", false);
+            
+            Iterator it = test.getTasks().iterator();
+            Task task = (Task) it.next();
+            task.startTask("local");
+            task.generateData();
 /**
             Iterator it = test.getTasks().iterator();
-        
+            Task task = (Task) it.next();
             while (it.hasNext()) {
                 Task task = (Task) it.next();
                 task.startTask("local");
@@ -237,30 +246,10 @@ public class Test {
                 }
                 //task.insertToDb();
                 //task.closeTask();
-            }
+            }*/
             
-            //InputFile test = new InputFile("alchemy-task");
-            //test.getTasks();
-
-            /*Task test1 = new Task("alchemy-task", "alchemy-task");
-            test1.startTask();
-            
-            test1.closeTask();
-
-            Task test2 = new Task("exam-wise13", "exam-wise13");
-            test2.startTask();
-            test2.closeTask();
-
-            Task test3 = new Task("exercises-wise11", "exercises-wise11");
-            test3.startTask();
-            test3.closeTask();
-
-            Task test4 = new Task("exercises-wise13", "exercises-wise13");
-            test4.startTask();
-            test4.closeTask();*/
-            
-            DataGenerator df = new DataGenerator();
-            df.generateData("occupation", 30, "Student");
+            //DataGenerator df = new DataGenerator();
+            //df.generateData("occupation", 30, "Student");
             
             
         } catch (MySQLAlchemistException mse) {

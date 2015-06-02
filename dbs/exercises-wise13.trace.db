@@ -1,0 +1,4 @@
+06-02 12:30:52 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Tabelle "TABLE" nicht gefunden
+Table "TABLE" not found; SQL statement:
+SELECT * FROM TABLE [42102-176]
