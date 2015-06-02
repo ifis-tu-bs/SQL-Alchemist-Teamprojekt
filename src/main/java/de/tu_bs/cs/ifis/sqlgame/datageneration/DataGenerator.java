@@ -402,19 +402,19 @@ public class DataGenerator {
     }
     
     public ArrayList<String> generateInteger(int quantity) {
-        DataFactory df = new DataFactory();
+        Random r = new Random();
         ArrayList<String> result = new ArrayList<>();
         for (int i = 0; i < quantity; i++){
-            result.add("" + df.getNumberBetween(0, 1000000));
+            result.add("" + r.nextInt());
         }
         return result;
     }
     
     public ArrayList<String> generateDouble(int quantity) {
-        DataFactory df = new DataFactory();
+        Random r = new Random();
         ArrayList<String> result = new ArrayList<>();
         for (int i = 0; i < quantity; i++){
-            result.add(df.getNumber() + "." + df.getNumberBetween(0, 99));
+            result.add("" + r.nextDouble());
         }
         return result;
     }
@@ -502,7 +502,6 @@ public class DataGenerator {
     }
     
     public ArrayList<String> generateGauss(int quantity, double median, double sd) {
-        DataFactory df = new DataFactory();
         ArrayList<String> result = new ArrayList<>();
         Random r = new Random();
         for (int i = 0; i < quantity; i++){
