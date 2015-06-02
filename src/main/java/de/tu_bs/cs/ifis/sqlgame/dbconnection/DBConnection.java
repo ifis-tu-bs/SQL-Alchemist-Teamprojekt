@@ -331,28 +331,28 @@ public class DBConnection {
      * @throws java.sql.SQLException, SQLException se
      */
     private ArrayList<ArrayList<String>> transformResultSet(ResultSet rs) throws SQLException {
-        ArrayList<ArrayList<String>> result;
-        ArrayList<String> resultColumnName;
-        ArrayList<String> resultContent;
+        ArrayList<ArrayList<String>> result = new ArrayList<>();
+        ArrayList<String> resultColumnName = new ArrayList<>();
+        ArrayList<String> resultRow = new ArrayList<>();
         ResultSetMetaData rsmd = rs.getMetaData();
         int columnsNumber = rsmd.getColumnCount();
-        result = new ArrayList<>();
-        resultColumnName = new ArrayList<>();
-        resultContent = new ArrayList<>();
         if (rs.next()) {
             for (int i = 0; i < columnsNumber; i++) {
                 resultColumnName.add(rsmd.getColumnName(i + 1));
-                resultContent.add(rs.getString(i + 1));
-            }
-            while (rs.next()) {
-                for (int j = 0; j < columnsNumber; j++) {
-                    resultContent.add(rs.getString(j + 1));
-                }
+                resultRow.add(rs.getString(i + 1));
             }
             result.add(resultColumnName);
-            result.add(resultContent);
+            result.add(resultRow);
+            
+            while (rs.next()) {
+                for (int i = 0; i < columnsNumber; i++) {
+                    resultRow = new ArrayList<>();
+                    resultRow.add(rs.getString(i + 1));
+                }
+                result.add(resultRow);
+            }
         } else {
-            result = null;
+            return null;
         }
 
         return result;

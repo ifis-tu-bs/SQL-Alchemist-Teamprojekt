@@ -26,7 +26,8 @@ public class DataGenerator {
     private List<Relation> relations;
     private DBConnection dbConn;
     
-    private ArrayList<String> primaryKeys;
+    private ArrayList<String> primaryKeyNames;
+    private ArrayList<ArrayList<String>> primaryKeyValues;
     
     private final Config conf = ConfigFactory.load();
     
@@ -40,16 +41,17 @@ public class DataGenerator {
             if (rel.getDataGeneration().isEmpty()) {
                 break;
             }
+            this.primaryKeyNames = rel.getPrimaryKey();
             int columns = this.calculateColumns(rel);
             ArrayList<ArrayList<String>> dataList = new ArrayList<>();
             
             for (String dataConstraint : rel.getDataGeneration()) {
-                int i = 0;
+                int i;
                 ArrayList<String> columnFunctions = new ArrayList<>();
                 StringTokenizer st = new StringTokenizer(dataConstraint, ";");
                 
                 String numberFunction = st.nextToken();
-                String refType = st.nextToken();
+                String refFunction = st.nextToken();
                 while (st.hasMoreTokens()) {
                     columnFunctions.add(st.nextToken());
                 }
@@ -65,14 +67,13 @@ public class DataGenerator {
                     }
                 }
                 String selectStatement = "SELECT " + primaryKeyColumns + " FROM " + rel.getTableName();
-                ArrayList<ArrayList<String>> refTable = this.dbConn.executeSQLSelectStatement(
+                this.primaryKeyValues = this.dbConn.executeSQLSelectStatement(
                         this.conf.getString("auth.user"),
                         this.conf.getString("auth.pass"),
                         selectStatement
                 );
-                this.primaryKeys = refTable.get(1);
 
-                switch (refType) {
+                switch (refFunction) {
                     case "none": {
                         dataList = this.generateDataFromFunction(true, null, null, columnFunctions, numberFunction, dataList);
                         break;
@@ -97,10 +98,11 @@ public class DataGenerator {
                 }
                 
                 this.generateAndExecuteInsertStatements(rel.getTableName(), dataList);
-                
-                //Reset the primarykey list
-                this.primaryKeys = null;
             }
+            
+            //Reset the primarykey lists
+            this.primaryKeyNames = null;
+            this.primaryKeyValues = null;
         }
     }
         
