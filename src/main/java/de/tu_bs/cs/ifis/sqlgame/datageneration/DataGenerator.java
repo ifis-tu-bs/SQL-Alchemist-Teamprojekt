@@ -138,27 +138,155 @@ public class DataGenerator {
         return 0;
     }
     
-    private String findAndExecuteFunction(String functionName, ArrayList<String> params) {
+    private ArrayList<String> findAndExecuteFunction(int quantity, String functionName, ArrayList<String> params) throws MySQLAlchemistException{
+        ArrayList<String> result = new ArrayList<>();
         switch (functionName) {
-            
+            case("random"): {
+                String para = params.get(0);
+                switch (para) {
+                    case("int"):{
+                        result = generateInteger(quantity);
+                        break;
+                    }
+                    case("double"):{
+                        result = generateDouble(quantity);
+                        break;
+                    }
+                    case("firstname"):{
+                        result = generateFirstName(quantity);
+                        break;
+                    }
+                    case("lastname"):{
+                        result = generateLastName(quantity);
+                        break;
+                    }
+                    case("fullname"):{
+                        result = generateFullName(quantity);
+                        break;
+                    }
+                    case("date"):{
+                        result = generateDate(quantity);
+                        break;
+                    }
+                    case("city"):{
+                        result = generateCity(quantity);
+                        break;
+                    }
+                    case("adress"):{
+                        result = generateAdress(quantity);
+                        break;
+                    }
+                    case("email"):{
+                        result = generateEmail(quantity);
+                        break;
+                    }
+                    default:{
+                        int random = 100;
+                        String def = "NULL";
+                        if(params.size() >= 2){
+                            random = Integer.parseInt(params.get(1));
+                            if(params.size() >= 3){
+                                def = params.get(2); 
+                            }
+                        }
+                        result = generateCustomData(para, quantity, random, def);
+                        break;
+                    }
+                    
+                }
+                break;
+            }
         }
         
-        return "";
+        return result;
     }
     
     private void generateAndExecuteInsertStatements(ArrayList<ArrayList<String>> dataList) {
         
     }
     
-    public void generateFullname() {
+    public ArrayList<String> generateFirstName(int quantity) {
         DataFactory df = new DataFactory();
-        for (int i = 0; i < 100; i++) {
-            String name = df.getFirstName() + " "+ df.getLastName();
-            System.out.println(name);
+        ArrayList<String> result = new ArrayList<>();
+        for (int i = 0; i < quantity; i++){
+            result.add(df.getFirstName());
         }
+        return result;
+    }
+        
+    public ArrayList<String> generateLastName(int quantity) {
+        DataFactory df = new DataFactory();
+        ArrayList<String> result = new ArrayList<>();
+        for (int i = 0; i < quantity; i++){
+            result.add(df.getLastName());
+        }
+        return result;
     }
     
-    public void generateStringInt(String metaData, int quantity, String defaultValue) throws MySQLAlchemistException {
+    public ArrayList<String> generateFullName(int quantity) {
+        DataFactory df = new DataFactory();
+        ArrayList<String> result = new ArrayList<>();
+        for (int i = 0; i < quantity; i++){
+            result.add(df.getFirstName() + " " + df.getLastName());
+        }
+        return result;
+    }
+    
+    public ArrayList<String> generateInteger(int quantity) {
+        DataFactory df = new DataFactory();
+        ArrayList<String> result = new ArrayList<>();
+        for (int i = 0; i < quantity; i++){
+            result.add("" + df.getNumber());
+        }
+        return result;
+    }
+    
+    public ArrayList<String> generateDouble(int quantity) {
+        DataFactory df = new DataFactory();
+        ArrayList<String> result = new ArrayList<>();
+        for (int i = 0; i < quantity; i++){
+            result.add(df.getNumber() + "" + df.getNumber());
+        }
+        return result;
+    }
+    
+    public ArrayList<String> generateDate(int quantity) {
+        DataFactory df = new DataFactory();
+        ArrayList<String> result = new ArrayList<>();
+        for (int i = 0; i < quantity; i++){
+            //TODO: result.add(df.getBirthDate());
+        }
+        return result;
+    }
+    
+    public ArrayList<String> generateCity(int quantity) {
+        DataFactory df = new DataFactory();
+        ArrayList<String> result = new ArrayList<>();
+        for (int i = 0; i < quantity; i++){
+            result.add(df.getCity());
+        }
+        return result;
+    }
+    
+    public ArrayList<String> generateAdress(int quantity) {
+        DataFactory df = new DataFactory();
+        ArrayList<String> result = new ArrayList<>();
+        for (int i = 0; i < quantity; i++){
+            result.add(df.getAddress());
+        }
+        return result;
+    }
+    
+    public ArrayList<String> generateEmail(int quantity) {
+        DataFactory df = new DataFactory();
+        ArrayList<String> result = new ArrayList<>();
+        for (int i = 0; i < quantity; i++){
+            result.add(df.getEmailAddress());
+        }
+        return result;
+    }
+    
+    public ArrayList<String> generateCustomData(String metaData, int quantity, int random, String defaultValue) throws MySQLAlchemistException {
         try {
             DataFactory df = new DataFactory();
             Config conf = ConfigFactory.load();
@@ -172,9 +300,11 @@ public class DataGenerator {
                 values.add(st.nextToken());
             }
             String[] valuesStringArray = values.toArray(new String[values.size()]);
+            ArrayList<String> result = new ArrayList<>();
             for (int i = 0; i < quantity; i++) {
-                System.out.println(df.getItem(valuesStringArray,95,defaultValue));
+                result.add(df.getItem(valuesStringArray, random, defaultValue));
             }
+            return result;
         } catch (IOException e) {
             throw new MySQLAlchemistException("Fehler beim Generieren", e);
         }
