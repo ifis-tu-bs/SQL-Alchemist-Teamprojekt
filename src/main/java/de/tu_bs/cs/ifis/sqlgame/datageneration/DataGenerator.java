@@ -279,9 +279,20 @@ public class DataGenerator {
                 para1 = Double.parseDouble(params.get(0));
                 para2 = Double.parseDouble(params.get(1));
                 } else {
-                    throw new MySQLAlchemistException("2 Parameter werden bei max benötigt", new Exception());
+                    throw new MySQLAlchemistException("2 Parameter werden bei gauss benötigt", new Exception());
                 }
                 result = generateGauss(quantity, para1, para2);
+                break;
+            }
+            
+            case("list"):{
+                int para;
+                if(params.size() == 2){
+                para = Integer.parseInt(params.get(0));
+                } else {
+                    throw new MySQLAlchemistException("1 Parameter wird bei list benötigt", new Exception());
+                }
+                result = generateList(quantity, para);
                 break;
             }
         }
@@ -435,6 +446,14 @@ public class DataGenerator {
         for (int i = 0; i < quantity; i++){
             double d =  median + r.nextGaussian() * sd;
             result.add("" + d);
+        }
+        return result;
+    }
+    
+    public ArrayList<String> generateList(int quantity, int start) {
+        ArrayList<String> result = new ArrayList<>();
+        for (int i = start; i < start + quantity; i++){
+            result.add("" + i);
         }
         return result;
     }
