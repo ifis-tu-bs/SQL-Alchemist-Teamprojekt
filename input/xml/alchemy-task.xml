@@ -19,9 +19,11 @@
           <tuple>INSERT INTO Powders(id, pname, color) VALUES (1, 'Magic Glitter', 'red')</tuple>
         </extension>
         <metadata>
-          <tablename>id</tablename>
+          <tablename>powders</tablename>
           <primarykey>id</primarykey>
-          <datageneration>5;none;random$int;random$chemical element,80;random$colour</datageneration>
+          <referencing></referencing>
+          <datageneration>5;none;random$int;random$chemical element,80;random$colour;random$int</datageneration>
+          <datageneration>10;none;random$int;random$chemical element,80;random$colour;random$int</datageneration>
         </metadata>
       </relation>
       <relation>

@@ -26,8 +26,9 @@ public class DataGenerator {
     private List<Relation> relations;
     private DBConnection dbConn;
     
-    private final Config conf = ConfigFactory.load();
+    private ArrayList<String> primaryKeys;
     
+    private final Config conf = ConfigFactory.load();
     
     public DataGenerator(List<Relation> relations, DBConnection dbConn) {
         this.relations = relations;
@@ -43,6 +44,7 @@ public class DataGenerator {
             ArrayList<ArrayList<String>> dataList = new ArrayList<>();
             
             for (String dataConstraint : rel.getDataGeneration()) {
+                int i = 0;
                 ArrayList<String> columnFunctions = new ArrayList<>();
                 StringTokenizer st = new StringTokenizer(dataConstraint, ";");
                 
@@ -51,48 +53,33 @@ public class DataGenerator {
                 while (st.hasMoreTokens()) {
                     columnFunctions.add(st.nextToken());
                 }
-
-                ArrayList<ArrayList<String>> primaryKeys = new ArrayList<>();
-                if (!refType.equals("none")) {
-                    String selectStatement = "SELECT * FROM " + rel.getTableName();
-                    ArrayList<ArrayList<String>> refTable = this.dbConn.executeSQLSelectStatement(
-                            this.conf.getString("auth.user"),
-                            this.conf.getString("auth.pass"),
-                            selectStatement
-                    );
-                    
-                    int i = 0;
-                    for (String columnValue : refTable.get(1)) {
-                        ArrayList<String> primaryKey = new ArrayList<>();
-                        if (i == 0) {
-                            int j = 0;
-                            for (String columnName : refTable.get(0)) {
-                                if (rel.getPrimaryKey().contains(columnName.toLowerCase())) {
-                                    primaryKey.add("" + j);
-                                }
-                                j++;
-                            }
-                        }
-                        
-                        if (i % columns == 0) {
-                            primaryKeys.add(primaryKey);
-                        } else {
-                            if (rel.getPrimaryKey().contains(refTable.get(0).get(i % columns).toLowerCase())) {
-                                primaryKey.add(columnValue);
-                            }
-                            i++;
-                        }
+                
+                //Fill the list of primarykeys
+                String primaryKeyColumns = "*";
+                i = 0;
+                for (String primaryKey : rel.getPrimaryKey()) {
+                    if (i == 0) {
+                        primaryKeyColumns = primaryKey;
+                    } else {
+                        primaryKeyColumns += primaryKey;
                     }
                 }
-                
+                String selectStatement = "SELECT " + primaryKeyColumns + " FROM " + rel.getTableName();
+                ArrayList<ArrayList<String>> refTable = this.dbConn.executeSQLSelectStatement(
+                        this.conf.getString("auth.user"),
+                        this.conf.getString("auth.pass"),
+                        selectStatement
+                );
+                this.primaryKeys = refTable.get(1);
+
                 switch (refType) {
                     case "none": {
                         dataList = this.generateDataFromFunction(true, null, null, columnFunctions, numberFunction, dataList);
                         break;
                     }
                     
-                    case "refAll": {
-                        int i = 0;
+                    /*case "refAll": {
+                        i = 0;
                         for (ArrayList<String> primaryKey : primaryKeys) {
                             if (i >= 0) {
                                 dataList = this.generateDataFromFunction(true, primaryKeys.get(0), primaryKey, columnFunctions, numberFunction, dataList);
@@ -106,10 +93,13 @@ public class DataGenerator {
                         Random rand = new Random();
                         int randomNum = rand.nextInt(primaryKeys.get(0).size());
                         dataList = this.generateDataFromFunction(true, primaryKeys.get(0), primaryKeys.get(randomNum), columnFunctions, numberFunction, dataList);
-                    }
+                    }*/
                 }
-                System.out.println(dataList);
+                
                 this.generateAndExecuteInsertStatements(rel.getTableName(), dataList);
+                
+                //Reset the primarykey list
+                this.primaryKeys = null;
             }
         }
     }
@@ -313,16 +303,14 @@ public class DataGenerator {
     
     private void generateAndExecuteInsertStatements(String tableName, ArrayList<ArrayList<String>> dataList) throws MySQLAlchemistException {
         ArrayList<String> insertStatements = new ArrayList<>();
-        for (ArrayList<String> row : dataList) {
-            int i = 0;
+        for (int i = 0; i < dataList.get(0).size(); i++) {
             String insertedValues = "";
-            for (String value : row) {
-                if (i == 0) {
-                    insertedValues += value;
+            for (int j = 0; j < dataList.size(); j++) {
+                if (j == 0) {
+                    insertedValues += dataList.get(j).get(i);
                 } else {
-                    insertedValues += ", " + value;
+                    insertedValues += ", " + dataList.get(j).get(i);
                 }
-                i++;
             }
             insertStatements.add("INSERT INTO " + tableName + " VALUES(" + insertedValues + ")");
         }
@@ -492,3 +480,28 @@ public class DataGenerator {
         
     }
 }
+
+/*
+                i = 0;
+                for (String columnValue : refTable.get(1)) {
+                    ArrayList<String> primaryKey = new ArrayList<>();
+                    if (i == 0) {
+                        int j = 0;
+                        for (String columnName : refTable.get(0)) {
+                            if (rel.getPrimaryKey().contains(columnName.toLowerCase())) {
+                                primaryKey.add("" + j);
+                            }
+                            j++;
+                        }
+                    }
+
+                    if (i % columns == 0) {
+                        primaryKeys.add(primaryKey);
+                    } else {
+                        if (rel.getPrimaryKey().contains(refTable.get(0).get(i % columns).toLowerCase())) {
+                            primaryKey.add(columnValue);
+                        }
+                        i++;
+                    }
+                }
+*/

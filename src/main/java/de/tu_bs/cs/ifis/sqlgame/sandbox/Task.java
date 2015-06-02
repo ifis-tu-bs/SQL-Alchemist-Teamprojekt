@@ -338,10 +338,12 @@ public class Task {
 
         while (it.hasNext()) {
             Relation s = it.next();
-            ArrayList<String> a = s.getTuple();
-            for (int i = 0; i < a.size(); i++) {
-                a.add(i, a.get(i).replace('\"', '\''));
+            ArrayList<String> tmp = s.getTuple();
+            ArrayList<String> a = new ArrayList<>();
+            for (int i = 0; i < tmp.size(); i++) {
+                a.add(i, tmp.get(i).replace('\"', '\''));
             }
+            
             this.tmpDbConn.executeSQLUpdateStatement(this.conf.getString("auth.user"), this.conf.getString("auth.pass"), s.getIntension());
             this.tmpDbConn.executeSQLUpdateStatement(this.conf.getString("auth.user"), this.conf.getString("auth.pass"), a);
         }
