@@ -14,23 +14,24 @@
     
     <schema>
       <relation><!--how would we handle autoincrement ids here?-->
-        <intension>CREATE TABLE Powders(id int not null primary key, pname varchar(100), color varchar(50), price int)</intension>
+        <intension>CREATE TABLE Powders(id int not null, pname varchar(100) not null, color varchar(50), price int, PRIMARY KEY (id, pname))</intension>
         <extension>
           <tuple>INSERT INTO Powders(id, pname, color) VALUES (1, 'Magic Glitter', 'red')</tuple>
         </extension>
         <metadata>
           <tablename>powders</tablename>
           <primarykey>id</primarykey>
-          <referencing></referencing>
+          <primarykey>pname</primarykey>
           <datageneration>5;none;random$int;random$chemical element,80;random$colour;random$int</datageneration>
-          <datageneration>10;none;random$int;random$chemical element,80;random$colour;random$int</datageneration>
+          <datageneration>100;none;random$int;random$chemical element,80;random$colour;random$int</datageneration>
         </metadata>
       </relation>
       <relation>
       	<intension>CREATE TABLE Effects(id int not null primary key, ename varchar(100), description varchar(1000))</intension>
       	<extension>
       		<tuple>INSERT INTO Effects(id, ename) VALUES (1, 'Dizzyness')</tuple>
-      	</extension></relation>
+      	</extension>
+      </relation>
       <relation>
       	<intension>CREATE TABLE p2e(pid int  not null, eid int not null, strength int, PRIMARY KEY (pid, eid), FOREIGN KEY (pid) REFERENCES Powders(id), FOREIGN KEY (eid) REFERENCES Effects(id))</intension>
       	<extension>

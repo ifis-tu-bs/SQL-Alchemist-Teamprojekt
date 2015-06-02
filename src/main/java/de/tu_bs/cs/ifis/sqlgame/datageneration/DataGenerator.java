@@ -166,7 +166,7 @@ public class DataGenerator {
                     for (int j = 0; j < number; j++) {
                         column.add(this.findAndExecuteFunction(functionName, params));
                     }
-                    data.add(i, column);
+                    data.add(column);
                     column = new ArrayList<>();
                 } else {
                     ArrayList<ArrayList<String>> primaryKeyFunction = new ArrayList<>();
@@ -184,7 +184,7 @@ public class DataGenerator {
             for (i = 0; i < number; i++) {
                 boolean primaryKeyExists = true;
                 ArrayList<String> primaryKey = new ArrayList<>();
-                while (!primaryKeyExists) {
+                while (primaryKeyExists) {
                     for (int j = 0; j < this.primaryKeyValues.get(0).size(); j++) {
                         primaryKey.add(this.findAndExecuteFunction(primaryKeyFunctions.get(j).get(0).get(0), primaryKeyFunctions.get(j).get(1)));
                     }

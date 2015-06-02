@@ -227,7 +227,7 @@ public class Test {
             Iterator it = test.getTasks().iterator();
             Task task = (Task) it.next();
             task.startTask("local");
-            //task.insertToDb();
+            task.insertToDb();
             task.generateData();
 /**
             Iterator it = test.getTasks().iterator();
