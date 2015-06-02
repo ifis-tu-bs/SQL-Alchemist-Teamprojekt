@@ -249,18 +249,18 @@ public class DataGenerator {
         return number;
     }
 
-    private ArrayList<String> findAndExecuteFunction(int quantity, String functionName, ArrayList<String> params, int column) throws MySQLAlchemistException{
-        ArrayList<String> result = new ArrayList<>();
+    private String findAndExecuteFunction(String functionName, ArrayList<String> params) throws MySQLAlchemistException{
+        String result = "";
         switch (functionName) {
             case("random"): {
                 String para = params.get(0);
                 switch (para) {
                     case("int"):{
-                        result = generateInteger(quantity);
+                        result = generateInteger();
                         break;
                     }
                     case("double"):{
-                        result = generateDouble(quantity);
+                        result = generateDouble();
                         break;
                     }
                     case("string"):{
@@ -268,35 +268,35 @@ public class DataGenerator {
                         if(params.size() == 2){
                         para2 = Integer.parseInt(params.get(1));
                         }
-                        result = generateString(quantity, para2);
+                        result = generateString(para2);
                         break;
                     }
                     case("firstname"):{
-                        result = generateFirstName(quantity);
+                        result = generateFirstName();
                         break;
                     }
                     case("lastname"):{
-                        result = generateLastName(quantity);
+                        result = generateLastName();
                         break;
                     }
                     case("fullname"):{
-                        result = generateFullName(quantity);
+                        result = generateFullName();
                         break;
                     }
                     case("date"):{
-                        result = generateDate(quantity);
+                        result = generateDate();
                         break;
                     }
                     case("city"):{
-                        result = generateCity(quantity);
+                        result = generateCity();
                         break;
                     }
                     case("adress"):{
-                        result = generateAdress(quantity);
+                        result = generateAdress();
                         break;
                     }
                     case("email"):{
-                        result = generateEmail(quantity);
+                        result = generateEmail();
                         break;
                     }
                     default:{
@@ -308,7 +308,7 @@ public class DataGenerator {
                                 def = params.get(2); 
                             }
                         }
-                        result = generateCustomData(para, quantity, random, def);
+                        result = generateCustomData(para, random, def);
                         break;
                     }
                 }
@@ -326,11 +326,11 @@ public class DataGenerator {
                 }
                 switch(para1){
                     case("int"):{
-                        result = generateMinInteger(quantity, para2);
+                        result = generateMinInteger(para2);
                         break;
                     }
                     case("double"):{
-                        result = generateMinDouble(quantity, para2);
+                        result = generateMinDouble(para2);
                         break;
                     }
                 }
@@ -348,11 +348,11 @@ public class DataGenerator {
                 }
                 switch(para1){
                     case("int"):{
-                        result = generateMaxInteger(quantity, para2);
+                        result = generateMaxInteger(para2);
                         break;
                     }
                     case("double"):{
-                        result = generateMaxDouble(quantity, para2);
+                        result = generateMaxDouble(para2);
                         break;
                     }
                 }
@@ -368,18 +368,33 @@ public class DataGenerator {
                 } else {
                     throw new MySQLAlchemistException("2 Parameter werden bei gauss benötigt", new Exception());
                 }
-                result = generateGauss(quantity, para1, para2);
+                result = generateGauss(para1, para2);
                 break;
             }
             
             case("list"):{
                 int para;
-                if(params.size() == 2){
+                if(params.size() == 1){
                 para = Integer.parseInt(params.get(0));
+                int tmp = para + 1;
+                String tmp2 = "" + tmp;
+                params.add(0, tmp2);
+                params.remove(1);
                 } else {
                     throw new MySQLAlchemistException("1 Parameter wird bei list benötigt", new Exception());
                 }
-                result = generateList(quantity, para);
+                result = generateList(para);
+                break;
+            }
+            
+            case("fix"):{
+                String para;
+                if(params.size() == 1){
+                para = params.get(0);
+                } else {
+                    throw new MySQLAlchemistException("1 Parameter wird bei fix benötigt", new Exception());
+                }
+                result = para;
                 break;
             }
         }
@@ -406,152 +421,104 @@ public class DataGenerator {
         );
     }
     
-    public ArrayList<String> generateFirstName(int quantity) {
+    public String generateFirstName() {
         DataFactory df = new DataFactory();
-        ArrayList<String> result = new ArrayList<>();
-        for (int i = 0; i < quantity; i++){
-            result.add("'" + df.getFirstName() + "'");
-        }
+        String result = "'" + df.getFirstName() + "'";
         return result;
     }
         
-    public ArrayList<String> generateLastName(int quantity) {
+    public String generateLastName() {
         DataFactory df = new DataFactory();
-        ArrayList<String> result = new ArrayList<>();
-        for (int i = 0; i < quantity; i++){
-            result.add("'" + df.getLastName() + "'");
-        }
+        String result = "'" + df.getLastName() + "'";
         return result;
     }
     
-    public ArrayList<String> generateFullName(int quantity) {
+    public String generateFullName() {
         DataFactory df = new DataFactory();
-        ArrayList<String> result = new ArrayList<>();
-        for (int i = 0; i < quantity; i++){
-            result.add("'" + df.getFirstName() + " " + df.getLastName() + "'");
-        }
+        String result = "'" + df.getFirstName() + " " + df.getLastName() + "'";
         return result;
     }
     
-    public ArrayList<String> generateInteger(int quantity) {
+    public String generateInteger() {
         Random r = new Random();
-        ArrayList<String> result = new ArrayList<>();
-        for (int i = 0; i < quantity; i++){
-            result.add("" + r.nextInt());
-        }
+        String result = "" + r.nextInt();
         return result;
     }
     
-    public ArrayList<String> generateDouble(int quantity) {
+    public String generateDouble() {
         Random r = new Random();
-        ArrayList<String> result = new ArrayList<>();
-        for (int i = 0; i < quantity; i++){
-            result.add("" + r.nextDouble());
-        }
+        String result = "" + r.nextDouble();
         return result;
     }
     
-    public ArrayList<String> generateString(int quantity, int length) {
+    public String generateString(int length) {
         DataFactory df = new DataFactory();
-        ArrayList<String> result = new ArrayList<>();
-        for (int i = 0; i < quantity; i++){
-            result.add(df.getRandomChars(length));
-        }
+        String result = df.getRandomChars(length);
         return result;
     }
     
-    public ArrayList<String> generateDate(int quantity) {
+    public String generateDate() {
         DataFactory df = new DataFactory();
-        ArrayList<String> result = new ArrayList<>();
-        for (int i = 0; i < quantity; i++){
-            String date = new SimpleDateFormat("yyyy-MM-dd").format(df.getBirthDate());
-            result.add("'" + date + "'");
-        }
+        String date = new SimpleDateFormat("yyyy-MM-dd").format(df.getBirthDate());
+        String result = "'" + date + "'";
         return result;
     }
     
-    public ArrayList<String> generateCity(int quantity) {
+    public String generateCity() {
         DataFactory df = new DataFactory();
-        ArrayList<String> result = new ArrayList<>();
-        for (int i = 0; i < quantity; i++){
-            result.add("'" + df.getCity() + "'");
-        }
+        String result = "'" + df.getCity() + "'";
         return result;
     }
     
-    public ArrayList<String> generateAdress(int quantity) {
+    public String generateAdress() {
         DataFactory df = new DataFactory();
-        ArrayList<String> result = new ArrayList<>();
-        for (int i = 0; i < quantity; i++){
-            result.add("'" + df.getAddress() + "'");
-        }
+        String result = "'" + df.getAddress() + "'";
         return result;
     }
     
-    public ArrayList<String> generateEmail(int quantity) {
+    public String generateEmail() {
         DataFactory df = new DataFactory();
-        ArrayList<String> result = new ArrayList<>();
-        for (int i = 0; i < quantity; i++){
-            result.add("'" + df.getEmailAddress() + "'");
-        }
+        String result = "'" + df.getEmailAddress() + "'";
         return result;
     }
     
-    public ArrayList<String> generateMinInteger(int quantity, int para2) {
+    public String generateMinInteger(int min) {
         DataFactory df = new DataFactory();
-        ArrayList<String> result = new ArrayList<>();
-        for (int i = 0; i < quantity; i++){
-            result.add("" + df.getNumberBetween(para2, 1000000));
-        }
+        String result = "" + df.getNumberBetween(min, 1000000);
         return result;
     }
     
-    public ArrayList<String> generateMinDouble(int quantity, int para2) {
+    public String generateMinDouble(int min) {
         DataFactory df = new DataFactory();
-        ArrayList<String> result = new ArrayList<>();
-        for (int i = 0; i < quantity; i++){
-            result.add("" + df.getNumberBetween(para2, 1000000) + "." + df.getNumberBetween(0, 99));
-        }
+        String result = "" + df.getNumberBetween(min, 1000000) + "." + df.getNumberBetween(0, 99);
         return result;
     }
         
-    public ArrayList<String> generateMaxInteger(int quantity, int para2) {
+    public String generateMaxInteger(int max) {
         DataFactory df = new DataFactory();
-        ArrayList<String> result = new ArrayList<>();
-        for (int i = 0; i < quantity; i++){
-            result.add("" + df.getNumberUpTo(para2));
-        }
+        String result = "" + df.getNumberUpTo(max);
         return result;
     }
     
-    public ArrayList<String> generateMaxDouble(int quantity, int para2) {
+    public String generateMaxDouble(int max) {
         DataFactory df = new DataFactory();
-        ArrayList<String> result = new ArrayList<>();
-        for (int i = 0; i < quantity; i++){
-            result.add("" + df.getNumberUpTo(para2) + "." + df.getNumberBetween(0, 99));
-        }
+        String result = "" + df.getNumberUpTo(max) + "." + df.getNumberBetween(0, 99);
         return result;
     }
     
-    public ArrayList<String> generateGauss(int quantity, double median, double sd) {
-        ArrayList<String> result = new ArrayList<>();
+    public String generateGauss(double median, double sd) {
         Random r = new Random();
-        for (int i = 0; i < quantity; i++){
-            double d =  median + r.nextGaussian() * sd;
-            result.add("" + d);
-        }
+        double d =  median + r.nextGaussian() * sd;
+        String result = "" + d;
         return result;
     }
     
-    public ArrayList<String> generateList(int quantity, int start) {
-        ArrayList<String> result = new ArrayList<>();
-        for (int i = start; i < start + quantity; i++){
-            result.add("" + i);
-        }
+    public String generateList(int start) {
+        String result = "" + start;
         return result;
     }
     
-    public ArrayList<String> generateCustomData(String metaData, int quantity, int random, String defaultValue) throws MySQLAlchemistException {
+    public String generateCustomData(String metaData, int random, String defaultValue) throws MySQLAlchemistException {
         try {
             DataFactory df = new DataFactory();
             Config conf = ConfigFactory.load();
@@ -565,14 +532,12 @@ public class DataGenerator {
                 values.add(st.nextToken());
             }
             String[] valuesStringArray = values.toArray(new String[values.size()]);
-            ArrayList<String> result = new ArrayList<>();
-            for (int i = 0; i < quantity; i++) {
+            String result;
                 if(metaData.equals("size")){
-                    result.add(df.getItem(valuesStringArray, random, defaultValue));
+                    result = df.getItem(valuesStringArray, random, defaultValue);
                 } else{
-                    result.add("'" + df.getItem(valuesStringArray, random, defaultValue) + "'");
+                    result = "'" + df.getItem(valuesStringArray, random, defaultValue) + "'";
                 }
-            }
             return result;
         } catch (IOException e) {
             throw new MySQLAlchemistException("Fehler beim Generieren", e);
