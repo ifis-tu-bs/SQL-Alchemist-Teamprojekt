@@ -26,8 +26,8 @@ public class DataGenerator {
     private List<Relation> relations;
     private DBConnection dbConn;
     
-    private ArrayList<String> primaryKeyNames;
-    private ArrayList<ArrayList<String>> primaryKeyValues;
+    private ArrayList<ArrayList<String>> primaryKeyAssignments = new ArrayList<>();
+    private ArrayList<ArrayList<String>> primaryKeyValues = new ArrayList<>();
     
     private final Config conf = ConfigFactory.load();
     
@@ -41,8 +41,8 @@ public class DataGenerator {
             if (rel.getDataGeneration().isEmpty()) {
                 break;
             }
-            this.primaryKeyNames = rel.getPrimaryKey();
             int columns = this.calculateColumns(rel);
+            this.calculatePrimaryKeyAssignments(rel);
             ArrayList<ArrayList<String>> dataList = new ArrayList<>();
             
             for (String dataConstraint : rel.getDataGeneration()) {
@@ -100,9 +100,30 @@ public class DataGenerator {
                 this.generateAndExecuteInsertStatements(rel.getTableName(), dataList);
             }
             
-            //Reset the primarykey lists
-            this.primaryKeyNames = null;
+            //Reset the primarykey list
             this.primaryKeyValues = null;
+        }
+    }
+    
+    private void calculatePrimaryKeyAssignments(Relation rel) throws MySQLAlchemistException {
+        ArrayList<String> primaryKeyAssignment;
+        
+        String selectStatement = "SELECT * FROM " + rel.getTableName();
+        ArrayList<String> columnNames = this.dbConn.executeSQLSelectStatement(
+                this.conf.getString("auth.user"),
+                this.conf.getString("auth.pass"),
+                selectStatement
+        ).get(0);
+        
+        int i = 0;
+        for (String columnName : columnNames) {
+            if (rel.getPrimaryKey().contains(columnName.toLowerCase())) {
+                primaryKeyAssignment = new ArrayList<>();
+                primaryKeyAssignment.add(columnName);
+                primaryKeyAssignment.add("" + i);
+                this.primaryKeyAssignments.add(primaryKeyAssignment);
+            }
+            i++;
         }
     }
         
@@ -136,7 +157,7 @@ public class DataGenerator {
                     }
                 }
                 
-                dataList.add(this.findAndExecuteFunction(number, functionName, params));
+                dataList.add(this.findAndExecuteFunction(number, functionName, params, this.checkPrimaryKeyStatus(i)));
                 i++;
             }
         } else {
@@ -152,6 +173,17 @@ public class DataGenerator {
         }
         
         return dataList;
+    }
+    
+    private boolean checkPrimaryKeyStatus(int columnIndex) {
+        String columnIndexString = "" + columnIndex;
+        for (ArrayList<String> primaryKeyAssignment : this.primaryKeyAssignments) {
+            if (primaryKeyAssignment.get(1).equals(columnIndexString)) {
+                return true;
+            }
+        }
+        
+        return false;
     }
     
     private int generateNumber(String numberFunction) throws MySQLAlchemistException {
@@ -185,7 +217,7 @@ public class DataGenerator {
         return number;
     }
 
-    private ArrayList<String> findAndExecuteFunction(int quantity, String functionName, ArrayList<String> params) throws MySQLAlchemistException{
+    private ArrayList<String> findAndExecuteFunction(int quantity, String functionName, ArrayList<String> params, boolean isPrimaryKey) throws MySQLAlchemistException{
         ArrayList<String> result = new ArrayList<>();
         switch (functionName) {
             case("random"): {
@@ -490,7 +522,6 @@ public class DataGenerator {
     
     public ArrayList<String> generateCustomData(String metaData, int quantity, int random, String defaultValue) throws MySQLAlchemistException {
         try {
-            System.out.println(metaData);
             DataFactory df = new DataFactory();
             Config conf = ConfigFactory.load();
             String path = conf.getString("input.dataGenPath");
