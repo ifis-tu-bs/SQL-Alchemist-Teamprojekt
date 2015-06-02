@@ -11,6 +11,7 @@ import com.typesafe.config.*;
 import de.tu_bs.cs.ifis.sqlgame.dbconnection.DBConnection;
 import de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException;
 import de.tu_bs.cs.ifis.sqlgame.xmlparse.Relation;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -244,8 +245,64 @@ public class DataGenerator {
                         result = generateCustomData(para, quantity, random, def);
                         break;
                     }
-                    
                 }
+                break;
+            }
+            
+            case("min"):{
+                String para1;
+                int para2;
+                if(params.size() == 2){
+                para1 = params.get(0);
+                para2 = Integer.parseInt(params.get(1));
+                } else {
+                    throw new MySQLAlchemistException("2 Parameter werden bei min benötigt", new Exception());
+                }
+                switch(para1){
+                    case("int"):{
+                        result = generateMinInteger(quantity, para2);
+                        break;
+                    }
+                    case("double"):{
+                        result = generateMinDouble(quantity, para2);
+                        break;
+                    }
+                }
+                break;
+            }
+            
+            case("max"):{
+                String para1;
+                int para2;
+                if(params.size() == 2){
+                para1 = params.get(0);
+                para2 = Integer.parseInt(params.get(1));
+                } else {
+                    throw new MySQLAlchemistException("2 Parameter werden bei max benötigt", new Exception());
+                }
+                switch(para1){
+                    case("int"):{
+                        result = generateMaxInteger(quantity, para2);
+                        break;
+                    }
+                    case("double"):{
+                        result = generateMaxDouble(quantity, para2);
+                        break;
+                    }
+                }
+                break;
+            }
+            
+            case("gauss"):{
+                double para1;
+                double para2;
+                if(params.size() == 2){
+                para1 = Double.parseDouble(params.get(0));
+                para2 = Double.parseDouble(params.get(1));
+                } else {
+                    throw new MySQLAlchemistException("2 Parameter werden bei max benötigt", new Exception());
+                }
+                result = generateGauss(quantity, para1, para2);
                 break;
             }
         }
@@ -278,7 +335,7 @@ public class DataGenerator {
         DataFactory df = new DataFactory();
         ArrayList<String> result = new ArrayList<>();
         for (int i = 0; i < quantity; i++){
-            result.add(df.getFirstName());
+            result.add("'" + df.getFirstName() + "'");
         }
         return result;
     }
@@ -287,7 +344,7 @@ public class DataGenerator {
         DataFactory df = new DataFactory();
         ArrayList<String> result = new ArrayList<>();
         for (int i = 0; i < quantity; i++){
-            result.add(df.getLastName());
+            result.add("'" + df.getLastName() + "'");
         }
         return result;
     }
@@ -296,7 +353,7 @@ public class DataGenerator {
         DataFactory df = new DataFactory();
         ArrayList<String> result = new ArrayList<>();
         for (int i = 0; i < quantity; i++){
-            result.add(df.getFirstName() + " " + df.getLastName());
+            result.add("'" + df.getFirstName() + " " + df.getLastName() + "'");
         }
         return result;
     }
@@ -314,7 +371,7 @@ public class DataGenerator {
         DataFactory df = new DataFactory();
         ArrayList<String> result = new ArrayList<>();
         for (int i = 0; i < quantity; i++){
-            result.add(df.getNumber() + "" + df.getNumber());
+            result.add(df.getNumber() + "." + df.getNumberBetween(0, 99));
         }
         return result;
     }
@@ -323,7 +380,8 @@ public class DataGenerator {
         DataFactory df = new DataFactory();
         ArrayList<String> result = new ArrayList<>();
         for (int i = 0; i < quantity; i++){
-            //TODO: result.add(df.getBirthDate());
+            String date = new SimpleDateFormat("yyyy-MM-dd").format(df.getBirthDate());
+            result.add("'" + date + "'");
         }
         return result;
     }
@@ -332,7 +390,7 @@ public class DataGenerator {
         DataFactory df = new DataFactory();
         ArrayList<String> result = new ArrayList<>();
         for (int i = 0; i < quantity; i++){
-            result.add(df.getCity());
+            result.add("'" + df.getCity() + "'");
         }
         return result;
     }
@@ -341,7 +399,7 @@ public class DataGenerator {
         DataFactory df = new DataFactory();
         ArrayList<String> result = new ArrayList<>();
         for (int i = 0; i < quantity; i++){
-            result.add(df.getAddress());
+            result.add("'" + df.getAddress() + "'");
         }
         return result;
     }
@@ -350,7 +408,54 @@ public class DataGenerator {
         DataFactory df = new DataFactory();
         ArrayList<String> result = new ArrayList<>();
         for (int i = 0; i < quantity; i++){
-            result.add(df.getEmailAddress());
+            result.add("'" + df.getEmailAddress() + "'");
+        }
+        return result;
+    }
+    
+    public ArrayList<String> generateMinInteger(int quantity, int para2) {
+        DataFactory df = new DataFactory();
+        ArrayList<String> result = new ArrayList<>();
+        for (int i = 0; i < quantity; i++){
+            result.add("" + df.getNumberBetween(para2, 1000000));
+        }
+        return result;
+    }
+    
+    public ArrayList<String> generateMinDouble(int quantity, int para2) {
+        DataFactory df = new DataFactory();
+        ArrayList<String> result = new ArrayList<>();
+        for (int i = 0; i < quantity; i++){
+            result.add("" + df.getNumberBetween(para2, 1000000) + "." + df.getNumberBetween(0, 99));
+        }
+        return result;
+    }
+        
+    public ArrayList<String> generateMaxInteger(int quantity, int para2) {
+        DataFactory df = new DataFactory();
+        ArrayList<String> result = new ArrayList<>();
+        for (int i = 0; i < quantity; i++){
+            result.add("" + df.getNumberUpTo(para2));
+        }
+        return result;
+    }
+    
+    public ArrayList<String> generateMaxDouble(int quantity, int para2) {
+        DataFactory df = new DataFactory();
+        ArrayList<String> result = new ArrayList<>();
+        for (int i = 0; i < quantity; i++){
+            result.add("" + df.getNumberUpTo(para2) + "." + df.getNumberBetween(0, 99));
+        }
+        return result;
+    }
+    
+    public ArrayList<String> generateGauss(int quantity, double median, double sd) {
+        DataFactory df = new DataFactory();
+        ArrayList<String> result = new ArrayList<>();
+        Random r = new Random();
+        for (int i = 0; i < quantity; i++){
+            double d =  median + r.nextGaussian() * sd;
+            result.add("" + d);
         }
         return result;
     }
@@ -371,7 +476,11 @@ public class DataGenerator {
             String[] valuesStringArray = values.toArray(new String[values.size()]);
             ArrayList<String> result = new ArrayList<>();
             for (int i = 0; i < quantity; i++) {
-                result.add(df.getItem(valuesStringArray, random, defaultValue));
+                if(metaData.equals("size")){
+                    result.add(df.getItem(valuesStringArray, random, defaultValue));
+                } else{
+                    result.add("'" + df.getItem(valuesStringArray, random, defaultValue) + "'");
+                }
             }
             return result;
         } catch (IOException e) {
