@@ -26,6 +26,7 @@ public class DataGenerator {
     private List<Relation> relations;
     private DBConnection dbConn;
     
+    private int columns = 0;
     private ArrayList<ArrayList<String>> primaryKeyAssignments = new ArrayList<>();
     private ArrayList<ArrayList<String>> primaryKeyValues = new ArrayList<>();
     
@@ -41,12 +42,12 @@ public class DataGenerator {
             if (rel.getDataGeneration().isEmpty()) {
                 break;
             }
-            int columns = this.calculateColumns(rel);
+            this.calculateColumns(rel);
             this.calculatePrimaryKeyAssignments(rel);
-            ArrayList<ArrayList<String>> dataList = new ArrayList<>();
             
             for (String dataConstraint : rel.getDataGeneration()) {
                 int i;
+                ArrayList<ArrayList<String>> dataList = new ArrayList<>();
                 ArrayList<String> columnFunctions = new ArrayList<>();
                 StringTokenizer st = new StringTokenizer(dataConstraint, ";");
                 
@@ -75,7 +76,7 @@ public class DataGenerator {
 
                 switch (refFunction) {
                     case "none": {
-                        dataList = this.generateDataFromFunction(true, null, null, columnFunctions, numberFunction, dataList);
+                        dataList = this.generateDataFromFunction(true, columnFunctions, numberFunction);
                         break;
                     }
                     
@@ -127,28 +128,33 @@ public class DataGenerator {
         }
     }
         
-    private int calculateColumns(Relation rel) {
+    private void calculateColumns(Relation rel) {
         String tuple = rel.getDataGeneration().get(0);
         StringTokenizer st = new StringTokenizer(tuple, ";");
-        return st.countTokens() - 1;
+        this.columns = st.countTokens() - 1;
     }
     
-    private ArrayList<ArrayList<String>> generateDataFromFunction(
-            boolean refTypeNone,
-            ArrayList<String> primaryKeyColumns,
-            ArrayList<String> primaryKey,
-            ArrayList<String> columnFunctions,
-            String numberFunction,
-            ArrayList<ArrayList<String>> dataList
-    ) throws MySQLAlchemistException {
-        int i = 0;
+    private ArrayList<ArrayList<String>> generateDataFromFunction(boolean refTypeNone, ArrayList<String> columnFunctions, String numberFunction ) throws MySQLAlchemistException {
+        int i;
         int number = this.generateNumber(numberFunction);
+        ArrayList<ArrayList<String>> data = new ArrayList<>();
+        ArrayList<String> column = new ArrayList<>();
+        ArrayList<Integer> primaryKeyColumnIndex = new ArrayList<>();
+        for (i = 0; i < this.columns; i++) {
+            for (ArrayList<String> primaryKeyAssignment : this.primaryKeyAssignments) {
+                if (Integer.parseInt(primaryKeyAssignment.get(1)) == i) {
+                    primaryKeyColumnIndex.add(i);
+                }
+            }
+        }
         
         if (refTypeNone) {
+            i = 0;
+            ArrayList<ArrayList<ArrayList<String>>> primaryKeyFunctions = new ArrayList<>();
             for (String columnFunction : columnFunctions) {
                 StringTokenizer st = new StringTokenizer(columnFunction, "$");
                 String functionName = st.nextToken();
-                
+
                 ArrayList<String> params = new ArrayList<>();
                 if (st.hasMoreTokens()) {
                     StringTokenizer stt = new StringTokenizer(st.nextToken(), ",");
@@ -156,23 +162,49 @@ public class DataGenerator {
                         params.add(stt.nextToken());
                     }
                 }
-                
-                dataList.add(this.findAndExecuteFunction(number, functionName, params, this.checkPrimaryKeyStatus(i)));
+                if (!primaryKeyColumnIndex.contains(i)) {
+                    for (int j = 0; j < number; j++) {
+                        column.add(this.findAndExecuteFunction(functionName, params));
+                    }
+                    data.add(i, column);
+                    column = new ArrayList<>();
+                } else {
+                    ArrayList<ArrayList<String>> primaryKeyFunction = new ArrayList<>();
+                    ArrayList<String> functionNameList = new ArrayList<>();
+                    functionNameList.add(functionName);
+                    primaryKeyFunction.add(functionNameList);
+                    primaryKeyFunction.add(params);
+                    primaryKeyFunctions.add(primaryKeyFunction);
+                }
                 i++;
             }
-        } else {
-            ArrayList<String> values = new ArrayList<>();
-            for (String columnString : primaryKeyColumns) {
-                int column = Integer.parseInt(columnString);
-                for (int j = 0; j < number; j++) {
-                    values.add(primaryKey.get(i));
+            
+            //Handle primary keys
+            ArrayList<ArrayList<String>> primaryKeys = new ArrayList<>();
+            for (i = 0; i < number; i++) {
+                boolean primaryKeyExists = true;
+                ArrayList<String> primaryKey = new ArrayList<>();
+                while (!primaryKeyExists) {
+                    for (int j = 0; j < this.primaryKeyValues.get(0).size(); j++) {
+                        primaryKey.add(this.findAndExecuteFunction(primaryKeyFunctions.get(j).get(0).get(0), primaryKeyFunctions.get(j).get(1)));
+                    }
+                    if (!this.primaryKeyValues.contains(primaryKey)) {
+                        primaryKeyExists = false;
+                    }
                 }
-                dataList.add(values);
-                i++;
+                primaryKeys.add(primaryKey);
+            }
+            
+            for (i = 0; i < this.primaryKeyValues.get(0).size(); i++) {
+                for (ArrayList<String> primaryKey : primaryKeys) {
+                    column.add(primaryKey.get(i));
+                }
+                data.add(Integer.parseInt(this.primaryKeyAssignments.get(i).get(1)), column);
+                column = new ArrayList<>();
             }
         }
         
-        return dataList;
+        return data;
     }
     
     private boolean checkPrimaryKeyStatus(int columnIndex) {
@@ -217,7 +249,7 @@ public class DataGenerator {
         return number;
     }
 
-    private ArrayList<String> findAndExecuteFunction(int quantity, String functionName, ArrayList<String> params, boolean isPrimaryKey) throws MySQLAlchemistException{
+    private ArrayList<String> findAndExecuteFunction(int quantity, String functionName, ArrayList<String> params, int column) throws MySQLAlchemistException{
         ArrayList<String> result = new ArrayList<>();
         switch (functionName) {
             case("random"): {
