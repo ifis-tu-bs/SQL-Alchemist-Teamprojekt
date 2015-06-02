@@ -28,7 +28,7 @@ public class Test {
      */
     public static void main(String[] args) {
         try {
-            InputFile test = new InputFile("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+            InputFile test0 = new InputFile("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
 "\n" +
 "<tasks schemaversion=\"1\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"recipe.xsd\">\n" +
 "\n" +
@@ -223,6 +223,7 @@ public class Test {
 "  \n" +
 "</tasks>", false);
             
+            InputFile test = new InputFile("alchemy-task.xml", true);
             Iterator it = test.getTasks().iterator();
             Task task = (Task) it.next();
             task.startTask("local");

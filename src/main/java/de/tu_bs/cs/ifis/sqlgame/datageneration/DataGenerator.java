@@ -108,7 +108,7 @@ public class DataGenerator {
                         dataList = this.generateDataFromFunction(true, primaryKeys.get(0), primaryKeys.get(randomNum), columnFunctions, numberFunction, dataList);
                     }
                 }
-                
+                System.out.println(dataList);
                 this.generateAndExecuteInsertStatements(rel.getTableName(), dataList);
             }
         }
@@ -135,11 +135,13 @@ public class DataGenerator {
             for (String columnFunction : columnFunctions) {
                 StringTokenizer st = new StringTokenizer(columnFunction, "$");
                 String functionName = st.nextToken();
-
-                StringTokenizer stt = new StringTokenizer(st.nextToken(), ",");
+                
                 ArrayList<String> params = new ArrayList<>();
-                while (stt.hasMoreTokens()) {
-                    params.add(stt.nextToken());
+                if (st.hasMoreTokens()) {
+                    StringTokenizer stt = new StringTokenizer(st.nextToken(), ",");
+                    while (stt.hasMoreTokens()) {
+                        params.add(stt.nextToken());
+                    }
                 }
                 
                 dataList.add(this.findAndExecuteFunction(number, functionName, params));
@@ -362,7 +364,7 @@ public class DataGenerator {
         DataFactory df = new DataFactory();
         ArrayList<String> result = new ArrayList<>();
         for (int i = 0; i < quantity; i++){
-            result.add("" + df.getNumber());
+            result.add("" + df.getNumberBetween(0, 1000000));
         }
         return result;
     }
@@ -462,6 +464,7 @@ public class DataGenerator {
     
     public ArrayList<String> generateCustomData(String metaData, int quantity, int random, String defaultValue) throws MySQLAlchemistException {
         try {
+            System.out.println(metaData);
             DataFactory df = new DataFactory();
             Config conf = ConfigFactory.load();
             String path = conf.getString("input.dataGenPath");
