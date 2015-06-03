@@ -164,5 +164,60 @@ Dabei wird das Statement (String) als Parameter an die Methode übergeben und da
 Die Methode \textit{printData} gibt alle Inhalte des Aufgabenblattes aus.
 Es wird für jede der drei Listen nacheinander (für die Header, Relations und Exercises) die Anzahl der Elemente und anschließend die Elemente selbst ausgegeben.
 
+\chapter{Data Generation}
 
+Im Folgenden wird erläutert wie Daten generiert werden können. Der Allgemeine Aufbau ist:
+
+\texttt{Anzahl;Ref;Spalte1;Spalte2;Spalte3;...}
+
+\bigskip\noindent
+Anzahl besteht aus einer Zahl oder \texttt{span,Anfang,Ende}\\
+Ref ist noch nicht implementiert und im Moment sollte \texttt{none} angegeben werden\\
+Spalte: hier werden die Daten für eine Spalte generiert und alle Parameter werden durch ein Komma getrennt. Also ist der Aufbau einer Spalte:
+
+\texttt{Para1,Para2,Para3,...}
+
+\bigskip\noindent
+\textbf{erste Parameter:}
+\begin{itemize}
+
+\item random: zufälliger Eintrag
+\begin{itemize}
+\item	int, int+, double, string(optional mit Länge), firstname, lastname, fullname, date, business, street, adress, email, custom(name, opt. random, opt. Default)
+\begin{itemize}
+\item	für den Parameter name nach custom gibts folgende Möglichkeiten: alias, chemical element, colour, comic title, effect, gender, genre, land, occupation, programming language, publisher, size
+\end{itemize}
+\end{itemize}
+
+die Angaben in Klammern sind weitere Parameter
+Beispiel: random,string,5 oder random,firstname oder random,colour,80,weiß
+
+\item min: mindestens größer als
+\begin{itemize}
+\item int(min), double(min)
+\end{itemize}
+
+\item max: maximal so groß
+\begin{itemize}
+\item int(max), double(max)
+\end{itemize}
+
+\item between: zwischen zwei Werten
+\begin{itemize}
+\item int(min, max), double(min, max)
+\end{itemize}
+	
+
+\item gauss: gaussche Normalverteilung
+\begin{itemize}
+\item int(Mittelwert, Standardabweichung), double(Mittelwert, Standardabweichung)
+\end{itemize}
+
+
+\item list: liste von Zahlen mit Parameter Start
+
+\item fix: selbst ausgedachter Wert: Wert mit '' also fix,'ausgedacht'
+\end{itemize}
+
+weitere Beispiele: min,int,5 oder gauss,int,5,4
 \end{document}
