@@ -1,0 +1,4 @@
+06-03 20:04:50 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Tabelle "POWDERS" besteht bereits
+Table "POWDERS" already exists; SQL statement:
+CREATE TABLE Powders(id int not null primary key, pname varchar(100), color varchar(50), price int) [42101-176]

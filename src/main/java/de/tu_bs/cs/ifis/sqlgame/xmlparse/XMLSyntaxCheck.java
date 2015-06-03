@@ -26,7 +26,7 @@ import org.xml.sax.XMLReader;
  * 
  * Check the syntax of a xml-file.
  * 
- * @author Philip Holzhueter
+ * @author Tobias Gruenhagen, Philip Holzhueter, Tobias Runge
  */
 public class XMLSyntaxCheck {
     

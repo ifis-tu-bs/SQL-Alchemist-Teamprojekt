@@ -11,7 +11,7 @@ import org.apache.logging.log4j.Logger;
  * 
  * Handles Errors and Exceptions that could arrise during the XML-syntaxcheck
  * 
- * @author Philip Holzhueter
+ * @author Tobias Gruenhagen, Philip Holzhueter, Tobias Runge
  */
 public class MyParserExceptionHandler implements ErrorHandler {
     

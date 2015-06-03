@@ -16,7 +16,6 @@ import com.typesafe.config.*;
 import de.tu_bs.cs.ifis.sqlgame.dbconnection.DBConnection;
 import de.tu_bs.cs.ifis.sqlgame.sandbox.Task;
 import java.util.Iterator;
-import java.util.StringTokenizer;
 import org.h2.tools.DeleteDbFiles;
 
 /**
@@ -24,7 +23,7 @@ import org.h2.tools.DeleteDbFiles;
  *
  * Class to parse a xml and put the information into java-task-objects.
  *
- * @author Tobias Runge
+ * @author Tobias Gruenhagen, Philip Holzhueter, Tobias Runge
  */
 public class MySAXParser extends DefaultHandler {
 

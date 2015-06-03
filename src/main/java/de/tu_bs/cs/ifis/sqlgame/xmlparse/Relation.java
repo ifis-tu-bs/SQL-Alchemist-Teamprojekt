@@ -5,7 +5,7 @@ import java.util.ArrayList;
 /**
  * class for the tables and inserts of the tasks
  *
- * @author Tobias
+ * @author Tobias Gruenhagen, Philip Holzhueter, Tobias Runge
  */
 public class Relation {
 

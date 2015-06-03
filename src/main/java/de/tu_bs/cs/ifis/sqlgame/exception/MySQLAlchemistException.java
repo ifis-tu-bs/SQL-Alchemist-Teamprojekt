@@ -6,7 +6,7 @@ package de.tu_bs.cs.ifis.sqlgame.exception;
  * Handles Errors and Exceptions that could arrise during the execution of
  * SQL-Statements or during the parsing of the xml-file
  *
- * @author Tobias
+ * @author Tobias Gruenhagen, Philip Holzhueter, Tobias Runge
  */
 public class MySQLAlchemistException extends Exception {
 

@@ -5,7 +5,7 @@ import java.util.ArrayList;
 /**
  * class for the title and other texts in the task
  *
- * @author Tobias
+ * @author Tobias Gruenhagen, Philip Holzhueter, Tobias Runge
  */
 public class Header {
 

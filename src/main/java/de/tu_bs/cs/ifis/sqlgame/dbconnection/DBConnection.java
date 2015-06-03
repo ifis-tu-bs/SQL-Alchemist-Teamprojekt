@@ -5,7 +5,6 @@ import com.typesafe.config.ConfigFactory;
 import de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException;
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Class DBConnection.
@@ -13,7 +12,7 @@ import java.util.List;
  * Establishing a connection to a database and giving the possibility to execute
  * SQL-Statements.
  *
- * @author Tobias Gruenhagen
+ * @author Tobias Gruenhagen, Philip Holzhueter, Tobias Runge
  */
 public class DBConnection {
     
@@ -63,8 +62,8 @@ public class DBConnection {
      *
      * Declare db-url and register jdbc-driver.
      *
-     * @param dbType int, 0-local DB, 1-server DB, 2-in-memory DB
-     * @param dbPath String, path, where the db is located
+     * @param dbType int 0-local DB, 1-server DB, 2-in-memory DB
+     * @param dbPath String path, where the db is located
      * @throws de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException
      */
     public DBConnection(String dbType, String dbPath) throws MySQLAlchemistException {

@@ -1,78 +1,137 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package de.tu_bs.cs.ifis.sqlgame.datageneration;
 
-import org.fluttercode.datafactory.impl.DataFactory;
-import java.io.*;
 import com.typesafe.config.*;
+
 import de.tu_bs.cs.ifis.sqlgame.dbconnection.DBConnection;
 import de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException;
 import de.tu_bs.cs.ifis.sqlgame.xmlparse.Relation;
-import java.text.SimpleDateFormat;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.StringTokenizer;
 
 /**
- *
- * @author Philips
+ * Class DataGenerator.
+ * 
+ * Class to generate custom insert statements for the tabes of a task.
+ * 
+ * @author Tobias Gruenhagen, Philip Holzhueter, Tobias Runge
  */
 public class DataGenerator {
     
-    private List<Relation> relations;
-    private DBConnection dbConn;
+    /**
+     * List with the relations for the task
+     */
+    private final List<Relation> relations;
     
+    /**
+     * Database connection to speak with the database.
+     */
+    private final DBConnection dbConn;
+    
+    /**
+     * Number of columns of the actual relation.
+     */
     private int columns = 0;
+    
+    /**
+     * ArrayList of the primary keys assigned to the column index.
+     * 
+     * Form: [[first primary key name, column index],
+     *        [second primary key name, column index], ...]
+     */
     private ArrayList<ArrayList<String>> primaryKeyAssignments = new ArrayList<>();
+    
+    /**
+     * ArrayList of the primary values.
+     * 
+     * Form: [[first primary key name, second primary key name, ...],
+     *        [first primary key value 1, second primary key value 1, ...],
+     *        [first primary key value 2, second primary key value 2, ...], ...]
+     */
     private ArrayList<ArrayList<String>> primaryKeyValues = new ArrayList<>();
-    private ArrayList<ArrayList<String>> referenceAssignments = new ArrayList<>();
+    
+    /**
+     * ArrayList of the reference values.
+     * 
+     * Form: [[[first reference name], [first reference value 1],
+     *         [first reference value 1], ...]
+     *        [[second reference name], [second reference value 1]
+     *         [second reference value 1], ...], ...]
+     */
     private ArrayList<ArrayList<ArrayList<String>>> referenceValues = new ArrayList<>();
     
+    /**
+     * Config to load dynamic paths.
+     */
     private final Config conf = ConfigFactory.load();
     
-    public DataGenerator(List<Relation> relations, DBConnection dbConn) {
+    /**
+     * Constructor DataGenerator.
+     * 
+     * Initialize the local attributes relations and dbConn with the given
+     * parameter.
+     * 
+     * @param relations ArrayList<String> list with the relations of the task
+     * @param dbConn DBConnection database connection to execute sql statements
+     */
+    public DataGenerator(ArrayList<Relation> relations, DBConnection dbConn) {
         this.relations = relations;
         this.dbConn = dbConn;
     }
     
+    /**
+     * Method generateData.
+     * 
+     * Grab the metadata and bring it into ArrayLists. Generate insert
+     * statements for each table of the task based on the metadata
+     * of the xml file.
+     * 
+     * @throws de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException
+     */
     public void generateData() throws MySQLAlchemistException {
+        //Iterate through all relations of the task
         for (Relation rel : this.relations) {
+            //Break if no data has to be generated
             if (rel.getDataGeneration().isEmpty()) {
                 break;
             }
+            //Calculate the column number and the primary key assignments of
+            //the actual relation
             this.calculateColumns(rel);
             this.calculatePrimaryKeyAssignments(rel);
             
+            //Iterate through all data constraints
             for (String dataConstraint : rel.getDataGeneration()) {
-                int i;
-                ArrayList<ArrayList<String>> dataList = new ArrayList<>();
-                ArrayList<ArrayList<String>> columnFunctions = new ArrayList<>();
-                ArrayList<String> refFunctionList = new ArrayList<>();
                 StringTokenizer st = new StringTokenizer(dataConstraint, ";");
                 
+                //First token for the number function
                 String numberFunction = st.nextToken();
+                
+                //Second token for the reference function
                 String refFunction = st.nextToken();
+                ArrayList<String> refFunctionList = new ArrayList<>();
+                StringTokenizer stt = new StringTokenizer(refFunction, ",");
+                while (stt.hasMoreTokens()) {
+                    refFunctionList.add(stt.nextToken());
+                }
+                
+                //The following tokens for the column function of the relation
+                ArrayList<ArrayList<String>> columnFunctions = new ArrayList<>();
                 while (st.hasMoreTokens()) {
                     ArrayList<String> columnFunction = new ArrayList<>();
-                    StringTokenizer stt = new StringTokenizer(st.nextToken(), ",");
+                    stt = new StringTokenizer(st.nextToken(), ",");
                     while (stt.hasMoreTokens()) {
                         columnFunction.add(stt.nextToken());
                     }
                     columnFunctions.add(columnFunction);
                 }
-                
-                st = new StringTokenizer(refFunction, "$");
-                while (st.hasMoreTokens()) {
-                    refFunctionList.add(st.nextToken());
-                }
-                
-                //Fill the list of primarykeys
+
+                //Fill primary key values list
+                //Build the sql select statement to get the primary key columns
                 String primaryKeyColumns = "*";
-                i = 0;
+                int i = 0;
                 for (String primaryKey : rel.getPrimaryKey()) {
                     if (i == 0) {
                         primaryKeyColumns = primaryKey;
@@ -81,37 +140,50 @@ public class DataGenerator {
                     }
                     i++;
                 }
-                String selectStatement = "SELECT " + primaryKeyColumns + " FROM " + rel.getTableName();
+                //Execute the sql select statement to get the primary key columns
                 this.primaryKeyValues = this.dbConn.executeSQLSelectStatement(
                         this.conf.getString("auth.user"),
                         this.conf.getString("auth.pass"),
-                        selectStatement
+                        "SELECT " + primaryKeyColumns + " FROM " + rel.getTableName()
                 );
                 
-                this.generateDataFromFunction(rel.getTableName(), refFunctionList, columnFunctions, numberFunction);
+                //Generate and execute the insert statements with the grabed data
+                int number = generateNumber(numberFunction);
+                this.generateDataFromFunction(rel.getTableName(), number, refFunctionList, columnFunctions);
             }
             
-            //Reset the primarykey and reference lists
+            //Reset the primarykey and reference lists for the new data constraint
             this.primaryKeyValues = new ArrayList<>();
             this.primaryKeyAssignments = new ArrayList<>();
             this.referenceValues = new ArrayList<>();
-            this.referenceAssignments = new ArrayList<>();
         }
     }
     
-    private void calculatePrimaryKeyAssignments(Relation rel) throws MySQLAlchemistException {
-        ArrayList<String> primaryKeyAssignment;
-        
-        String selectStatement = "SELECT * FROM " + rel.getTableName();
+    /**
+     * Method calculatePrimaryKeyAssignments.
+     * 
+     * Get the primary keys of the given relation and assigne its column index
+     * to it.
+     * 
+     * @param relation Relation
+     * @throws de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException
+     */
+    private void calculatePrimaryKeyAssignments(Relation relation) throws MySQLAlchemistException {
+        //Get the column names from the given relation/table
+        String selectStatement = "SELECT * FROM " + relation.getTableName();
         ArrayList<String> columnNames = this.dbConn.executeSQLSelectStatement(
                 this.conf.getString("auth.user"),
                 this.conf.getString("auth.pass"),
                 selectStatement
         ).get(0);
         
+        //Iterate through the list of the column names and build a new
+        //primary key assignment for every primary key column
+        ArrayList<String> primaryKeyAssignment;
         int i = 0;
         for (String columnName : columnNames) {
-            if (rel.getPrimaryKey().contains(columnName.toLowerCase())) {
+            //New primary key assignment if the actual column is a primary key
+            if (relation.getPrimaryKey().contains(columnName.toLowerCase())) {
                 primaryKeyAssignment = new ArrayList<>();
                 primaryKeyAssignment.add(columnName);
                 primaryKeyAssignment.add("" + i);
@@ -120,53 +192,210 @@ public class DataGenerator {
             i++;
         }
     }
-        
-    private void calculateColumns(Relation rel) {
-        String tuple = rel.getDataGeneration().get(0);
+    
+    /**
+     * Method calculate Columns.
+     * 
+     * Method to calculate the columns of the given relation/table.
+     * 
+     * @param relation Relation
+     */
+    private void calculateColumns(Relation relation) {
+        //Count the tokens of the given metadata row (this is the column number
+        //minus the token for the number and the token for the reference type
+        String tuple = relation.getDataGeneration().get(0);
         StringTokenizer st = new StringTokenizer(tuple, ";");
         this.columns = st.countTokens() - 2;
     }
     
-    private void generateDataFromFunction(String tableName, ArrayList<String> refFunctionList, ArrayList<ArrayList<String>> columnFunctions, String numberFunction ) throws MySQLAlchemistException {
-        int i;
-        int number = this.generateNumber(numberFunction);
-        ArrayList<ArrayList<String>> data = new ArrayList<>();
-        ArrayList<String> column = new ArrayList<>();
-        ArrayList<Integer> primaryKeyColumnIndex = new ArrayList<>();
-        for (i = 0; i < this.columns; i++) {
-            for (ArrayList<String> primaryKeyAssignment : this.primaryKeyAssignments) {
-                if (Integer.parseInt(primaryKeyAssignment.get(1)) == i) {
-                    primaryKeyColumnIndex.add(i);
+    /**
+     * Method generateNumber.
+     * 
+     * Generate a number from the given number function. This can be just an
+     * integer value of for example a random integer between two values.
+     * 
+     * @param numberFunction
+     * @return
+     * @throws de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException
+     */
+    private int generateNumber(String numberFunction) throws MySQLAlchemistException {
+        StringTokenizer st = new StringTokenizer(numberFunction, ",");
+        //Get the function name of the number function
+        String functionName = st.nextToken();
+        //Get the parameter of the number function
+        ArrayList<String> params = new ArrayList<>();
+        //If the number function has parameter add them to the list
+        //if not, return the function name which is the number
+        if (st.hasMoreTokens()) {
+            params.add(st.nextToken());
+        } else {
+            return Integer.parseInt(functionName);
+        }
+        
+        //Calculate the number by the specific function and parameter
+        int number = 1;
+        switch(functionName) {
+            //Calculate a number in a specific span of two given integer
+            case "span": {
+                if (params.size() == 2) {
+                    int param1 = Integer.parseInt(params.get(0));
+                    int param2 = Integer.parseInt(params.get(1));
+                    Random rand = new Random();
+                    number = rand.nextInt(param2) + param1;
+                } else {
+                    throw new MySQLAlchemistException("Es werden zwei Parameter bei der Spannen-Funktion benötigt.", new Exception());
                 }
+                
+                break;
             }
         }
         
-        ArrayList<ArrayList<ArrayList<String>>> functions = new ArrayList<>();
+        return number;
+    }
+    
+    /**
+     * Method generateDataFromFunction.
+     * 
+     * Generate the insert statements with the given data.
+     * 
+     * @param tableName String name of the given table
+     * @param numberFunction number of the inserted statements
+     * @param refFunctionList ArrayList<String> list of the reference function
+     * @param columnFunctions ArrayList<ArrayList<String>> list of the column functions
+     * @throws de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException
+     */
+    private void generateDataFromFunction(String tableName, int number, ArrayList<String> refFunctionList, ArrayList<ArrayList<String>> columnFunctions) throws MySQLAlchemistException {
+        //Iterate through the columnFunctions to save the referencing columns
+        int i = 0;
         for (ArrayList<String> columnFunction : columnFunctions) {
+            //If the actual column is a referencing column, get the referenced values
+            //and save them in the local list
             if (columnFunction.get(0).equals("ref")) {
-                ArrayList<String> referenceAssigment = new ArrayList<>();
-                referenceAssigment.add("" + i);
-                referenceAssigment.add(columnFunction.get(1));
-                referenceAssigment.add(columnFunction.get(2));
-                this.referenceAssignments.add(referenceAssigment);
-
-                String selectStatement = "SELECT " + columnFunction.get(2) + " FROM " + columnFunction.get(1);
                 ArrayList<ArrayList<String>> referenceColumn = this.dbConn.executeSQLSelectStatement(
                         this.conf.getString("auth.user"),
                         this.conf.getString("auth.pass"),
-                        selectStatement
+                        "SELECT " + columnFunction.get(2) + " FROM " + columnFunction.get(1)
                 );
                 String columnName = referenceColumn.get(0).get(0);
-                referenceColumn.get(0).set(0, columnFunction.get(1) + "." + columnName);
+                //Replace the column name of the referenced value by the unique pair of table name and column name
+                referenceColumn.get(0).set(0, columnFunction.get(1) + "." + columnName.toLowerCase());
                 this.referenceValues.add(referenceColumn);
             }
+            i++;
         }
         
+        //Switch the given reference type
         switch (refFunctionList.get(0)) {
-            /*
-             * NOT USEBALL FOR NOW
-             *
-             *
+            //No reference type
+            case "none": {
+                //Create and execute "number" times insert statements 
+                for (i = 1; i < number; i++) {
+                    //New Stringarray for the inserted data
+                    String[] dataRow = new String[this.columns];
+                    
+                    //Iterate through the column functions to generate a value for every column
+                    int j = 0;
+                    for (ArrayList<String> columnFunction : columnFunctions) {
+                        //Handle the normal columns that are not a primary key
+                        if (!this.primaryKeyValues.get(0).contains(columnFunction.get(0))) {
+                            //Get the parameter for the column function
+                            ArrayList<String> params = new ArrayList<>();
+                            int k = 0;
+                            for (String param : columnFunction) {
+                                if (k != 0) {
+                                    params.add(param);
+                                }
+                                k++;
+                            }
+                            
+                            //Get a value for the actual column
+                            if (!columnFunction.get(0).equals("ref")) {
+                                //Generate a new value if it is no referencing column
+                                dataRow[j] = this.findAndExecuteFunction(columnFunction.get(0), params);
+                            } else {
+                                //Get a value of the reference list if it is a referencing column
+                                //Iterate through reference value list
+                                for (ArrayList<ArrayList<String>> referenceValue : this.referenceValues) {
+                                    //Get a random value if the actual referenceValue belongs to the actual column
+                                    if (referenceValue.get(0).get(0).equals(columnFunction.get(1) + "." + columnFunction.get(2))) {
+                                        Random rd = new Random();
+                                        int randomInt = rd.nextInt(referenceValue.size());
+                                        dataRow[j] = referenceValue.get(randomInt).get(0);
+                                    }
+                                }
+                            }
+                        }
+                        j++;
+                    }
+                    
+                    //Handle the primary keys and search for one until it is a unique one
+                    boolean primaryKeyExists = true;
+                    ArrayList<String> primaryKey = new ArrayList<>();
+                    j = 0;
+                    while (primaryKeyExists) {
+                        //Reset the primary key
+                        primaryKey = new ArrayList<>();
+                        //Iterate through all primary keys
+                        for (ArrayList<String> primaryKeyAssignment : this.primaryKeyAssignments) {
+                            int columnIndex = Integer.parseInt(primaryKeyAssignment.get(1));
+                            
+                            //Get the parameter for the column function
+                            ArrayList<String> params = new ArrayList<>();
+                            int k = 0;
+                            for (String param : columnFunctions.get(columnIndex)) {
+                                if (k != 0) {
+                                    params.add(param);
+                                }
+                                k++;
+                            }
+                            
+                            //Get a value for the actual column
+                            if (!columnFunctions.get(columnIndex).get(0).equals("ref")) {
+                                //Generate a new value if it is no referencing column
+                                primaryKey.add(this.findAndExecuteFunction(columnFunctions.get(columnIndex).get(0), params));
+                            } else {
+                                //Get a value of the reference list if it is a referencing column
+                                //Iterate through reference value list
+                                for (ArrayList<ArrayList<String>> referenceValue : this.referenceValues) {
+                                    //Get a random value if the actual referenceValue belongs to the actual column
+                                    if (referenceValue.get(0).get(0).equals(columnFunctions.get(columnIndex).get(1) + "." + columnFunctions.get(columnIndex).get(2))) {
+                                        Random rd = new Random();
+                                        int randomInt = rd.nextInt(referenceValue.size() - 1) + 1;
+                                        primaryKey.add(referenceValue.get(randomInt).get(0));
+                                    }
+                                }
+                            }
+                        }
+                        
+                        //Leave the while scope if the new primary key does not exist
+                        if (!this.primaryKeyValues.contains(primaryKey)) {
+                            primaryKeyExists = false;
+                        }
+                        
+                        //Throw an exception if no primary key is found after 200 iterations
+                        if (j > 200) {
+                            throw new MySQLAlchemistException("Kein freier Primary-Key gefunden.", new Exception());
+                        }
+                        
+                        j++;
+                    }
+                    
+                    //Insert the new primary key in the data row
+                    j = 0;
+                    for (ArrayList<String> primaryKeyAssignment : this.primaryKeyAssignments) {
+                        int columnIndex = Integer.parseInt(primaryKeyAssignment.get(1));
+                        dataRow[columnIndex] = primaryKey.get(j);
+                        j++;
+                    }
+                    //Add the new primary to the primary key values of the actual relation/table
+                    this.primaryKeyValues.add(primaryKey);
+                    
+                    //Generate and execute an insert statement based on the data row
+                    this.generateAndExecuteInsertStatement(tableName, dataRow);
+                }
+            }
+            
+            /* NOT FINISHED!!!
             case "refAll": {
                 String refColumnName = refFunctionList.get(2);
                 ArrayList<ArrayList<String>> referenceList = new ArrayList<>();
@@ -270,154 +499,68 @@ public class DataGenerator {
             case "refRandom": {
                 
             }
-             */
-            
-            default: {                
-                for (i = 1; i < number; i++) {
-                    String[] dataRow = new String[this.columns];
-                    
-                    int j = 0;
-                    for (ArrayList<String> columnFunction : columnFunctions) {
-                        //Handle normal columns that are not primaryKey and not part of refAll
-                        if (!this.primaryKeyValues.get(0).contains(columnFunction.get(0).toUpperCase())) {
-                            ArrayList<String> params = new ArrayList<>();
-                            int k = 0;
-                            for (String param : columnFunction) {
-                                if (k != 0) {
-                                    params.add(param);
-                                }
-                                k++;
-                            }
-                            if (!columnFunction.get(0).equals("ref")) {
-                                dataRow[j] = this.findAndExecuteFunction(columnFunction.get(0), params);
-                            } else {
-                                for (ArrayList<ArrayList<String>> referenceValue : this.referenceValues) {
-                                    if (referenceValue.get(0).get(0).equals(columnFunction.get(1) + "." + columnFunction.get(2).toUpperCase())) {
-                                        Random rd = new Random();
-                                        int randomInt = rd.nextInt(referenceValue.size());
-                                        dataRow[j] = referenceValue.get(randomInt).get(0);
-                                    }
-                                }
-                            }
-                        }
-                        j++;
-                    }
-                    
-                    //Handle primary keys
-                    boolean primaryKeyExists = true;
-                    ArrayList<String> primaryKey = new ArrayList<>();
-                    j = 0;
-                    while (primaryKeyExists) {
-                        primaryKey = new ArrayList<>();
-                        for (int columnIndex : primaryKeyColumnIndex) {
-                            ArrayList<String> params = new ArrayList<>();
-                            int k = 0;
-                            for (String param : columnFunctions.get(columnIndex)) {
-                                if (k != 0) {
-                                    params.add(param);
-                                }
-                                k++;
-                            }
-                            if (!columnFunctions.get(columnIndex).get(0).equals("ref")) {
-                                primaryKey.add(this.findAndExecuteFunction(columnFunctions.get(columnIndex).get(0), params));
-                            } else {
-                                for (ArrayList<ArrayList<String>> referenceValue : this.referenceValues) {
-                                    if (referenceValue.get(0).get(0).equals(columnFunctions.get(columnIndex).get(1) + "." + columnFunctions.get(columnIndex).get(2).toUpperCase())) {
-                                        Random rd = new Random();
-                                        int randomInt = rd.nextInt(referenceValue.size() - 1) + 1;
-                                        primaryKey.add(referenceValue.get(randomInt).get(0));
-                                    }
-                                }
-                            }
-                        }
-                        if (!this.primaryKeyValues.contains(primaryKey)) {
-                            primaryKeyExists = false;
-                        }
-                        if (j > 200) {
-                            throw new MySQLAlchemistException("Kein freier Primary-Key gefunden.", new Exception());
-                        }
-                        j++;
-                    }
-                    j = 0;
-                    for (int columnIndex : primaryKeyColumnIndex) {
-                        dataRow[columnIndex] = primaryKey.get(j);
-                        j++;
-                    }
-                    this.primaryKeyValues.add(primaryKey);
-                    
-                    this.generateAndExecuteInsertStatement(tableName, dataRow);
-                }
-            }
+            */
         }
     }
     
-    private boolean checkPrimaryKeyStatus(int columnIndex) {
-        String columnIndexString = "" + columnIndex;
-        for (ArrayList<String> primaryKeyAssignment : this.primaryKeyAssignments) {
-            if (primaryKeyAssignment.get(1).equals(columnIndexString)) {
-                return true;
-            }
-        }
-        
-        return false;
-    }
-    
-    private int generateNumber(String numberFunction) throws MySQLAlchemistException {
-        StringTokenizer st = new StringTokenizer(numberFunction, "$");
-        String functionName = st.nextToken();
-        
-        int number = 5;
-        if (st.hasMoreTokens()) {
-            StringTokenizer stt = new StringTokenizer(st.nextToken(), ",");
-            ArrayList<String> params = new ArrayList<>();
-            while (stt.hasMoreTokens()) {
-                params.add(stt.nextToken());
-            }
-            switch(functionName) {
-                case "span": {
-                    if (params.size() == 2) {
-                        int param1 = Integer.parseInt(params.get(0));
-                        int param2 = Integer.parseInt(params.get(1));
-                        Random rand = new Random();
-                        number = rand.nextInt(param2) + param1;
-                    } else {
-                        throw new MySQLAlchemistException("Es werden zwei Parameter bei der Spannen-Funktion benötigt.", new Exception());
-                    }
-                    break;
-                }
-            }
-        } else {
-            number = Integer.parseInt(functionName);
-        }
-        
-        return number;
-    }
     /**
-     * Method findAndExecuteFunction
+     * Method generateAndExecuteInsertStatement.
      * 
-     * This method find the spezific function to generate data from the
-     * given function name and other parameters
+     * Generate and execute an insert statement with the given data row into
+     * the given table.
+     * 
+     * @param tableName String name of the table in which the data is inserted
+     * @param dataRow String[] data which is inserted
+     * @throws de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException
+     */
+    private void generateAndExecuteInsertStatement(String tableName, String[] dataRow) throws MySQLAlchemistException {
+        //Build the insert statement as a string from the data row stringarray
+        String insertedValues = "";
+        for (int i = 0; i < dataRow.length; i++) {
+            //Only insert no comma if it is the first value
+            if (i == 0) {
+                insertedValues += dataRow[i];
+            } else {
+                insertedValues += ", " + dataRow[i];
+            }
+        }
+        //Excute the insert statement
+        this.dbConn.executeSQLUpdateStatement(
+                this.conf.getString("auth.user"),
+                this.conf.getString("auth.pass"),
+                "INSERT INTO " + tableName + " VALUES(" + insertedValues + ")"
+        );
+    }
+    
+    /**
+     * Method findAndExecuteFunction.
+     * 
+     * This method finds the specific function to generate data from the
+     * given function name and other parameters.
+     * 
      * @param functionName the name of the fuction
      * @param params a list of paramters for the function
      * @return string with the generated data
-     * @throws MySQLAlchemistException Exception, if the user give not the correct parameters
+     * @throws de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException
+     *         Exception, if the user give not the correct parameters
      */
     private String findAndExecuteFunction(String functionName, ArrayList<String> params) throws MySQLAlchemistException{
         String result = "";
+        GenerateSpecificData gd = new GenerateSpecificData();
         switch (functionName) {
             case("random"): {
                 String para = params.get(0);
                 switch (para) {
                     case("int+"):{
-                        result = generateIntegerPos();
+                        result = gd.generateIntegerPos();
                         break;
                     }
                     case("int"):{
-                        result = generateInteger();
+                        result = gd.generateInteger();
                         break;
                     }
                     case("double"):{
-                        result = generateDouble();
+                        result = gd.generateDouble();
                         break;
                     }
                     case("string"):{
@@ -425,43 +568,43 @@ public class DataGenerator {
                         if(params.size() == 2){
                         para2 = Integer.parseInt(params.get(1));
                         }
-                        result = generateString(para2);
+                        result = gd.generateString(para2);
                         break;
                     }
                     case("firstname"):{
-                        result = generateFirstName();
+                        result = gd.generateFirstName();
                         break;
                     }
                     case("lastname"):{
-                        result = generateLastName();
+                        result = gd.generateLastName();
                         break;
                     }
                     case("fullname"):{
-                        result = generateFullName();
+                        result = gd.generateFullName();
                         break;
                     }
                     case("date"):{
-                        result = generateDate();
+                        result = gd.generateDate();
                         break;
                     }
                     case("business"):{
-                        result = generateBusinessName();
+                        result = gd.generateBusinessName();
                         break;
                     }
                     case("street"):{
-                        result = generateStreetName();
+                        result = gd.generateStreetName();
                         break;
                     }
                     case("city"):{
-                        result = generateCity();
+                        result = gd.generateCity();
                         break;
                     }
                     case("adress"):{
-                        result = generateAdress();
+                        result = gd.generateAdress();
                         break;
                     }
                     case("email"):{
-                        result = generateEmail();
+                        result = gd.generateEmail();
                         break;
                     }
                     default:{
@@ -473,7 +616,7 @@ public class DataGenerator {
                                 def = params.get(2); 
                             }
                         }
-                        result = generateCustomData(para, random, def);
+                        result = gd.generateCustomData(para, random, def);
                         break;
                     }
                 }
@@ -491,11 +634,11 @@ public class DataGenerator {
                 }
                 switch(para1){
                     case("int"):{
-                        result = generateMinInteger(para2);
+                        result = gd.generateMinInteger(para2);
                         break;
                     }
                     case("double"):{
-                        result = generateMinDouble(para2);
+                        result = gd.generateMinDouble(para2);
                         break;
                     }
                 }
@@ -513,11 +656,11 @@ public class DataGenerator {
                 }
                 switch(para1){
                     case("int"):{
-                        result = generateMaxInteger(para2);
+                        result = gd.generateMaxInteger(para2);
                         break;
                     }
                     case("double"):{
-                        result = generateMaxDouble(para2);
+                        result = gd.generateMaxDouble(para2);
                         break;
                     }
                 }
@@ -537,11 +680,11 @@ public class DataGenerator {
                 }
                 switch(para1){
                     case("int"):{
-                        result = generateBetweenInteger(para2, para3);
+                        result = gd.generateBetweenInteger(para2, para3);
                         break;
                     }
                     case("double"):{
-                        result = generateBetweenDouble(para2, para3);
+                        result = gd.generateBetweenDouble(para2, para3);
                         break;
                     }
                 }
@@ -561,11 +704,11 @@ public class DataGenerator {
                 }
                 switch(para1){
                     case("int"):{
-                        result = generateGaussInt(para2, para3);
+                        result = gd.generateGaussInt(para2, para3);
                         break;
                     }
                     case("double"):{
-                        result = generateGaussDouble(para2, para3);
+                        result = gd.generateGaussDouble(para2, para3);
                         break;
                     }
                 }
@@ -583,7 +726,7 @@ public class DataGenerator {
                 } else {
                     throw new MySQLAlchemistException("1 Parameter wird bei list benötigt", new Exception());
                 }
-                result = generateList(para);
+                result = gd.generateList(para);
                 break;
             }
             
@@ -599,342 +742,5 @@ public class DataGenerator {
             }
         }
         return result;
-    }
-
-    private void generateAndExecuteInsertStatement(String tableName, String[] dataRow) throws MySQLAlchemistException {
-        String insertedValues = "";
-        for (int i = 0; i < dataRow.length; i++) {
-            if (i == 0) {
-                insertedValues += dataRow[i];
-            } else {
-                insertedValues += ", " + dataRow[i];
-            }
-        }
-        this.dbConn.executeSQLUpdateStatement(
-                this.conf.getString("auth.user"),
-                this.conf.getString("auth.pass"),
-                "INSERT INTO " + tableName + " VALUES(" + insertedValues + ")"
-        );
-    }
-    
-    /**
-     * Method generateFirstName
-     * 
-     * Generates a random first name
-     * @return String with the name
-     */
-    public String generateFirstName() {
-        DataFactory df = new DataFactory();
-        String result = "'" + df.getFirstName() + "'";
-        return result;
-    }
-    
-    /**
-     * Method generateLastName
-     * 
-     * Generates a random last name
-     * @return String with the name
-     */   
-    public String generateLastName() {
-        DataFactory df = new DataFactory();
-        String result = "'" + df.getLastName() + "'";
-        return result;
-    }
-    
-    /**
-     * Method generateFullName
-     * 
-     * Generates a random first and last name
-     * @return String with the name
-     */  
-    public String generateFullName() {
-        DataFactory df = new DataFactory();
-        String result = "'" + df.getFirstName() + " " + df.getLastName() + "'";
-        return result;
-    }
-    
-    /**
-     * Method generateInteger
-     * 
-     * Generates a random integer
-     * @return String with the integer
-     */
-    public String generateInteger() {
-        Random r = new Random();
-        String result = "" + r.nextInt();
-        return result;
-    }
-    
-    /**
-     * Method generateIntegerPos
-     * 
-     * Generates a random positive integer
-     * @return String with the integer
-     */
-    public String generateIntegerPos() {
-        Random r = new Random();
-        int i = r.nextInt();
-        if(i < 0){
-            i = i*(-1);
-        }
-        String result = "" + i;
-        return result;
-    }
-    
-    /**
-     * Method generateDouble
-     * 
-     * Generates a random floating-point number
-     * @return String with the number
-     */
-    public String generateDouble() {
-        Random r = new Random();
-        String result = "" + r.nextDouble();
-        return result;
-    }
-    
-    /**
-     * Method generateString
-     * 
-     * Generates a random string
-     * @param length the length of the string
-     * @return String with the string
-     */
-    public String generateString(int length) {
-        DataFactory df = new DataFactory();
-        String result = "'" + df.getRandomChars(length) + "'";
-        return result;
-    }
-    
-    /**
-     * Method generateDate
-     * 
-     * Generates a random date "yyyy-MM-dd"
-     * @return String with the date
-     */
-    public String generateDate() {
-        DataFactory df = new DataFactory();
-        String date = new SimpleDateFormat("yyyy-MM-dd").format(df.getBirthDate());
-        String result = "'" + date + "'";
-        return result;
-    }
-    
-    /**
-     * Method generateBusinessName
-     * 
-     * Generates a random business name
-     * @return String with the name
-     */
-    public String generateBusinessName() {
-        DataFactory df = new DataFactory();
-        String result = "'" + df.getBusinessName() + "'";
-        return result;
-    }
-    
-    /**
-     * Method generateStreetName
-     * 
-     * Generates a random street name
-     * @return String with the name
-     */
-    public String generateStreetName() {
-        DataFactory df = new DataFactory();
-        String result = "'" + df.getStreetName() + "'";
-        return result;
-    }
-    
-    /**
-     * Method generateCity
-     * 
-     * Generates a random city name
-     * @return String with the city
-     */
-    public String generateCity() {
-        DataFactory df = new DataFactory();
-        String result = "'" + df.getCity() + "'";
-        return result;
-    }
-    
-    /**
-     * Method generateAdress
-     * 
-     * Generates a random adress
-     * @return String with the adress
-     */
-    public String generateAdress() {
-        DataFactory df = new DataFactory();
-        String result = "'" + df.getAddress() + "'";
-        return result;
-    }
-    
-    /**
-     * Method generateEmail
-     * 
-     * Generates a random email adress
-     * @return String with the email
-     */
-    public String generateEmail() {
-        DataFactory df = new DataFactory();
-        String result = "'" + df.getEmailAddress() + "'";
-        return result;
-    }
-    
-    /**
-     * Method generateMinInteger
-     * 
-     * Generates an integer greater than the parameter
-     * @param min the minimum integer
-     * @return String with the integer
-     */
-    public String generateMinInteger(int min) {
-        DataFactory df = new DataFactory();
-        String result = "" + df.getNumberBetween(min, 1000000);
-        return result;
-    }
-    
-    /**
-     * Method generateMinDouble
-     * 
-     * Generates a double greater than the parameter
-     * @param min the minimum double
-     * @return String with the double
-     */
-    public String generateMinDouble(int min) {
-        DataFactory df = new DataFactory();
-        String result = "" + df.getNumberBetween(min, 1000000) + "." + df.getNumberBetween(0, 99);
-        return result;
-    }
-    
-    /**
-     * Method generateMaxInteger
-     * 
-     * Generates an integer less than the parameter
-     * @param max the maximum integer
-     * @return String with the integer
-     */
-    public String generateMaxInteger(int max) {
-        DataFactory df = new DataFactory();
-        String result = "" + df.getNumberUpTo(max);
-        return result;
-    }
-    
-    /**
-     * Method generateMaxDouble
-     * 
-     * Generates a double less than the parameter
-     * @param max the maximum double
-     * @return String with the double
-     */
-    public String generateMaxDouble(int max) {
-        DataFactory df = new DataFactory();
-        String result = "" + df.getNumberUpTo(max) + "." + df.getNumberBetween(0, 99);
-        return result;
-    }
-    
-    /**
-     * Method generateBetweenInteger
-     * 
-     * Generates an integer between the parameter
-     * @param min the minimum integer
-     * @param max the maximum integer
-     * @return String with the integer
-     */
-    public String generateBetweenInteger(int min, int max) {
-        DataFactory df = new DataFactory();
-        String result = "" + df.getNumberBetween(min, max);
-        return result;
-    }
-    
-    /**
-     * Method generateBetweenDouble
-     * 
-     * Generates a double between the parameter
-     * @param min the minimum double
-     * @param max the maximum double
-     * @return String with the double
-     */
-    public String generateBetweenDouble(int min, int max) {
-        DataFactory df = new DataFactory();
-        String result = "" + df.getNumberBetween(min, max-1) + "." + df.getNumberBetween(0, 99);
-        return result;
-    }
-    
-    /**
-     * Method generateGaussInt
-     * 
-     * Generates an integer with the Gaussian distribution
-     * @param median the median of the Gaussian distribution
-     * @param sd the standard deviation	of the Gaussian distribution
-     * @return String with the integer
-     */
-    public String generateGaussInt(double median, double sd) {
-        Random r = new Random();
-        double d =  median + r.nextGaussian() * sd;
-        int i = (int) d;
-        String result = "" + i;
-        return result;
-    }
-    
-    /**
-     * Method generateGaussDouble
-     * 
-     * Generates a double with the Gaussian distribution
-     * @param median the median of the Gaussian distribution
-     * @param sd the standard deviation	of the Gaussian distribution
-     * @return String with the double
-     */
-    public String generateGaussDouble(double median, double sd) {
-        Random r = new Random();
-        double d =  median + r.nextGaussian() * sd;
-        String result = "" + d;
-        return result;
-    }
-    
-    /**
-     * Method generateList
-     * 
-     * Generates an integer of the list
-     * @param start the startelement
-     * @return String with the number
-     */
-    public String generateList(int start) {
-        String result = "" + start;
-        return result;
-    }
-    
-    /**
-     * Method generateCustomData
-     * 
-     * Generates a random string with our txt-files
-     * @param metaData the name of the txt-file
-     * @param random the percentage of how often the value or the default is chosen
-     * @param defaultValue the defaultvalue
-     * @return
-     * @throws MySQLAlchemistException 
-     */
-    public String generateCustomData(String metaData, int random, String defaultValue) throws MySQLAlchemistException {
-        try {
-            DataFactory df = new DataFactory();
-            String path = this.conf.getString("input.dataGenPath");
-            FileReader fr = new FileReader(path + metaData + ".txt");
-            BufferedReader br = new BufferedReader(fr);
-            String content = br.readLine();
-            StringTokenizer st = new StringTokenizer(content, ";");
-            ArrayList<String> values = new ArrayList();
-            while (st.hasMoreTokens()) {
-                values.add(st.nextToken());
-            }
-            String[] valuesStringArray = values.toArray(new String[values.size()]);
-            String result;
-                if(metaData.equals("size")){
-                    result = df.getItem(valuesStringArray, random, defaultValue);
-                } else{
-                    result = "'" + df.getItem(valuesStringArray, random, defaultValue) + "'";
-                }
-            return result;
-        } catch (IOException e) {
-            throw new MySQLAlchemistException("Fehler beim Generieren", e);
-        }
-        
     }
 }

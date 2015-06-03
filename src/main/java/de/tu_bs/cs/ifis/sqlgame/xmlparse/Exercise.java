@@ -5,7 +5,7 @@ import java.util.ArrayList;
 /**
  * class for the subtasks in the exercise
  *
- * @author Tobias
+ * @author Tobias Gruenhagen, Philip Holzhueter, Tobias Runge
  */
 public class Exercise {
 

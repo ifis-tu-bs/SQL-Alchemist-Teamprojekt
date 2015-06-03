@@ -19,7 +19,7 @@ import java.util.ArrayList;
  * Manage a task (create task, close task, update DB, load from DB, check
  * existence)
  *
- * @author Tobias
+ * @author Tobias Gruenhagen, Philip Holzhueter, Tobias Runge
  */
 public class Task {
 

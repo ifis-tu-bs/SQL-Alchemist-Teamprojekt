@@ -13,13 +13,12 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 /**
- * Class InputFile
+ * Class InputFile.
  *
  * Create tasks for each task in a input xml-file.
- * The file is checked and tasks
- * are only created, if the file is correct.
+ * The file is checked and tasks are only created if the file is correct.
  *
- * @author Tobias
+ * @author Tobias Gruenhagen, Philip Holzhueter, Tobias Runge
  */
 public class InputFile {
 
@@ -27,11 +26,21 @@ public class InputFile {
     private ArrayList<Task> tasks;
     
     private final Config conf = ConfigFactory.load();
-
+    
+    /**
+     * Getter for tasks.
+     * 
+     * @return ArrayList<Task> list of tasks
+     */
     public ArrayList<Task> getTasks() {
         return tasks;
     }
-
+    
+    /**
+     * Setter for tasks.
+     * 
+     * @param tasks ArrayList<Task> list of tasks
+     */
     public void setTasks(ArrayList<Task> tasks) {
         this.tasks = tasks;
     }
@@ -40,9 +49,10 @@ public class InputFile {
      * Constructor InputFile.
      *
      * @param file String, the content of the file
-     * @param isFile
+     * @param isFile boolean true if the String is a file name,
+     *        false if the String is a file string
      * @throws de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException
-     * Exception for the parsing of the document
+     *         Exception for the parsing of the document
      */
     public InputFile(String file, boolean isFile) throws MySQLAlchemistException {
         String filePath = conf.getString("input.xmlPath");
@@ -72,6 +82,7 @@ public class InputFile {
 
         //Make the xml-sructure-check
         XMLSyntaxCheck sych = new XMLSyntaxCheck();
+        //XSD FILE ANPASSEN!!!
         //sych.checkxml(this.filename);
 
         //Parse the xml-file und build the db-tables
