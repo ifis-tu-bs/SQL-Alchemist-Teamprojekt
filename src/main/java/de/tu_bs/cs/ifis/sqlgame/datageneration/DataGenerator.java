@@ -29,6 +29,8 @@ public class DataGenerator {
     private int columns = 0;
     private ArrayList<ArrayList<String>> primaryKeyAssignments = new ArrayList<>();
     private ArrayList<ArrayList<String>> primaryKeyValues = new ArrayList<>();
+    private ArrayList<ArrayList<String>> referenceAssignments = new ArrayList<>();
+    private ArrayList<ArrayList<ArrayList<String>>> referenceValues = new ArrayList<>();
     
     private final Config conf = ConfigFactory.load();
     
@@ -48,13 +50,24 @@ public class DataGenerator {
             for (String dataConstraint : rel.getDataGeneration()) {
                 int i;
                 ArrayList<ArrayList<String>> dataList = new ArrayList<>();
-                ArrayList<String> columnFunctions = new ArrayList<>();
+                ArrayList<ArrayList<String>> columnFunctions = new ArrayList<>();
+                ArrayList<String> refFunctionList = new ArrayList<>();
                 StringTokenizer st = new StringTokenizer(dataConstraint, ";");
                 
                 String numberFunction = st.nextToken();
                 String refFunction = st.nextToken();
                 while (st.hasMoreTokens()) {
-                    columnFunctions.add(st.nextToken());
+                    ArrayList<String> columnFunction = new ArrayList<>();
+                    StringTokenizer stt = new StringTokenizer(st.nextToken(), ",");
+                    while (stt.hasMoreTokens()) {
+                        columnFunction.add(stt.nextToken());
+                    }
+                    columnFunctions.add(columnFunction);
+                }
+                
+                st = new StringTokenizer(refFunction, "$");
+                while (st.hasMoreTokens()) {
+                    refFunctionList.add(st.nextToken());
                 }
                 
                 //Fill the list of primarykeys
@@ -64,8 +77,9 @@ public class DataGenerator {
                     if (i == 0) {
                         primaryKeyColumns = primaryKey;
                     } else {
-                        primaryKeyColumns += primaryKey;
+                        primaryKeyColumns += ", " + primaryKey;
                     }
+                    i++;
                 }
                 String selectStatement = "SELECT " + primaryKeyColumns + " FROM " + rel.getTableName();
                 this.primaryKeyValues = this.dbConn.executeSQLSelectStatement(
@@ -73,36 +87,15 @@ public class DataGenerator {
                         this.conf.getString("auth.pass"),
                         selectStatement
                 );
-
-                switch (refFunction) {
-                    case "none": {
-                        dataList = this.generateDataFromFunction(true, columnFunctions, numberFunction);
-                        break;
-                    }
-                    
-                    /*case "refAll": {
-                        i = 0;
-                        for (ArrayList<String> primaryKey : primaryKeys) {
-                            if (i >= 0) {
-                                dataList = this.generateDataFromFunction(true, primaryKeys.get(0), primaryKey, columnFunctions, numberFunction, dataList);
-                            }
-                            i++;
-                        }
-                        break;
-                    }
-                    
-                    case "refRandom": {
-                        Random rand = new Random();
-                        int randomNum = rand.nextInt(primaryKeys.get(0).size());
-                        dataList = this.generateDataFromFunction(true, primaryKeys.get(0), primaryKeys.get(randomNum), columnFunctions, numberFunction, dataList);
-                    }*/
-                }
                 
-                this.generateAndExecuteInsertStatements(rel.getTableName(), dataList);
+                this.generateDataFromFunction(rel.getTableName(), refFunctionList, columnFunctions, numberFunction);
             }
             
-            //Reset the primarykey list
-            this.primaryKeyValues = null;
+            //Reset the primarykey and reference lists
+            this.primaryKeyValues = new ArrayList<>();
+            this.primaryKeyAssignments = new ArrayList<>();
+            this.referenceValues = new ArrayList<>();
+            this.referenceAssignments = new ArrayList<>();
         }
     }
     
@@ -131,10 +124,10 @@ public class DataGenerator {
     private void calculateColumns(Relation rel) {
         String tuple = rel.getDataGeneration().get(0);
         StringTokenizer st = new StringTokenizer(tuple, ";");
-        this.columns = st.countTokens() - 1;
+        this.columns = st.countTokens() - 2;
     }
     
-    private ArrayList<ArrayList<String>> generateDataFromFunction(boolean refTypeNone, ArrayList<String> columnFunctions, String numberFunction ) throws MySQLAlchemistException {
+    private void generateDataFromFunction(String tableName, ArrayList<String> refFunctionList, ArrayList<ArrayList<String>> columnFunctions, String numberFunction ) throws MySQLAlchemistException {
         int i;
         int number = this.generateNumber(numberFunction);
         ArrayList<ArrayList<String>> data = new ArrayList<>();
@@ -148,63 +141,214 @@ public class DataGenerator {
             }
         }
         
-        if (refTypeNone) {
-            i = 0;
-            ArrayList<ArrayList<ArrayList<String>>> primaryKeyFunctions = new ArrayList<>();
-            for (String columnFunction : columnFunctions) {
-                StringTokenizer st = new StringTokenizer(columnFunction, "$");
-                String functionName = st.nextToken();
+        ArrayList<ArrayList<ArrayList<String>>> functions = new ArrayList<>();
+        for (ArrayList<String> columnFunction : columnFunctions) {
+            if (columnFunction.get(0).equals("ref")) {
+                ArrayList<String> referenceAssigment = new ArrayList<>();
+                referenceAssigment.add("" + i);
+                referenceAssigment.add(columnFunction.get(1));
+                referenceAssigment.add(columnFunction.get(2));
+                this.referenceAssignments.add(referenceAssigment);
 
-                ArrayList<String> params = new ArrayList<>();
-                if (st.hasMoreTokens()) {
-                    StringTokenizer stt = new StringTokenizer(st.nextToken(), ",");
-                    while (stt.hasMoreTokens()) {
-                        params.add(stt.nextToken());
-                    }
-                }
-                if (!primaryKeyColumnIndex.contains(i)) {
-                    for (int j = 0; j < number; j++) {
-                        column.add(this.findAndExecuteFunction(functionName, params));
-                    }
-                    data.add(column);
-                    column = new ArrayList<>();
-                } else {
-                    ArrayList<ArrayList<String>> primaryKeyFunction = new ArrayList<>();
-                    ArrayList<String> functionNameList = new ArrayList<>();
-                    functionNameList.add(functionName);
-                    primaryKeyFunction.add(functionNameList);
-                    primaryKeyFunction.add(params);
-                    primaryKeyFunctions.add(primaryKeyFunction);
-                }
-                i++;
-            }
-            
-            //Handle primary keys
-            ArrayList<ArrayList<String>> primaryKeys = new ArrayList<>();
-            for (i = 0; i < number; i++) {
-                boolean primaryKeyExists = true;
-                ArrayList<String> primaryKey = new ArrayList<>();
-                while (primaryKeyExists) {
-                    for (int j = 0; j < this.primaryKeyValues.get(0).size(); j++) {
-                        primaryKey.add(this.findAndExecuteFunction(primaryKeyFunctions.get(j).get(0).get(0), primaryKeyFunctions.get(j).get(1)));
-                    }
-                    if (!this.primaryKeyValues.contains(primaryKey)) {
-                        primaryKeyExists = false;
-                    }
-                }
-                primaryKeys.add(primaryKey);
-            }
-            
-            for (i = 0; i < this.primaryKeyValues.get(0).size(); i++) {
-                for (ArrayList<String> primaryKey : primaryKeys) {
-                    column.add(primaryKey.get(i));
-                }
-                data.add(Integer.parseInt(this.primaryKeyAssignments.get(i).get(1)), column);
-                column = new ArrayList<>();
+                String selectStatement = "SELECT " + columnFunction.get(2) + " FROM " + columnFunction.get(1);
+                ArrayList<ArrayList<String>> referenceColumn = this.dbConn.executeSQLSelectStatement(
+                        this.conf.getString("auth.user"),
+                        this.conf.getString("auth.pass"),
+                        selectStatement
+                );
+                String columnName = referenceColumn.get(0).get(0);
+                referenceColumn.get(0).set(0, columnFunction.get(1) + "." + columnName);
+                this.referenceValues.add(referenceColumn);
             }
         }
         
-        return data;
+        switch (refFunctionList.get(0)) {
+            /*
+             * NOT USEBALL FOR NOW
+             *
+             *
+            case "refAll": {
+                String refColumnName = refFunctionList.get(2);
+                ArrayList<ArrayList<String>> referenceList = new ArrayList<>();
+                i = 0;
+                for (ArrayList<ArrayList<String>> referenceValue : this.referenceValues) {
+                    if (referenceValue.get(0).get(0).equals(refColumnName)) {
+                        referenceList = this.referenceValues.get(i);
+                    }
+                    i++;
+                }
+                
+                for (i = 1; i < referenceList.size(); i++) {
+                    String[] dataRow = new String[this.columns];
+                    
+                    int j = 0;
+                    for (ArrayList<String> columnFunction : columnFunctions) {
+                        //Handle normal columns that are not primaryKey and not part of refAll
+                        if (!this.primaryKeyValues.get(0).contains(columnFunction.get(0).toUpperCase())) {
+                            ArrayList<String> params = new ArrayList<>();
+                            int k = 0;
+                            for (String param : columnFunction) {
+                                if (k != 0) {
+                                    params.add(param);
+                                }
+                                k++;
+                            }
+                            
+                            if (!columnFunction.get(0).equals("ref")) {
+                                dataRow[j] = this.findAndExecuteFunction(columnFunction.get(0), params);
+                            } else {
+                                for (ArrayList<ArrayList<String>> referenceValue : this.referenceValues) {
+                                    if (referenceValue.get(0).get(0).equals(columnFunction.get(2))) {
+                                        Random rd = new Random();
+                                        int randomInt = rd.nextInt(referenceValue.size());
+                                        dataRow[j] = referenceValue.get(randomInt).get(0);
+                                    }
+                                }
+                            }
+                        }
+                        
+                        //Handle refAll function
+                        if (!this.primaryKeyValues.get(0).contains(referenceList.get(0).get(0).toUpperCase())) {
+                            dataRow[j] = referenceList.get(i).get(0);
+                        }
+                        
+                        j++;
+                    }
+                    
+                    //Handle primary keys
+                    boolean primaryKeyExists = true;
+                    ArrayList<String> primaryKey = new ArrayList<>();
+                    j = 0;
+                    while (primaryKeyExists) {
+                        int k = 0;
+                        for (int columnIndex : primaryKeyColumnIndex) {
+                            if (this.primaryKeyValues.get(0).get(k).equals(referenceList.get(0).get(0).toUpperCase())) {
+                                primaryKey.add(referenceList.get(i).get(0));
+                            } else {
+                                ArrayList<String> params = new ArrayList<>();
+                                int l = 0;
+                                for (String param : columnFunctions.get(columnIndex)) {
+                                    if (l != 0) {
+                                        params.add(param);
+                                    }
+                                    l++;
+                                }
+                                if (!columnFunctions.get(columnIndex).get(0).equals("ref")) {
+                                    primaryKey.add(this.findAndExecuteFunction(columnFunctions.get(columnIndex).get(0), params));
+                                } else {
+                                    for (ArrayList<ArrayList<String>> referenceValue : this.referenceValues) {
+                                        if (referenceValue.get(0).get(0).equals(columnFunctions.get(columnIndex).get(2).toUpperCase())) {
+                                            Random rd = new Random();
+                                            int randomInt = rd.nextInt(referenceValue.size());
+                                            primaryKey.add(referenceValue.get(randomInt).get(0));
+                                        }
+                                    }
+                                }
+                            }
+                            k++;
+                        }
+                        if (!this.primaryKeyValues.contains(primaryKey)) {
+                            primaryKeyExists = false;
+                        }
+                        if (j > 200) {
+                            throw new MySQLAlchemistException("Kein freier Primary-Key gefunden.", new Exception());
+                        }
+                        j++;
+                    }
+                    
+                    j = 0;
+                    for (int columnIndex : primaryKeyColumnIndex) {
+                        dataRow[columnIndex] = primaryKey.get(j);
+                        j++;
+                    }
+                    this.primaryKeyValues.add(primaryKey);
+                    
+                    this.generateAndExecuteInsertStatement(tableName, dataRow);
+                }
+            }
+            
+            case "refRandom": {
+                
+            }
+             */
+            
+            default: {                
+                for (i = 1; i < number; i++) {
+                    String[] dataRow = new String[this.columns];
+                    
+                    int j = 0;
+                    for (ArrayList<String> columnFunction : columnFunctions) {
+                        //Handle normal columns that are not primaryKey and not part of refAll
+                        if (!this.primaryKeyValues.get(0).contains(columnFunction.get(0).toUpperCase())) {
+                            ArrayList<String> params = new ArrayList<>();
+                            int k = 0;
+                            for (String param : columnFunction) {
+                                if (k != 0) {
+                                    params.add(param);
+                                }
+                                k++;
+                            }
+                            if (!columnFunction.get(0).equals("ref")) {
+                                dataRow[j] = this.findAndExecuteFunction(columnFunction.get(0), params);
+                            } else {
+                                for (ArrayList<ArrayList<String>> referenceValue : this.referenceValues) {
+                                    if (referenceValue.get(0).get(0).equals(columnFunction.get(1) + "." + columnFunction.get(2).toUpperCase())) {
+                                        Random rd = new Random();
+                                        int randomInt = rd.nextInt(referenceValue.size());
+                                        dataRow[j] = referenceValue.get(randomInt).get(0);
+                                    }
+                                }
+                            }
+                        }
+                        j++;
+                    }
+                    
+                    //Handle primary keys
+                    boolean primaryKeyExists = true;
+                    ArrayList<String> primaryKey = new ArrayList<>();
+                    j = 0;
+                    while (primaryKeyExists) {
+                        primaryKey = new ArrayList<>();
+                        for (int columnIndex : primaryKeyColumnIndex) {
+                            ArrayList<String> params = new ArrayList<>();
+                            int k = 0;
+                            for (String param : columnFunctions.get(columnIndex)) {
+                                if (k != 0) {
+                                    params.add(param);
+                                }
+                                k++;
+                            }
+                            if (!columnFunctions.get(columnIndex).get(0).equals("ref")) {
+                                primaryKey.add(this.findAndExecuteFunction(columnFunctions.get(columnIndex).get(0), params));
+                            } else {
+                                for (ArrayList<ArrayList<String>> referenceValue : this.referenceValues) {
+                                    if (referenceValue.get(0).get(0).equals(columnFunctions.get(columnIndex).get(1) + "." + columnFunctions.get(columnIndex).get(2).toUpperCase())) {
+                                        Random rd = new Random();
+                                        int randomInt = rd.nextInt(referenceValue.size() - 1) + 1;
+                                        primaryKey.add(referenceValue.get(randomInt).get(0));
+                                    }
+                                }
+                            }
+                        }
+                        if (!this.primaryKeyValues.contains(primaryKey)) {
+                            primaryKeyExists = false;
+                        }
+                        if (j > 200) {
+                            throw new MySQLAlchemistException("Kein freier Primary-Key gefunden.", new Exception());
+                        }
+                        j++;
+                    }
+                    j = 0;
+                    for (int columnIndex : primaryKeyColumnIndex) {
+                        dataRow[columnIndex] = primaryKey.get(j);
+                        j++;
+                    }
+                    this.primaryKeyValues.add(primaryKey);
+                    
+                    this.generateAndExecuteInsertStatement(tableName, dataRow);
+                }
+            }
+        }
     }
     
     private boolean checkPrimaryKeyStatus(int columnIndex) {
@@ -437,23 +581,19 @@ public class DataGenerator {
         return result;
     }
     
-    private void generateAndExecuteInsertStatements(String tableName, ArrayList<ArrayList<String>> dataList) throws MySQLAlchemistException {
-        ArrayList<String> insertStatements = new ArrayList<>();
-        for (int i = 0; i < dataList.get(0).size(); i++) {
-            String insertedValues = "";
-            for (int j = 0; j < dataList.size(); j++) {
-                if (j == 0) {
-                    insertedValues += dataList.get(j).get(i);
-                } else {
-                    insertedValues += ", " + dataList.get(j).get(i);
-                }
+    private void generateAndExecuteInsertStatement(String tableName, String[] dataRow) throws MySQLAlchemistException {
+        String insertedValues = "";
+        for (int i = 0; i < dataRow.length; i++) {
+            if (i == 0) {
+                insertedValues += dataRow[i];
+            } else {
+                insertedValues += ", " + dataRow[i];
             }
-            insertStatements.add("INSERT INTO " + tableName + " VALUES(" + insertedValues + ")");
         }
         this.dbConn.executeSQLUpdateStatement(
                 this.conf.getString("auth.user"),
                 this.conf.getString("auth.pass"),
-                insertStatements
+                "INSERT INTO " + tableName + " VALUES(" + insertedValues + ")"
         );
     }
     
@@ -499,7 +639,7 @@ public class DataGenerator {
     
     public String generateString(int length) {
         DataFactory df = new DataFactory();
-        String result = df.getRandomChars(length);
+        String result = "'" + df.getRandomChars(length) + "'";
         return result;
     }
     
@@ -591,8 +731,7 @@ public class DataGenerator {
     public String generateCustomData(String metaData, int random, String defaultValue) throws MySQLAlchemistException {
         try {
             DataFactory df = new DataFactory();
-            Config conf = ConfigFactory.load();
-            String path = conf.getString("input.dataGenPath");
+            String path = this.conf.getString("input.dataGenPath");
             FileReader fr = new FileReader(path + metaData + ".txt");
             BufferedReader br = new BufferedReader(fr);
             String content = br.readLine();
@@ -615,28 +754,3 @@ public class DataGenerator {
         
     }
 }
-
-/*
-                i = 0;
-                for (String columnValue : refTable.get(1)) {
-                    ArrayList<String> primaryKey = new ArrayList<>();
-                    if (i == 0) {
-                        int j = 0;
-                        for (String columnName : refTable.get(0)) {
-                            if (rel.getPrimaryKey().contains(columnName.toLowerCase())) {
-                                primaryKey.add("" + j);
-                            }
-                            j++;
-                        }
-                    }
-
-                    if (i % columns == 0) {
-                        primaryKeys.add(primaryKey);
-                    } else {
-                        if (rel.getPrimaryKey().contains(refTable.get(0).get(i % columns).toLowerCase())) {
-                            primaryKey.add(columnValue);
-                        }
-                        i++;
-                    }
-                }
-*/

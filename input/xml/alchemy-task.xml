@@ -14,16 +14,14 @@
     
     <schema>
       <relation><!--how would we handle autoincrement ids here?-->
-        <intension>CREATE TABLE Powders(id int not null, pname varchar(100) not null, color varchar(50), price int, PRIMARY KEY (id, pname))</intension>
+        <intension>CREATE TABLE Powders(id int not null primary key, pname varchar(100), color varchar(50), price int)</intension>
         <extension>
           <tuple>INSERT INTO Powders(id, pname, color) VALUES (1, 'Magic Glitter', 'red')</tuple>
         </extension>
         <metadata>
           <tablename>powders</tablename>
           <primarykey>id</primarykey>
-          <primarykey>pname</primarykey>
-          <datageneration>5;none;random$int;random$chemical element,80;random$colour;random$int</datageneration>
-          <datageneration>100;none;random$int;random$chemical element,80;random$colour;random$int</datageneration>
+          <datageneration>10;none;max,int,20;random,chemical element,80;random,colour;random,int</datageneration>
         </metadata>
       </relation>
       <relation>
@@ -31,14 +29,25 @@
       	<extension>
       		<tuple>INSERT INTO Effects(id, ename) VALUES (1, 'Dizzyness')</tuple>
       	</extension>
+        <metadata>
+          <tablename>effects</tablename>
+          <primarykey>id</primarykey>
+          <datageneration>10;none;max,int,20;random,effect,80;random,string,200</datageneration>
+        </metadata>
       </relation>
       <relation>
-      	<intension>CREATE TABLE p2e(pid int  not null, eid int not null, strength int, PRIMARY KEY (pid, eid), FOREIGN KEY (pid) REFERENCES Powders(id), FOREIGN KEY (eid) REFERENCES Effects(id))</intension>
+      	<intension>CREATE TABLE p2e(pid int not null, eid int not null, strength int, PRIMARY KEY (pid, eid), FOREIGN KEY (pid) REFERENCES Powders(id), FOREIGN KEY (eid) REFERENCES Effects(id))</intension>
       	<extension>
             <tuple>
                  INSERT INTO p2e VALUES (1, 1, 4)
             </tuple>
-        </extension><!--Can we prevent automatically inserting more tuples for dizzyness? So that it stays unqiue for the red glitter powder?--><!--I wonder how data generation works: Should we provide some hints here? i.e. we need at least 100 powders, and 20 effects, and each powerd should have 0..5 effects each?-->
+        </extension>
+        <metadata>
+          <tablename>p2e</tablename>
+          <primarykey>pid</primarykey>
+          <primarykey>eid</primarykey>
+          <datageneration>5;none;ref,powders,id;ref,effects,id;max,int,200</datageneration>
+        </metadata><!--Can we prevent automatically inserting more tuples for dizzyness? So that it stays unqiue for the red glitter powder?--><!--I wonder how data generation works: Should we provide some hints here? i.e. we need at least 100 powders, and 20 effects, and each powerd should have 0..5 effects each?-->
       </relation>
     </schema>
     

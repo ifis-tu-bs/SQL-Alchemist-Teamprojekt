@@ -345,8 +345,8 @@ public class DBConnection {
             result.add(resultRow);
             
             while (rs.next()) {
+                resultRow = new ArrayList<>();
                 for (int i = 0; i < columnsNumber; i++) {
-                    resultRow = new ArrayList<>();
                     resultRow.add(rs.getString(i + 1));
                 }
                 result.add(resultRow);
