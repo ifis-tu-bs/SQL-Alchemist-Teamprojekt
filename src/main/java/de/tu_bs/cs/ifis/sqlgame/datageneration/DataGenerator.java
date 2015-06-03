@@ -540,15 +540,26 @@ public class DataGenerator {
             }
             
             case("gauss"):{
-                double para1;
+                String para1;
                 double para2;
-                if(params.size() == 2){
-                para1 = Double.parseDouble(params.get(0));
-                para2 = Double.parseDouble(params.get(1));
+                double para3;
+                if(params.size() == 3){
+                    para1 = params.get(0);
+                    para2 = Double.parseDouble(params.get(1));
+                    para3 = Double.parseDouble(params.get(2));
                 } else {
-                    throw new MySQLAlchemistException("2 Parameter werden bei gauss benötigt", new Exception());
+                    throw new MySQLAlchemistException("3 Parameter werden bei gauss benötigt", new Exception());
                 }
-                result = generateGauss(para1, para2);
+                switch(para1){
+                    case("int"):{
+                        result = generateGaussInt(para2, para3);
+                        break;
+                    }
+                    case("double"):{
+                        result = generateGaussDouble(para2, para3);
+                        break;
+                    }
+                }
                 break;
             }
             
@@ -716,7 +727,15 @@ public class DataGenerator {
         return result;
     }
     
-    public String generateGauss(double median, double sd) {
+    public String generateGaussInt(double median, double sd) {
+        Random r = new Random();
+        double d =  median + r.nextGaussian() * sd;
+        int i = (int) d;
+        String result = "" + i;
+        return result;
+    }
+    
+    public String generateGaussDouble(double median, double sd) {
         Random r = new Random();
         double d =  median + r.nextGaussian() * sd;
         String result = "" + d;
