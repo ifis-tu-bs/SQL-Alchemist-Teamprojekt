@@ -29,7 +29,7 @@
           <tuple>INSERT INTO Comic(no, title, publisher) VALUES (18, 'Wonderboy Rocks', 'Marvel');</tuple>
           <tuple>INSERT INTO Comic(no, title, publisher) VALUES (21, 'Young Nastyman''s Revenge', 'Marvel');</tuple>
         </extension>
-        <metadata>          <primarykey>no</primarykey>          <datageneration>5$none;max$1,int;random$string;max$1,int;random$string</datageneration>        </metadata>      </relation>
+        <metadata>         <tablename>comic</tablename>          <primarykey>no</primarykey>          <datageneration>5$none;max$1,int;random$string;max$1,int;random$string</datageneration>        </metadata>      </relation>
       <relation>
         <intension>
           CREATE TABLE PoweredPerson (

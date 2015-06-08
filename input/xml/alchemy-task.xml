@@ -46,7 +46,7 @@
           <tablename>p2e</tablename>
           <primarykey>pid</primarykey>
           <primarykey>eid</primarykey>
-          <datageneration>5;refRandom,powders,id;ref,powders,id;ref,effects,id;max,int,200</datageneration>
+          <datageneration>5;refAll,powders,id;ref,powders,id;ref,effects,id;max,int,200</datageneration>
         </metadata><!--Can we prevent automatically inserting more tuples for dizzyness? So that it stays unqiue for the red glitter powder?--><!--I wonder how data generation works: Should we provide some hints here? i.e. we need at least 100 powders, and 20 effects, and each powerd should have 0..5 effects each?-->
       </relation>
     </schema>
