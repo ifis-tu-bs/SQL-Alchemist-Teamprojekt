@@ -21,7 +21,7 @@
         <metadata>
           <tablename>powders</tablename>
           <primarykey>id</primarykey>
-          <datageneration>10;none;max,int,20;random,chemical element,80;random,colour;random,int</datageneration>
+          <datageneration>10;none;max,int,100;random,chemical element,80;random,colour;random,int</datageneration>
         </metadata>
       </relation>
       <relation>
@@ -32,7 +32,7 @@
         <metadata>
           <tablename>effects</tablename>
           <primarykey>id</primarykey>
-          <datageneration>10;none;max,int,20;random,effect,80;random,string,200</datageneration>
+          <datageneration>10;none;max,int,100;random,effect,80;random,string,200</datageneration>
         </metadata>
       </relation>
       <relation>
@@ -46,7 +46,7 @@
           <tablename>p2e</tablename>
           <primarykey>pid</primarykey>
           <primarykey>eid</primarykey>
-          <datageneration>5;none;ref,powders,id;ref,effects,id;max,int,200</datageneration>
+          <datageneration>5;refRandom,powders,id;ref,powders,id;ref,effects,id;max,int,200</datageneration>
         </metadata><!--Can we prevent automatically inserting more tuples for dizzyness? So that it stays unqiue for the red glitter powder?--><!--I wonder how data generation works: Should we provide some hints here? i.e. we need at least 100 powders, and 20 effects, and each powerd should have 0..5 effects each?-->
       </relation>
     </schema>

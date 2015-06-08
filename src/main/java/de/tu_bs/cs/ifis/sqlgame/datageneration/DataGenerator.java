@@ -289,7 +289,7 @@ public class DataGenerator {
             //No reference type
             case "none": {
                 //Create and execute "number" times insert statements 
-                for (i = 1; i < number; i++) {
+                for (i = 1; i <= number; i++) {
                     //New Stringarray for the inserted data
                     String[] dataRow = new String[this.columns];
                     
@@ -319,7 +319,7 @@ public class DataGenerator {
                                     //Get a random value if the actual referenceValue belongs to the actual column
                                     if (referenceValue.get(0).get(0).equals(columnFunction.get(1) + "." + columnFunction.get(2))) {
                                         Random rd = new Random();
-                                        int randomInt = rd.nextInt(referenceValue.size());
+                                        int randomInt = rd.nextInt(referenceValue.size() - 1) + 1;
                                         dataRow[j] = referenceValue.get(randomInt).get(0);
                                     }
                                 }
@@ -393,67 +393,83 @@ public class DataGenerator {
                     //Generate and execute an insert statement based on the data row
                     this.generateAndExecuteInsertStatement(tableName, dataRow);
                 }
+                
+                break;
             }
             
-            /* NOT FINISHED!!!
             case "refAll": {
+                String refTableName = refFunctionList.get(1);
                 String refColumnName = refFunctionList.get(2);
+                
                 ArrayList<ArrayList<String>> referenceList = new ArrayList<>();
                 i = 0;
                 for (ArrayList<ArrayList<String>> referenceValue : this.referenceValues) {
-                    if (referenceValue.get(0).get(0).equals(refColumnName)) {
+                    if (referenceValue.get(0).get(0).equals(refTableName + "." + refColumnName)) {
                         referenceList = this.referenceValues.get(i);
                     }
                     i++;
                 }
                 
+                //Iterate through every referenced value
                 for (i = 1; i < referenceList.size(); i++) {
-                    String[] dataRow = new String[this.columns];
-                    
-                    int j = 0;
-                    for (ArrayList<String> columnFunction : columnFunctions) {
-                        //Handle normal columns that are not primaryKey and not part of refAll
-                        if (!this.primaryKeyValues.get(0).contains(columnFunction.get(0).toUpperCase())) {
-                            ArrayList<String> params = new ArrayList<>();
-                            int k = 0;
-                            for (String param : columnFunction) {
-                                if (k != 0) {
-                                    params.add(param);
+                    //Create and execute "number" times insert statements 
+                    for (int j = 1; j <= number; j++) {
+                        //New Stringarray for the inserted data
+                        String[] dataRow = new String[this.columns];
+
+                        //Iterate through the column functions to generate a value for every column
+                        int k = 0;
+                        for (ArrayList<String> columnFunction : columnFunctions) {
+                            //Handle the normal columns that are not a primary key
+                            if (!this.primaryKeyValues.get(0).contains(columnFunction.get(0))) {
+                                //Get the parameter for the column function
+                                ArrayList<String> params = new ArrayList<>();
+                                int l = 0;
+                                for (String param : columnFunction) {
+                                    if (l != 0) {
+                                        params.add(param);
+                                    }
+                                    l++;
                                 }
-                                k++;
-                            }
-                            
-                            if (!columnFunction.get(0).equals("ref")) {
-                                dataRow[j] = this.findAndExecuteFunction(columnFunction.get(0), params);
-                            } else {
-                                for (ArrayList<ArrayList<String>> referenceValue : this.referenceValues) {
-                                    if (referenceValue.get(0).get(0).equals(columnFunction.get(2))) {
-                                        Random rd = new Random();
-                                        int randomInt = rd.nextInt(referenceValue.size());
-                                        dataRow[j] = referenceValue.get(randomInt).get(0);
+
+                                //Get a value for the actual column
+                                if (!columnFunction.get(0).equals("ref")) {
+                                    //Generate a new value if it is no referencing column
+                                    dataRow[k] = this.findAndExecuteFunction(columnFunction.get(0), params);
+                                } else {
+                                    //Proof if the referencing column is the reference function column
+                                    if (referenceList.get(0).get(0).equals(columnFunction.get(1) + "." + columnFunction.get(2))) {
+                                        //Get one value by order of the reference list
+                                        dataRow[k] = referenceList.get(i).get(0);
+                                    } else {
+                                        //Get a value of the reference list if it is a referencing column
+                                        //Iterate through reference value list
+                                        for (ArrayList<ArrayList<String>> referenceValue : this.referenceValues) {
+                                            //Get a random value if the actual referenceValue belongs to the actual column
+                                            if (referenceValue.get(0).get(0).equals(columnFunction.get(1) + "." + columnFunction.get(2))) {
+                                                Random rd = new Random();
+                                                int randomInt = rd.nextInt(referenceValue.size() - 1) + 1;
+                                                dataRow[k] = referenceValue.get(randomInt).get(0);
+                                            }
+                                        }
                                     }
                                 }
                             }
+                            k++;
                         }
                         
-                        //Handle refAll function
-                        if (!this.primaryKeyValues.get(0).contains(referenceList.get(0).get(0).toUpperCase())) {
-                            dataRow[j] = referenceList.get(i).get(0);
-                        }
-                        
-                        j++;
-                    }
-                    
-                    //Handle primary keys
-                    boolean primaryKeyExists = true;
-                    ArrayList<String> primaryKey = new ArrayList<>();
-                    j = 0;
-                    while (primaryKeyExists) {
-                        int k = 0;
-                        for (int columnIndex : primaryKeyColumnIndex) {
-                            if (this.primaryKeyValues.get(0).get(k).equals(referenceList.get(0).get(0).toUpperCase())) {
-                                primaryKey.add(referenceList.get(i).get(0));
-                            } else {
+                        //Handle the primary keys and search for one until it is a unique one
+                        boolean primaryKeyExists = true;
+                        ArrayList<String> primaryKey = new ArrayList<>();
+                        k = 0;
+                        while (primaryKeyExists) {
+                            //Reset the primary key
+                            primaryKey = new ArrayList<>();
+                            //Iterate through all primary keys
+                            for (ArrayList<String> primaryKeyAssignment : this.primaryKeyAssignments) {
+                                int columnIndex = Integer.parseInt(primaryKeyAssignment.get(1));
+
+                                //Get the parameter for the column function
                                 ArrayList<String> params = new ArrayList<>();
                                 int l = 0;
                                 for (String param : columnFunctions.get(columnIndex)) {
@@ -462,44 +478,199 @@ public class DataGenerator {
                                     }
                                     l++;
                                 }
+
+                                //Get a value for the actual column
                                 if (!columnFunctions.get(columnIndex).get(0).equals("ref")) {
+                                    //Generate a new value if it is no referencing column
                                     primaryKey.add(this.findAndExecuteFunction(columnFunctions.get(columnIndex).get(0), params));
                                 } else {
+                                    //Proof if the referencing column is the reference function column
+                                    if (referenceList.get(0).get(0).equals(columnFunctions.get(columnIndex).get(1) + "." + columnFunctions.get(columnIndex).get(2))) {
+                                        //Get one value by order of the reference list
+                                        primaryKey.add(referenceList.get(i).get(0));
+                                    } else {
+                                        //Get a value of the reference list if it is a referencing column
+                                        //Iterate through reference value list
+                                        for (ArrayList<ArrayList<String>> referenceValue : this.referenceValues) {
+                                            //Get a random value if the actual referenceValue belongs to the actual column
+                                            if (referenceValue.get(0).get(0).equals(columnFunctions.get(columnIndex).get(1) + "." + columnFunctions.get(columnIndex).get(2))) {
+                                                Random rd = new Random();
+                                                int randomInt = rd.nextInt(referenceValue.size() - 1) + 1;
+                                                primaryKey.add(referenceValue.get(randomInt).get(0));
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+                            //Leave the while scope if the new primary key does not exist
+                            if (!this.primaryKeyValues.contains(primaryKey)) {
+                                primaryKeyExists = false;
+                            }
+
+                            //Throw an exception if no primary key is found after 200 iterations
+                            if (k > 200) {
+                                throw new MySQLAlchemistException("Kein freier Primary-Key gefunden.", new Exception());
+                            }
+
+                            k++;
+                        }
+                        
+                        //Insert the new primary key in the data row
+                        k = 0;
+                        for (ArrayList<String> primaryKeyAssignment : this.primaryKeyAssignments) {
+                            int columnIndex = Integer.parseInt(primaryKeyAssignment.get(1));
+                            dataRow[columnIndex] = primaryKey.get(k);
+                            k++;
+                        }
+                        //Add the new primary to the primary key values of the actual relation/table
+                        this.primaryKeyValues.add(primaryKey);
+
+                        //Generate and execute an insert statement based on the data row
+                        this.generateAndExecuteInsertStatement(tableName, dataRow);
+                    }
+                }
+                
+                break;
+            }
+            
+            case "refRandom": {
+                String refTableName = refFunctionList.get(1);
+                String refColumnName = refFunctionList.get(2);
+                
+                ArrayList<ArrayList<String>> referenceList = new ArrayList<>();
+                i = 0;
+                for (ArrayList<ArrayList<String>> referenceValue : this.referenceValues) {
+                    if (referenceValue.get(0).get(0).equals(refTableName + "." + refColumnName)) {
+                        referenceList = this.referenceValues.get(i);
+                    }
+                    i++;
+                }
+                
+                //Create and execute "number" times insert statements 
+                for (i = 1; i <= number; i++) {
+                    //New Stringarray for the inserted data
+                    String[] dataRow = new String[this.columns];
+
+                    //Iterate through the column functions to generate a value for every column
+                    int j = 0;
+                    for (ArrayList<String> columnFunction : columnFunctions) {
+                        //Handle the normal columns that are not a primary key
+                        if (!this.primaryKeyValues.get(0).contains(columnFunction.get(0))) {
+                            //Get the parameter for the column function
+                            ArrayList<String> params = new ArrayList<>();
+                            int k = 0;
+                            for (String param : columnFunction) {
+                                if (k != 0) {
+                                    params.add(param);
+                                }
+                                k++;
+                            }
+
+                            //Get a value for the actual column
+                            if (!columnFunction.get(0).equals("ref")) {
+                                //Generate a new value if it is no referencing column
+                                dataRow[j] = this.findAndExecuteFunction(columnFunction.get(0), params);
+                            } else {
+                                //Proof if the referencing column is the reference function column
+                                if (referenceList.get(0).get(0).equals(columnFunction.get(1) + "." + columnFunction.get(2))) {
+                                    //Get one value by random of the reference list
+                                    Random rd = new Random();
+                                    int randomInt = rd.nextInt(referenceList.size() - 1) + 1;
+                                    dataRow[j] = referenceList.get(randomInt).get(0);
+                                } else {
+                                    //Get a value of the reference list if it is a referencing column
+                                    //Iterate through reference value list
                                     for (ArrayList<ArrayList<String>> referenceValue : this.referenceValues) {
-                                        if (referenceValue.get(0).get(0).equals(columnFunctions.get(columnIndex).get(2).toUpperCase())) {
+                                        //Get a random value if the actual referenceValue belongs to the actual column
+                                        if (referenceValue.get(0).get(0).equals(columnFunction.get(1) + "." + columnFunction.get(2))) {
                                             Random rd = new Random();
-                                            int randomInt = rd.nextInt(referenceValue.size());
+                                            int randomInt = rd.nextInt(referenceList.size() - 1) + 1;
+                                            dataRow[j] = referenceValue.get(randomInt).get(0);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        j++;
+                    }
+
+                    //Handle the primary keys and search for one until it is a unique one
+                    boolean primaryKeyExists = true;
+                    ArrayList<String> primaryKey = new ArrayList<>();
+                    j = 0;
+                    while (primaryKeyExists) {
+                        //Reset the primary key
+                        primaryKey = new ArrayList<>();
+                        //Iterate through all primary keys
+                        for (ArrayList<String> primaryKeyAssignment : this.primaryKeyAssignments) {
+                            int columnIndex = Integer.parseInt(primaryKeyAssignment.get(1));
+
+                            //Get the parameter for the column function
+                            ArrayList<String> params = new ArrayList<>();
+                            int k = 0;
+                            for (String param : columnFunctions.get(columnIndex)) {
+                                if (k != 0) {
+                                    params.add(param);
+                                }
+                                k++;
+                            }
+
+                            //Get a value for the actual column
+                            if (!columnFunctions.get(columnIndex).get(0).equals("ref")) {
+                                //Generate a new value if it is no referencing column
+                                primaryKey.add(this.findAndExecuteFunction(columnFunctions.get(columnIndex).get(0), params));
+                            } else {
+                                //Proof if the referencing column is the reference function column
+                                if (referenceList.get(0).get(0).equals(columnFunctions.get(columnIndex).get(1) + "." + columnFunctions.get(columnIndex).get(2))) {
+                                    //Get one value by random of the reference list
+                                    Random rd = new Random();
+                                    int randomInt = rd.nextInt(referenceList.size() - 1) + 1;
+                                    primaryKey.add(referenceList.get(randomInt).get(0));
+                                } else {
+                                    //Get a value of the reference list if it is a referencing column
+                                    //Iterate through reference value list
+                                    for (ArrayList<ArrayList<String>> referenceValue : this.referenceValues) {
+                                        //Get a random value if the actual referenceValue belongs to the actual column
+                                        if (referenceValue.get(0).get(0).equals(columnFunctions.get(columnIndex).get(1) + "." + columnFunctions.get(columnIndex).get(2))) {
+                                            Random rd = new Random();
+                                            int randomInt = rd.nextInt(referenceValue.size() - 1) + 1;
                                             primaryKey.add(referenceValue.get(randomInt).get(0));
                                         }
                                     }
                                 }
                             }
-                            k++;
                         }
+
+                        //Leave the while scope if the new primary key does not exist
                         if (!this.primaryKeyValues.contains(primaryKey)) {
                             primaryKeyExists = false;
                         }
+
+                        //Throw an exception if no primary key is found after 200 iterations
                         if (j > 200) {
                             throw new MySQLAlchemistException("Kein freier Primary-Key gefunden.", new Exception());
                         }
+
                         j++;
                     }
-                    
+
+                    //Insert the new primary key in the data row
                     j = 0;
-                    for (int columnIndex : primaryKeyColumnIndex) {
+                    for (ArrayList<String> primaryKeyAssignment : this.primaryKeyAssignments) {
+                        int columnIndex = Integer.parseInt(primaryKeyAssignment.get(1));
                         dataRow[columnIndex] = primaryKey.get(j);
                         j++;
                     }
+                    //Add the new primary to the primary key values of the actual relation/table
                     this.primaryKeyValues.add(primaryKey);
-                    
+
+                    //Generate and execute an insert statement based on the data row
                     this.generateAndExecuteInsertStatement(tableName, dataRow);
                 }
-            }
-            
-            case "refRandom": {
                 
+                break;
             }
-            */
         }
     }
     

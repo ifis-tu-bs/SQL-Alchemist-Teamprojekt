@@ -29,7 +29,7 @@ public class Test {
             Iterator it = testFile.getTasks().iterator();
             Task task = (Task) it.next();
             task.startTask("local");
-            task.insertToDb();
+            //task.insertToDb();
             task.generateData();
             
             

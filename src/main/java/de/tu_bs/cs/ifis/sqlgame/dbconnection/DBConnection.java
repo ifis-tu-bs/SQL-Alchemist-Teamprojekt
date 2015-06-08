@@ -332,26 +332,21 @@ public class DBConnection {
     private ArrayList<ArrayList<String>> transformResultSet(ResultSet rs) throws SQLException {
         ArrayList<ArrayList<String>> result = new ArrayList<>();
         ArrayList<String> resultColumnName = new ArrayList<>();
-        ArrayList<String> resultRow = new ArrayList<>();
+        ArrayList<String> resultRow;
         ResultSetMetaData rsmd = rs.getMetaData();
         int columnsNumber = rsmd.getColumnCount();
-        if (rs.next()) {
+        
+        for (int i = 0; i < columnsNumber; i++) {
+            resultColumnName.add(rsmd.getColumnName(i + 1));
+        }
+        result.add(resultColumnName);
+            
+        while (rs.next()) {
+            resultRow = new ArrayList<>();
             for (int i = 0; i < columnsNumber; i++) {
-                resultColumnName.add(rsmd.getColumnName(i + 1));
                 resultRow.add(rs.getString(i + 1));
             }
-            result.add(resultColumnName);
             result.add(resultRow);
-            
-            while (rs.next()) {
-                resultRow = new ArrayList<>();
-                for (int i = 0; i < columnsNumber; i++) {
-                    resultRow.add(rs.getString(i + 1));
-                }
-                result.add(resultRow);
-            }
-        } else {
-            return null;
         }
 
         return result;
