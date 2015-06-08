@@ -164,7 +164,25 @@ Dabei wird das Statement (String) als Parameter an die Methode übergeben und da
 Die Methode \textit{printData} gibt alle Inhalte des Aufgabenblattes aus.
 Es wird für jede der drei Listen nacheinander (für die Header, Relations und Exercises) die Anzahl der Elemente und anschließend die Elemente selbst ausgegeben.
 
-\chapter{Data Generation}
+\chapter{Datengenerierung}
+
+\section{XML-Tags}
+
+Wir benötigen zusätzliche Informationen in der XML-Datei, damit wir Daten generieren können. Ein Beispiel zeigen wir in \autoref{code:xml}. Innerhalb des \texttt{relation-Tags} benötigen wir ein \texttt{metadata-Tag}. In diesem wird im Tag \texttt{tablename} der Name der Tabelle, wie in der intension angegeben, genannt. Außerdem benötigen wir pro Primärschlüssel den Tag \texttt{primarykey} in dem der Schlüssel angegeben wird. Zum Schluss folgt der Tag \texttt{datageneration} mit dem die Daten generiert werden können. Dieser Tag kann mehrmals benutzt werden, sollte mehrere verschiedene Daten der Tabelle hinzugefügt werden. Der genaue Aufbau für die Datengenerierung folgt in \autoref{cha:aufbau}.
+
+\begin{figure}[h]
+	\centering
+	\begin{minipage}{0.9\textwidth}
+		\lstinputlisting[
+			caption={XML-Datei für die Meta-informationen},
+			label={code:xml}
+		]{Beispiel.xml}
+	\end{minipage}
+\end{figure}
+
+
+\section{Aufbau für die Datengenerierung}
+\label{cha:aufbau}
 
 Im Folgenden wird erläutert wie Daten generiert werden können. Der Allgemeine Aufbau ist:
 
@@ -220,4 +238,18 @@ Beispiel: random,string,5 oder random,firstname oder random,colour,80,weiß
 \end{itemize}
 
 weitere Beispiele: min,int,5 oder gauss,int,5,4
+
+\bigskip\noindent
+Sollen für eine Tabelle Daten generiert werden, die eine andere Tabelle referenziert, muss bei der entsprechenden Spalte angegeben werden, auf welche Spalte einer anderen Tabelle sich diese Spalte bezieht. Wie in \autoref{code:xml2} ersichtlich wird für die Spalte \texttt{ref,Tabellenname,Spalte} angegeben, also z.B. \texttt{ref,powders,id}.
+
+\begin{figure}[h]
+	\centering
+	\begin{minipage}{0.9\textwidth}
+		\lstinputlisting[
+			caption={weitere XML-Datei für die Meta-informationen},
+			label={code:xml2}
+		]{Beispiel2.xml}
+	\end{minipage}
+\end{figure}
+
 \end{document}
