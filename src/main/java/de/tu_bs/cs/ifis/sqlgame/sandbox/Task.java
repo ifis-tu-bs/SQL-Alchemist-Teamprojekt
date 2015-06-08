@@ -231,8 +231,9 @@ public class Task {
         String[] variables = new String[1];
         variables[0] = this.name;
 
-        List result = this.fixDbConn.executeSQLSelectPreparedStatement(this.conf.getString("auth.user"), this.conf.getString("auth.pass"), selectStatement, variables);
-        return !(result == null);
+        ArrayList<ArrayList<String>> result = this.fixDbConn.executeSQLSelectPreparedStatement(this.conf.getString("auth.user"), this.conf.getString("auth.pass"), selectStatement, variables);
+        return !(result.size() == 1);
+        
     }
 
     /**
