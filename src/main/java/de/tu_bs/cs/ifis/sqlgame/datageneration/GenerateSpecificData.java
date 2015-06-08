@@ -132,6 +132,38 @@ public class GenerateSpecificData {
     }
     
     /**
+     * Method generateWord.
+     * 
+     * Generates a random word.
+     * 
+     * @param length the length of the word
+     * @return String with the word
+     */
+    public String generateWord(int length) {
+        DataFactory df = new DataFactory();
+        String result = "'" + df.getRandomWord(length) + "'";
+        return result;
+    }
+    
+    /**
+     * Method generateText.
+     * 
+     * Generates a random text.
+     * 
+     * @param number the number of the word in the text
+     * @return String with the text
+     */
+    public String generateText(int number) {
+        DataFactory df = new DataFactory();
+        String result = "'";
+        for(int i = 1; i < number; i++){
+            result += df.getRandomWord() + " ";
+        }
+        result += df.getRandomWord() + ".'";
+        return result;
+    }
+    
+    /**
      * Method generateDate.
      * 
      * Generates a random date "yyyy-MM-dd".
