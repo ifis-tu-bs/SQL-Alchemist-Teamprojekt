@@ -32,12 +32,21 @@
     <xs:sequence>
       <xs:element name="intension" type="string_type"/>
       <xs:element name="extension" minOccurs="0" maxOccurs="1" type="extension_type"/>
+      <xs:element name="metadata" minOccurs="0" maxOccurs="1" type="metadata_type"/>
     </xs:sequence>
   </xs:complexType>
   
   <xs:complexType name="extension_type">
     <xs:sequence>
       <xs:element name="tuple" maxOccurs="unbounded" type="string_type"/>
+    </xs:sequence>
+  </xs:complexType>
+  
+  <xs:complexType name="metadata_type">
+    <xs:sequence>
+      <xs:element name="tablename" minOccurs="1" maxOccurs="1" type="string_type"/>
+      <xs:element name="primarykey" minOccurs="1" maxOccurs="unbounded" type="string_type"/>
+      <xs:element name="datageneration" minOccurs="0" maxOccurs="unbounded" type="string_type"/>
     </xs:sequence>
   </xs:complexType>
   

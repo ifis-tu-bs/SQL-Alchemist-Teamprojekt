@@ -742,6 +742,22 @@ public class DataGenerator {
                         result = gd.generateString(para2);
                         break;
                     }
+                    case("word"):{
+                        int para2 = 5;
+                        if(params.size() == 2){
+                        para2 = Integer.parseInt(params.get(1));
+                        }
+                        result = gd.generateWord(para2);
+                        break;
+                    }
+                    case("text"):{
+                        int para2 = 20;
+                        if(params.size() == 2){
+                        para2 = Integer.parseInt(params.get(1));
+                        }
+                        result = gd.generateText(para2);
+                        break;
+                    }
                     case("firstname"):{
                         result = gd.generateFirstName();
                         break;

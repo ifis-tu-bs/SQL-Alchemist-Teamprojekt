@@ -184,7 +184,7 @@ Wir benötigen zusätzliche Informationen in der XML-Datei, damit wir Daten gene
 \section{Aufbau für die Datengenerierung}
 \label{cha:aufbau}
 
-Im Folgenden wird erläutert wie Daten generiert werden können. Der Allgemeine Aufbau ist:
+Im Folgenden wird erläutert wie Daten generiert werden können. Der Allgemeine Aufbau ist (keine Leerzeichen vor oder nach Kommata/Semikolons):
 
 \texttt{Anzahl;Ref;Spalte1;Spalte2;Spalte3;...}
 
@@ -240,7 +240,7 @@ Beispiel: random,string,5 oder random,firstname oder random,colour,80,weiß
 weitere Beispiele: min,int,5 oder gauss,int,5,4
 
 \bigskip\noindent
-Sollen für eine Tabelle Daten generiert werden, die eine andere Tabelle referenziert, muss bei der entsprechenden Spalte angegeben werden, auf welche Spalte einer anderen Tabelle sich diese Spalte bezieht. Wie in \autoref{code:xml2} ersichtlich wird für die Spalte \texttt{ref,Tabellenname,Spalte} angegeben, also z.B. \texttt{ref,powders,id}.
+Sollen für eine Tabelle Daten generiert werden, die eine andere Tabelle referenziert, muss bei der entsprechenden Spalte angegeben werden, auf welche Spalte der referenzierten Tabelle sich diese Spalte bezieht. Wie in \autoref{code:xml2} ersichtlich wird für die Spalte \texttt{ref,Tabellenname,Spalte} angegeben, also z.B. \texttt{ref,powders,id}.
 
 \begin{figure}[h]
 	\centering
