@@ -184,19 +184,30 @@ Wir benötigen zusätzliche Informationen in der XML-Datei, damit wir Daten gene
 \section{Aufbau für die Datengenerierung}
 \label{cha:aufbau}
 
-Im Folgenden wird erläutert wie Daten generiert werden können. Der Allgemeine Aufbau ist (keine Leerzeichen vor oder nach Kommata/Semikolons):
+Im Folgenden wird erläutert, wie Daten generiert werden können. Der Allgemeine Aufbau ist (keine Leerzeichen vor oder nach Kommata/Semikolons):\\
 
 \texttt{Anzahl;Ref;Spalte1;Spalte2;Spalte3;...}
 
-\bigskip\noindent
-Anzahl besteht aus einer Zahl oder \texttt{span,Anfang,Ende}\\
-Ref ist noch nicht implementiert und im Moment sollte \texttt{none} angegeben werden\\
-Spalte: hier werden die Daten für eine Spalte generiert und alle Parameter werden durch ein Komma getrennt. Also ist der Aufbau einer Spalte:
+\begin{itemize}
+\item[1.] Anzahl: Anzahl besteht aus einer Zahl oder \texttt{span,Anfang,Ende}.
+\item[2.] Ref: Mit Ref kann angegeben werden, dass sich die generierten Daten auf Werte aus einer anderen Tabelle beziehen (referenzieren). Hierbei wird unterschieden zwischen drei Möglichkeiten:
+\begin{itemize}
+\item \texttt{none}, was besagt, dass es keine Referenzierung gibt
+\item \texttt{refAll}, was besagt, dass für alle Werte der referenzierten Spalte genau Anzahl Reihen generiert werden
+\item \texttt{refRandom}, was besagt, dass für alle Werte der referenzierten Spalte genau Anzahl Reihen generiert werden
+\end{itemize}
+Der Aufbau von Ref ist der Folgende:
 
-\texttt{Para1,Para2,Para3,...}
+\texttt{RefType,referenzierter Tabellenname,referenzierter Spaltenname}
+
+\item[3.] Spalte: Hier werden die Daten für eine Spalte generiert und alle Parameter werden durch ein Komma getrennt. Also ist der Aufbau einer Spalte:
+
+\texttt{Funktionsname,Para1,Para2,...}
+
+\end{itemize}
 
 \bigskip\noindent
-\textbf{erste Parameter:}
+\textbf{Funktionsname einer Spalte (mit den dazugehörigen Parametern):}
 \begin{itemize}
 
 \item random: zufälliger Eintrag
