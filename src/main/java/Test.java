@@ -29,8 +29,8 @@ public class Test {
             Iterator it = testFile.getTasks().iterator();
             Task task = (Task) it.next();
             task.startTask("local");
-            task.insertToDb();
-            task.generateData();
+            //task.insertToDb();
+            //task.generateData();
             
             
             InputFile testString = new InputFile("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
@@ -65,6 +65,7 @@ public class Test {
             "          <tuple>INSERT INTO Comic(no, title, publisher) VALUES (21, 'Young Nastyman''s Revenge', 'Marvel');</tuple>\n" +
             "        </extension>\n" +
             "        <metadata>" +
+            "         <tablename>comic</tablename>" +            
             "          <primarykey>no</primarykey>" +
             "          <datageneration>5$none;max$1,int;random$string;max$1,int;random$string</datageneration>" +
             "        </metadata>" +

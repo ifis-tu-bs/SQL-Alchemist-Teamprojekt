@@ -82,8 +82,8 @@ public class InputFile {
 
         //Make the xml-sructure-check
         XMLSyntaxCheck sych = new XMLSyntaxCheck();
-        //XSD FILE ANPASSEN!!!
-        //sych.checkxml(this.filename);
+
+        sych.checkxml(this.filename);
 
         //Parse the xml-file und build the db-tables
         MySAXParser msp = new MySAXParser();
