@@ -233,7 +233,6 @@ public class Task {
 
         ArrayList<ArrayList<String>> result = this.fixDbConn.executeSQLSelectPreparedStatement(this.conf.getString("auth.user"), this.conf.getString("auth.pass"), selectStatement, variables);
         return !(result.size() == 1);
-        
     }
 
     /**
