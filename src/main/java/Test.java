@@ -29,8 +29,9 @@ public class Test {
             Iterator it = testFile.getTasks().iterator();
             Task task = (Task) it.next();
             task.startTask("local");
-            //task.insertToDb();
-            task.generateData();
+            task.insertToDb();
+            task.generateData("referenceStatement");
+            task.generateData("userData");
             
             
             InputFile testString = new InputFile("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +

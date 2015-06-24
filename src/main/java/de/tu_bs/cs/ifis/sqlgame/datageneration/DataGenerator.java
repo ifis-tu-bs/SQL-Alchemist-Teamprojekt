@@ -1,15 +1,18 @@
 package de.tu_bs.cs.ifis.sqlgame.datageneration;
 
 import com.typesafe.config.*;
+import net.sf.jsqlparser.*;
 
 import de.tu_bs.cs.ifis.sqlgame.dbconnection.DBConnection;
 import de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException;
+import de.tu_bs.cs.ifis.sqlgame.xmlparse.Exercise;
 import de.tu_bs.cs.ifis.sqlgame.xmlparse.Relation;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 import java.util.StringTokenizer;
+import net.sf.jsqlparser.parser.CCJSqlParserManager;
+import net.sf.jsqlparser.parser.CCJSqlParserTokenManager;
 
 /**
  * Class DataGenerator.
@@ -21,9 +24,14 @@ import java.util.StringTokenizer;
 public class DataGenerator {
     
     /**
-     * List with the relations for the task
+     * List with the relations of the task
      */
-    private final List<Relation> relations;
+    private final ArrayList<Relation> relations;
+    
+    /**
+     * List with the exercises of the task
+     */
+    private final ArrayList<Exercise> exercises;
     
     /**
      * Database connection to speak with the database.
@@ -73,24 +81,60 @@ public class DataGenerator {
      * Initialize the local attributes relations and dbConn with the given
      * parameter.
      * 
-     * @param relations ArrayList<String> list with the relations of the task
+     * @param relations ArrayList<Relation> list with the relations of the task
+     * @param exercises ArrayList<Exercise> list with the exercises of the task
      * @param dbConn DBConnection database connection to execute sql statements
      */
-    public DataGenerator(ArrayList<Relation> relations, DBConnection dbConn) {
+    public DataGenerator(ArrayList<Relation> relations, ArrayList<Exercise> exercises, DBConnection dbConn) {
         this.relations = relations;
+        this.exercises = exercises;
         this.dbConn = dbConn;
     }
     
     /**
-     * Method generateData.
+     * Method generateFixExtension.
      * 
-     * Grab the metadata and bring it into ArrayLists. Generate insert
-     * statements for each table of the task based on the metadata
+     * Grab the reference select statements and generate an extension so that
+     * there is always enough data if the select statement is executed.
+     * 
+     * @throws de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException
+     */
+    public void generateSelectExtension() throws MySQLAlchemistException {
+        //Iterate through all exercises of the task
+        for (Exercise exe : this.exercises) {
+            String selectStatement = exe.getReferencestatement();
+            selectStatement = selectStatement.toLowerCase();
+            ArrayList<String> tablesToSelectFrom = null;
+            ArrayList<ArrayList<String>> columnsNeedData = null;
+            
+            CCJSqlParserManager spm = new CCJSqlParserManager();
+            //HIER WEITER
+            
+            StringTokenizer st = new StringTokenizer(selectStatement, "from");
+            //String in front of first from is not needed
+            st.nextToken();
+            String withTablestoSelectFrom = st.nextToken();
+            
+            st = new StringTokenizer(selectStatement);
+            
+            if (st.nextToken().equals("select")) {
+                
+            } else {
+                throw new MySQLAlchemistException("Das Referenzstatement ist kein SELECT - Statement.", new Exception());
+            }
+        }
+    }
+    
+    /**
+     * Method generateFixExtension.
+     * 
+     * Grab the extension to be generated and generate the extension. Generate
+     * insert statements for each table of the task based on the tuples
      * of the xml file.
      * 
      * @throws de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException
      */
-    public void generateData() throws MySQLAlchemistException {
+    public void generateFixExtension() throws MySQLAlchemistException {
         //Iterate through all relations of the task
         for (Relation rel : this.relations) {
             //Break if no data has to be generated

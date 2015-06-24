@@ -19,6 +19,7 @@
   <classpathentry kind="lib" path="C:\Users\Tobias\.ivy2\cache\org.fluttercode.datafactory\datafactory\jars\datafactory-0.8.jar" scope="compile"/>
   <classpathentry kind="lib" path="C:\Users\Tobias\.ivy2\cache\org.apache.logging.log4j\log4j-api\jars\log4j-api-2.2.jar" scope="compile"/>
   <classpathentry kind="lib" path="C:\Users\Tobias\.ivy2\cache\com.typesafe\config\bundles\config-1.3.0-M3.jar" scope="compile"/>
+  <classpathentry kind="lib" path="C:\Users\Tobias\.ivy2\cache\net.sf.jsqlparser\jsqlparser\jars\jsqlparser-0.8.0.jar" scope="compile"/>
   <classpathentry kind="lib" path="C:\Users\Tobias\.ivy2\cache\junit\junit-dep\jars\junit-dep-4.10.jar" scope="compile"/>
   <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
   <classpathentry kind="output" path="bin"/>

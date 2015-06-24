@@ -82,7 +82,6 @@ public class InputFile {
 
         //Make the xml-sructure-check
         XMLSyntaxCheck sych = new XMLSyntaxCheck();
-
         sych.checkxml(this.filename);
 
         //Parse the xml-file und build the db-tables

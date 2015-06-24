@@ -1,8 +1,8 @@
-06-08 14:30:17 jdbc[3]: exception
+06-17 12:43:10 jdbc[3]: exception
 org.h2.jdbc.JdbcSQLException: Tabelle "POWDERS" besteht bereits
 Table "POWDERS" already exists; SQL statement:
 CREATE TABLE Powders(id int not null primary key, pname varchar(100), color varchar(50), price int) [42101-176]
-06-08 14:33:14 jdbc[3]: exception
-org.h2.jdbc.JdbcSQLException: Syntax Fehler in SQL Befehl "DELETE *[*] FROM POWDERS"; erwartet "identifier"
-Syntax error in SQL statement "DELETE *[*] FROM POWDERS"; expected "identifier"; SQL statement:
-DELETE * FROM POWDERS [42001-176]
+06-17 14:26:08 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Tabelle "POWDERS" besteht bereits
+Table "POWDERS" already exists; SQL statement:
+CREATE TABLE Powders(id int not null primary key, pname varchar(100), color varchar(50), price int) [42101-176]
