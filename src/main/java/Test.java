@@ -31,8 +31,9 @@ public class Test {
             Task task = (Task) it.next();
             task.startTask("local");
             task.insertToDb();
-            task.generateData();
             System.out.println(task.isUserStatementCorrect("SELECT * FROM Powders WHERE color='red'", 1));
+            task.generateData("referenceStatement");
+            task.generateData("userData");
             
             /**
             InputFile testString = new InputFile("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +

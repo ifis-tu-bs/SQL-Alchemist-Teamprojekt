@@ -36,6 +36,18 @@
         </metadata>
       </relation>
       <relation>
+      	<intension>CREATE TABLE WIZARDS(name varchar(100)not null, pid int not null, PRIMARY KEY(name, pid), FOREIGN KEY (pid) REFERENCES Powders(id))</intension>
+      	<extension>
+      		<tuple>INSERT INTO WIZARDS(name, pid) VALUES ('Big Magician', 1)</tuple>
+      	</extension>
+        <metadata>
+          <tablename>wizards</tablename>
+          <primarykey>name</primarykey>
+          <primarykey>pid</primarykey>
+          <datageneration>span0,5;none;random,fullname;ref,powders,id</datageneration>
+        </metadata>
+      </relation>
+      <relation>
       	<intension>CREATE TABLE p2e(pid int not null, eid int not null, strength int, PRIMARY KEY (pid, eid), FOREIGN KEY (pid) REFERENCES Powders(id), FOREIGN KEY (eid) REFERENCES Effects(id))</intension>
       	<extension>
             <tuple>

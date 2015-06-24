@@ -6,7 +6,6 @@ import de.tu_bs.cs.ifis.sqlgame.datageneration.DataGenerator;
 import de.tu_bs.cs.ifis.sqlgame.dbconnection.*;
 import de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException;
 import java.util.Iterator;
-import java.util.List;
 import org.h2.tools.DeleteDbFiles;
 import de.tu_bs.cs.ifis.sqlgame.xmlparse.Exercise;
 import de.tu_bs.cs.ifis.sqlgame.xmlparse.Header;
@@ -350,15 +349,29 @@ public class Task {
     }
     
     /**
-     * Method generateData.
+     * Method generateFixExtension.
      * 
      * Generates insert statements for the task.
      * 
+     * @param generateType String type of generation, can be userData for the generated extension
+     *                     or referenceStatement for the reference statements
      * @throws de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException
      */
-    public void generateData() throws MySQLAlchemistException {
-        DataGenerator dg = new DataGenerator(this.myRelation, this.tmpDbConn);
-        dg.generateData();
+    public void generateData(String generateType) throws MySQLAlchemistException {
+        DataGenerator dg = new DataGenerator(this.myRelation, this.myExercise, this.tmpDbConn);
+        
+        //Switch the generate type
+        switch (generateType) {
+            case "userData": {
+                dg.generateFixExtension();
+                break;
+            }
+            
+            case "referenceStatement": {
+                dg.generateSelectExtension();
+                break;
+            }
+        }
     }
 
     /**

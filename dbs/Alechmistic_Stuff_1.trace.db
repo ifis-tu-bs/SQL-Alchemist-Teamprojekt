@@ -1,7 +1,12 @@
-06-08 14:30:17 jdbc[3]: exception
+06-17 12:43:10 jdbc[3]: exception
 org.h2.jdbc.JdbcSQLException: Tabelle "POWDERS" besteht bereits
 Table "POWDERS" already exists; SQL statement:
 CREATE TABLE Powders(id int not null primary key, pname varchar(100), color varchar(50), price int) [42101-176]
+06-17 14:26:08 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Tabelle "POWDERS" besteht bereits
+Table "POWDERS" already exists; SQL statement:
+CREATE TABLE Powders(id int not null primary key, pname varchar(100), color varchar(50), price int) [42101-176]
+<<<<<<< HEAD
 06-08 14:33:14 jdbc[3]: exception
 org.h2.jdbc.JdbcSQLException: Syntax Fehler in SQL Befehl "DELETE *[*] FROM POWDERS"; erwartet "identifier"
 Syntax error in SQL statement "DELETE *[*] FROM POWDERS"; expected "identifier"; SQL statement:
@@ -54,3 +59,5 @@ Method is only allowed for a query. Use execute or executeUpdate instead of exec
 	at sbt.Logger$$anon$4.apply(Logger.scala:90)
 	at sbt.TrapExit$App.run(TrapExit.scala:244)
 	at java.lang.Thread.run(Thread.java:745)
+=======
+>>>>>>> 7f77d01b8d1e2b5461f9fe3a776a9d0c1b0f7a4c
