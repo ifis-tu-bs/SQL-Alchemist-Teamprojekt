@@ -58,6 +58,7 @@
   
   <xs:complexType name="subtask_type">
     <xs:sequence>
+      <xs:element name="subtaskid" type="subtaskid_type"/>
       <xs:element name="tasktexts" type="tasktexts_type"/>
       <xs:element name="solution" type="solution_type"/>
       <xs:element name="requiredterms" minOccurs="0" maxOccurs="1" type="terms_type"/>
@@ -72,6 +73,13 @@
     </xs:sequence>
   </xs:complexType>
   
+  <xs:simpleType name="subtaskid_type">
+    <xs:restriction base="xs:integer">
+      <xs:minInclusive value="1"/>
+      <xs:maxInclusive value="100000"/>
+    </xs:restriction>
+  </xs:simpleType>
+
   <xs:complexType name="tasktexts_type">
     <xs:sequence>
       <xs:element name="tasktext" minOccurs="1" maxOccurs="unbounded" type="multilanguage_type"/>

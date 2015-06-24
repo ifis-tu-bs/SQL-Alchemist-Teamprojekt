@@ -53,6 +53,7 @@
     
     <subtasks>
       <subtask><!--(1..n)-->
+        <subtaskid>1</subtaskid>
         <tasktexts>
           <tasktext language="EN">Ohhkey...to start simple, just create a result set of with the ID of all "red" powders.</tasktext>
         </tasktexts>
@@ -65,6 +66,7 @@
         <points>1</points>
       </subtask>
       <subtask>
+        <subtaskid>2</subtaskid>
         <tasktexts>
           <tasktext language="EN">That was simple. Lets do something more complex. Get me all Powders which have a unique effect, i.e. an effect not shared by any other powder. Please sort that list by the powder's price from most expensive to cheapest.</tasktext>
         </tasktexts>
@@ -73,10 +75,10 @@
       		<referencestatement>
       			SELECT * FROM Powders p JOIN p2e pe ON pe.pid=p.id WHERE pe.eid IN (SELECT eid FROM p2e GROUP BY eid HAVING count(pid)=1) ORDER BY p.price DESC
       		</referencestatement>
-      		 <evaluationstrategy>LIST</evaluationstrategy>
+      		<evaluationstrategy>LIST</evaluationstrategy>
       	</solution>
         <points>2</points>    
-      	</subtask>
+      </subtask>
     </subtasks>
     
   </task>

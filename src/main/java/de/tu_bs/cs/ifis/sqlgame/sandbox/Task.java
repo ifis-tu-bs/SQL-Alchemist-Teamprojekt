@@ -398,6 +398,32 @@ public class Task {
             return result;
     }
     
+    public boolean isUserStatementCorrect(String Statement, int subtaskid) throws MySQLAlchemistException {
+        
+        ArrayList<ArrayList<String>> userResult = this.executeUserStatement(Statement);
+        System.out.println("user statement ausgeführt!");
+        ArrayList<ArrayList<String>> refResult = new ArrayList<>();
+        Iterator<Exercise> it = myExercise.iterator();
+
+        while (it.hasNext()) {
+            Exercise s = it.next();
+            ArrayList<String> tmp = new ArrayList<>();
+            tmp.add(s.getReferencestatement());
+            
+            String refStatement = "";
+            if (s.getSubTaskId() == subtaskid) {
+                refStatement = s.getReferencestatement();
+            }
+            refResult = this.tmpDbConn.executeSQLSelectStatement(this.conf.getString("auth.user"), this.conf.getString("auth.pass"), refStatement);
+            System.out.println("ref statement ausgeführt!");
+        }
+        if (userResult.equals(refResult)) {
+            return true;
+        } else {
+            return false;
+        }    
+    }
+    
     /**
      * Method printData.
      * 

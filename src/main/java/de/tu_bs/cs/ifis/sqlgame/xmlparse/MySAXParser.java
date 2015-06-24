@@ -235,6 +235,8 @@ public class MySAXParser extends DefaultHandler {
         if (qName.equalsIgnoreCase("subtask")) {
             //add it to the list
             this.myExercise.add(this.tempExercise);
+        } else if (qName.equalsIgnoreCase("subtaskid")) {
+            this.tempExercise.setSubTaskId(Integer.parseInt(this.sb.toString()));
         } else if (qName.equalsIgnoreCase("tasktext")) {
             this.tempExercise.setTasktexts(this.sb.toString());
         } else if (qName.equalsIgnoreCase("referencestatement")) {

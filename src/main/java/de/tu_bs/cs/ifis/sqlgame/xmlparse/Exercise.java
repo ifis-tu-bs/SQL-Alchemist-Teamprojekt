@@ -9,6 +9,7 @@ import java.util.ArrayList;
  */
 public class Exercise {
 
+    private int subtaskid;
     private ArrayList<String> tasktexts;
     private String referencestatement;
     private String evaluationstrategy;
@@ -24,6 +25,24 @@ public class Exercise {
         this.term = new ArrayList<>();
     }
 
+    /**
+     * get-method for the subtaskid. The id of this subtask.
+     * 
+     * @return substaskid
+     */
+    public int getSubTaskId() {
+        return this.subtaskid;
+    }
+    
+    /**
+     * set-method for the subtaskid. The id of this subtask.
+     *
+     * @param subtaskid int, id of the subtask
+     */
+    public void setSubTaskId(int subtaskid) {
+        this.subtaskid = subtaskid;
+    }
+    
     /**
      * get-method for the tasktext. The defintion of the problem, 
      * that has to be solved
@@ -145,7 +164,7 @@ public class Exercise {
      */
     public String toString() {
         StringBuffer sb = new StringBuffer();
-        sb.append("Task \n");
+        sb.append("Task " + this.subtaskid + "\n");
         for (String taskText : this.tasktexts) {
             sb.append("Tasktext:" + taskText + "\n");
         }

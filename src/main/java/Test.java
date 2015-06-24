@@ -25,14 +25,16 @@ public class Test {
      */
     public static void main(String[] args) {
         try {
+            
             InputFile testFile = new InputFile("alchemy-task.xml", true);
             Iterator it = testFile.getTasks().iterator();
             Task task = (Task) it.next();
             task.startTask("local");
-            //task.insertToDb();
+            task.insertToDb();
             task.generateData();
+            System.out.println(task.isUserStatementCorrect("SELECT * FROM Powders WHERE color='red'", 1));
             
-            
+            /**
             InputFile testString = new InputFile("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
             "\n" +
             "<tasks schemaversion=\"1\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"recipe.xsd\">\n" +
@@ -228,7 +230,7 @@ public class Test {
             "  </task>\n" +
             "  \n" +
             "</tasks>", false);
-            
+            */
             /*
             Iterator it = test.getTasks().iterator();
             Task task = (Task) it.next();
