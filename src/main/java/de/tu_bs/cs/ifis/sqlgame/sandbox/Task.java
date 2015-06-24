@@ -399,42 +399,58 @@ public class Task {
      * Executes the select statement from the user
      * and returns the result set
      * 
-     * @param Statement the SQL user statement
+     * @param statement the SQL user statement
      * @return result list with two lists
      *              first a list with the column names
      *              second a list with the content
      * @throws de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException Exception for the
      * SQLSelectStatement
      */
-    public ArrayList<ArrayList<String>> executeUserStatement(String Statement) throws MySQLAlchemistException{
-            ArrayList<ArrayList<String>> result = this.tmpDbConn.executeSQLSelectStatement(this.conf.getString("auth.user"), this.conf.getString("auth.pass"), Statement);
+    public ArrayList<ArrayList<String>> executeUserStatement(String statement) throws MySQLAlchemistException{
+            ArrayList<ArrayList<String>> result = this.tmpDbConn.executeSQLSelectStatement(this.conf.getString("auth.user"), this.conf.getString("auth.pass"), statement);
             return result;
     }
     
-    public boolean isUserStatementCorrect(String Statement, int subtaskid) throws MySQLAlchemistException {
-        
-        ArrayList<ArrayList<String>> userResult = this.executeUserStatement(Statement);
+    public boolean isUserStatementCorrect(String statement, int subtaskid) throws MySQLAlchemistException {
+
+        ArrayList<ArrayList<String>> userResult = this.executeUserStatement(statement);
         System.out.println("user statement ausgeführt!");
         ArrayList<ArrayList<String>> refResult = new ArrayList<>();
         Iterator<Exercise> it = myExercise.iterator();
 
         while (it.hasNext()) {
             Exercise s = it.next();
-            ArrayList<String> tmp = new ArrayList<>();
-            tmp.add(s.getReferencestatement());
-            
+            //ArrayList<String> tmp = new ArrayList<>();
+            //tmp.add(s.getReferencestatement());
+
             String refStatement = "";
             if (s.getSubTaskId() == subtaskid) {
                 refStatement = s.getReferencestatement();
+                refResult = this.tmpDbConn.executeSQLSelectStatement(this.conf.getString("auth.user"), this.conf.getString("auth.pass"), refStatement);
+                System.out.println("ref statement ausgeführt!");
+                if (s.getEvaluationstrategy().equals("LIST")) {
+                    return userResult.equals(refResult);
+                } else {
+                    boolean equal = false;
+                    if (userResult.size() == refResult.size()) {
+                        for (ArrayList<String> tmpUser : userResult) {
+                            for (ArrayList<String> tmpRef : refResult) {
+                                if (tmpUser.equals(tmpRef)) {
+                                    equal = true;
+                                }
+                            }
+                            if (equal == false) {
+                                return false;
+                            } else {
+                                equal = false;
+                            }
+                        }
+                        return true;
+                    }
+                }
             }
-            refResult = this.tmpDbConn.executeSQLSelectStatement(this.conf.getString("auth.user"), this.conf.getString("auth.pass"), refStatement);
-            System.out.println("ref statement ausgeführt!");
         }
-        if (userResult.equals(refResult)) {
-            return true;
-        } else {
-            return false;
-        }    
+        return false;
     }
     
     /**
