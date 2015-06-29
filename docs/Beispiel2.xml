@@ -10,12 +10,9 @@
             INSERT INTO p2e VALUES (1, 1, 4)
         </tuple>
     </extension>
-    <metadata>
-        <tablename>p2e</tablename>
-        <primarykey>pid</primarykey>
-        <primarykey>eid</primarykey>
-        <datageneration>
+    <extensiongeneration>
+        <generationtuple>
             5;none;ref,powders,id;ref,effects,id;max,int,200
-        </datageneration>
-    </metadata>
+        </generationtuple>
+    </extensiongeneration>
 </relation>
