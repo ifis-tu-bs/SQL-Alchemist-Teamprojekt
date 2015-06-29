@@ -247,9 +247,9 @@ public class Task {
     private void createTask(String dbType) throws MySQLAlchemistException {
         try {
             String insertStatement = "INSERT INTO Task VALUES('" + this.name + "', '" + this.dbName + "', " + this.players + ")";
-
+            
             this.fixDbConn.executeSQLUpdateStatement(this.conf.getString("auth.user"), this.conf.getString("auth.pass"), insertStatement);
-
+            
             //Set db for task
             String dbPath = this.conf.getString("input.dbsPath") + this.dbName;
             this.tmpDbConn = new DBConnection(dbType, dbPath);

@@ -125,10 +125,6 @@ public class MySAXParser extends DefaultHandler {
                 
                 //Check CREATE-TABLE and INSERT-INTO statements
                 Iterator it1 = t.getMyRelation().iterator();
-                
-                    
-                    
-                    
                 while (it1.hasNext()) {
                     Relation r = (Relation) it1.next();
                     dbconn.executeSQLUpdateStatement(conf.getString("auth.user"), conf.getString("auth.pass"), r.getIntension());
@@ -150,7 +146,14 @@ public class MySAXParser extends DefaultHandler {
         }
     }
     
-    public ArrayList<ArrayList> getColumnInformation(Relation rel) {
+    /**
+     * Method setColumnInformationForRelation.
+     * 
+     * Method parses the column information out of the relation string.
+     * 
+     * @param rel Relation relation to get the information from
+     */
+    private void setColumnInformationForRelation(Relation rel) {
         String createTableStatement = rel.getIntension();
         ArrayList<ArrayList> resultList = new ArrayList();
         ArrayList<String> foreignColumns = new ArrayList();
@@ -160,6 +163,12 @@ public class MySAXParser extends DefaultHandler {
         String beforeStatement;
 
         String createTableStatementForForeigns = createTableStatement;
+        
+        //Get the table name
+        String[] splitTableStatement = createTableStatement.toLowerCase().split(" ");
+        StringTokenizer stt = new StringTokenizer(splitTableStatement[2], "(");
+        String tableName = stt.nextToken();
+        rel.setTableName(tableName);
 
         if (createTableStatementForForeigns.contains("FOREIGN KEY")) {
             String[] stringarrayF = createTableStatementForForeigns.split(", FOREIGN KEY ");
@@ -233,7 +242,8 @@ public class MySAXParser extends DefaultHandler {
             resultList.add((ArrayList) partsOfColumnInfo);
         }
 
-        String[] primaryColumns = compPrimaryKey.split(", ");
+        String[] primaryColumns = compPrimaryKey.split(", ");        
+        
         for (ArrayList cols : resultList) {
             for (String s : primaryColumns) {
                 if (cols.contains(s)) {
@@ -257,8 +267,14 @@ public class MySAXParser extends DefaultHandler {
                 iii++;
             }
         }
-
-        return resultList;
+        
+        for (ArrayList columnInformationRow : resultList) {
+            if ((boolean) columnInformationRow.get(2) == true) {
+                rel.setPrimaryKey((String) columnInformationRow.get(0));
+            }
+        }
+        
+        rel.setColumnInformation(resultList);
     }
 
     /**
@@ -330,7 +346,8 @@ public class MySAXParser extends DefaultHandler {
     @Override
     public void endElement(String uri, String localName, String qName) throws SAXException {
         if (qName.equalsIgnoreCase("relation")) {
-            //add it to the list
+            //set column information and add it to the list
+            this.setColumnInformationForRelation(this.tempRelation);
             this.myRelation.add(this.tempRelation);
         } else if (qName.equalsIgnoreCase("intension")) {
             String intension = this.sb.toString();
@@ -338,7 +355,7 @@ public class MySAXParser extends DefaultHandler {
         } else if (qName.equalsIgnoreCase("tuple")) {
             this.tempRelation.setTuple(this.sb.toString());
         }
-         else if (qName.equalsIgnoreCase("datageneration")) {
+         else if (qName.equalsIgnoreCase("generationtuple")) {
             this.tempRelation.setDataGeneration(this.sb.toString());
         }
         else if (qName.equalsIgnoreCase("primarykey")) {

@@ -100,27 +100,8 @@ public class DataGenerator {
      *         thrown if there is an error executing the insert statement on db
      */
     public void generateFixExtension() throws MySQLAlchemistException {
-        //Iterate through all relations of the task
-        for (Relation rel : this.relations) {
-            //Break if no data has to be generated
-            if (rel.getDataGeneration().isEmpty()) {
-                break;
-            }
-            //Calculate the column number and the primary key assignments of
-            //the actual relation
-            this.calculateColumns(rel);
-            this.calculatePrimaryKeyAssignments(rel);
-            
-            //Iterate through all data constraints
-            for (String generationTuple : rel.getDataGeneration()) {
-                this.generateDataFromGenerationTuple(rel, generationTuple);
-            }
-            
-            //Reset the primarykey and reference lists for the new data constraint
-            this.primaryKeyValues = new ArrayList<>();
-            this.primaryKeyAssignments = new ArrayList<>();
-            this.referenceValues = new ArrayList<>();
-        }
+        //Generate data
+        this.generateDataFromGenerationTuples();
     }
     
     /**
@@ -147,13 +128,14 @@ public class DataGenerator {
                     relation = rel;
                 }
             }
+            
             //Get the information of the where clause
             ArrayList<ArrayList<String>> whereInformation = sqlsp.getWhereInformation();
             //Generate the insert statements
             if (!whereInformation.isEmpty()) {
                 for (ArrayList<String> whereInformationRow : whereInformation) {
-                    String generationTuple = this.createGenerationTuple(null, whereInformationRow.get(0), whereInformationRow.get(1), whereInformationRow.get(2));
-                    this.generateDataFromGenerationTuple(relation, generationTuple);
+                    String generationTuple = this.createGenerationTuple(relation.getColumnInformation(), whereInformationRow.get(0), whereInformationRow.get(1), whereInformationRow.get(2));
+                    relation.setDataGeneration(generationTuple);
                 }
             }
         }
@@ -223,7 +205,7 @@ public class DataGenerator {
                             break;
                         }
                         
-                        case ("varchar"): {
+                        case ("varchar(100)"): {
                             result += "random,string;";
                             break;
                         }
@@ -247,7 +229,7 @@ public class DataGenerator {
     }
     
     /**
-     * Method generateDataFromGenerationTuple.
+     * Method generateDataFromGenerationTuples.
      * 
      * Generate data and insert statements for the given relation with the given
      * generation tuple.
@@ -257,53 +239,73 @@ public class DataGenerator {
      * @throws de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException exception
      *         thrown if there is an error executing the insert statement on db
      */
-    private void generateDataFromGenerationTuple(Relation rel, String generationTuple) throws MySQLAlchemistException {
-        StringTokenizer st = new StringTokenizer(generationTuple, ";");
-
-        //First token for the number function
-        String numberFunction = st.nextToken();
-
-        //Second token for the reference function
-        String refFunction = st.nextToken();
-        ArrayList<String> refFunctionList = new ArrayList<>();
-        StringTokenizer stt = new StringTokenizer(refFunction, ",");
-        while (stt.hasMoreTokens()) {
-            refFunctionList.add(stt.nextToken());
-        }
-
-        //The following tokens for the column function of the relation
-        ArrayList<ArrayList<String>> columnFunctions = new ArrayList<>();
-        while (st.hasMoreTokens()) {
-            ArrayList<String> columnFunction = new ArrayList<>();
-            stt = new StringTokenizer(st.nextToken(), ",");
-            while (stt.hasMoreTokens()) {
-                columnFunction.add(stt.nextToken());
+    private void generateDataFromGenerationTuples() throws MySQLAlchemistException {
+        //Iterate through all relations of the task
+        for (Relation rel : this.relations) {
+            //Break if no data has to be generated
+            if (rel.getDataGeneration().isEmpty()) {
+                break;
             }
-            columnFunctions.add(columnFunction);
-        }
+            //Calculate the column number and the primary key assignments of
+            //the actual relation
+            this.calculateColumns(rel);
+            this.calculatePrimaryKeyAssignments(rel);
+            
+            //Iterate through all data constraints
+            for (String generationTuple : rel.getDataGeneration()) {
+                StringTokenizer st = new StringTokenizer(generationTuple, ";");
 
-        //Fill primary key values list
-        //Build the sql select statement to get the primary key columns
-        String primaryKeyColumns = "*";
-        int i = 0;
-        for (String primaryKey : rel.getPrimaryKey()) {
-            if (i == 0) {
-                primaryKeyColumns = primaryKey;
-            } else {
-                primaryKeyColumns += ", " + primaryKey;
+                //First token for the number function
+                String numberFunction = st.nextToken();
+
+                //Second token for the reference function
+                String refFunction = st.nextToken();
+                ArrayList<String> refFunctionList = new ArrayList<>();
+                StringTokenizer stt = new StringTokenizer(refFunction, ",");
+                while (stt.hasMoreTokens()) {
+                    refFunctionList.add(stt.nextToken());
+                }
+
+                //The following tokens for the column function of the relation
+                ArrayList<ArrayList<String>> columnFunctions = new ArrayList<>();
+                while (st.hasMoreTokens()) {
+                    ArrayList<String> columnFunction = new ArrayList<>();
+                    stt = new StringTokenizer(st.nextToken(), ",");
+                    while (stt.hasMoreTokens()) {
+                        columnFunction.add(stt.nextToken());
+                    }
+                    columnFunctions.add(columnFunction);
+                }
+
+                //Fill primary key values list
+                //Build the sql select statement to get the primary key columns
+                String primaryKeyColumns = "*";
+                int i = 0;
+                for (String primaryKey : rel.getPrimaryKey()) {
+                    if (i == 0) {
+                        primaryKeyColumns = primaryKey;
+                    } else {
+                        primaryKeyColumns += ", " + primaryKey;
+                    }
+                    i++;
+                }
+                //Execute the sql select statement to get the primary key columns
+                this.primaryKeyValues = this.dbConn.executeSQLSelectStatement(
+                        this.conf.getString("auth.user"),
+                        this.conf.getString("auth.pass"),
+                        "SELECT " + primaryKeyColumns + " FROM " + rel.getTableName()
+                );
+
+                //Generate and execute the insert statements with the grabed data
+                int number = calculateNumber(numberFunction);
+                this.generateDataFromFunction(rel.getTableName(), number, refFunctionList, columnFunctions);
             }
-            i++;
+            
+            //Reset the primarykey and reference lists for the new data constraint
+            this.primaryKeyValues = new ArrayList<>();
+            this.primaryKeyAssignments = new ArrayList<>();
+            this.referenceValues = new ArrayList<>();
         }
-        //Execute the sql select statement to get the primary key columns
-        this.primaryKeyValues = this.dbConn.executeSQLSelectStatement(
-                this.conf.getString("auth.user"),
-                this.conf.getString("auth.pass"),
-                "SELECT " + primaryKeyColumns + " FROM " + rel.getTableName()
-        );
-
-        //Generate and execute the insert statements with the grabed data
-        int number = calculateNumber(numberFunction);
-        this.generateDataFromFunction(rel.getTableName(), number, refFunctionList, columnFunctions);
     }
     
     /**
@@ -377,6 +379,7 @@ public class DataGenerator {
         //If the number function has parameter add them to the list
         //if not, return the function name which is the number
         if (st.hasMoreTokens()) {
+            params.add(st.nextToken());
             params.add(st.nextToken());
         } else {
             return Integer.parseInt(functionName);

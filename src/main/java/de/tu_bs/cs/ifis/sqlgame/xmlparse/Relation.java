@@ -11,8 +11,9 @@ public class Relation {
 
     private String intension;
     private String tableName;
+    private ArrayList<ArrayList> columnInformation;
     private ArrayList<String> tuple;
-    private ArrayList<String> dataGeneration;
+    private ArrayList<String> generationTuples;
     private ArrayList<String> primaryKey;
 
     /**
@@ -20,7 +21,7 @@ public class Relation {
      */
     public Relation() {
         this.tuple = new ArrayList<>();
-        this.dataGeneration = new ArrayList<>();
+        this.generationTuples = new ArrayList<>();
         this.primaryKey = new ArrayList<>();
 
     }
@@ -43,7 +44,7 @@ public class Relation {
         this.intension = intension;
     }
     
-        /**
+    /**
      * get-method for the name of the table
      *
      * @return tableName
@@ -53,12 +54,30 @@ public class Relation {
     }
 
     /**
-     * set-method for the name of the table
+     * set-method for the column information.
      *
-     * @param name String, the name of the table
+     * @param name String column information
      */
     public void setTableName(String name) {
         this.tableName = name;
+    }
+    
+    /**
+     * get-method for the column information.
+     *
+     * @return ArrayList column information
+     */
+    public ArrayList<ArrayList> getColumnInformation() {
+        return columnInformation;
+    }
+
+    /**
+     * set-method for the column information.
+     *
+     * @param columnInformation ArrayList list with the column information
+     */
+    public void setColumnInformation(ArrayList<ArrayList> columnInformation) {
+        this.columnInformation = columnInformation;
     }
 
     /**
@@ -96,19 +115,19 @@ public class Relation {
     /**
      * get-method for the contraint tuples
      *
-     * @return dataGeneration tuples as an array
+     * @return generationTuples tuples as an array
      */
     public ArrayList<String> getDataGeneration() {
-        return this.dataGeneration;
+        return this.generationTuples;
     }
 
     /**
-     * set-method for the dataGeneration contraints
+     * set-method for the generationTuples contraints
      *
-     * @param data the dataGeneration tuple
+     * @param data the generationTuples tuple
      */
     public void setDataGeneration(String data) {
-        this.dataGeneration.add(data);
+        this.generationTuples.add(data);
     }
     
         /**
@@ -121,7 +140,7 @@ public class Relation {
     }
 
     /**
-     * set-method for the dataGeneration contraints
+     * set-method for the generationTuples contraints
      *
      * @param key the primary key
      */
