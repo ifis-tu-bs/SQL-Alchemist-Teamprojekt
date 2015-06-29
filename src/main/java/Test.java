@@ -32,7 +32,7 @@ public class Test {
             task.startTask("local");
             //task.insertToDb();
             System.out.println(task.isUserStatementCorrect("SELECT * FROM Powders WHERE color='red'", 1));
-            //task.generateData("referenceStatement");
+            task.generateData("referenceStatement");
             //task.generateData("userData");
             
             /**

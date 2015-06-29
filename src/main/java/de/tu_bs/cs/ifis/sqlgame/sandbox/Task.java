@@ -11,6 +11,9 @@ import de.tu_bs.cs.ifis.sqlgame.xmlparse.Exercise;
 import de.tu_bs.cs.ifis.sqlgame.xmlparse.Header;
 import de.tu_bs.cs.ifis.sqlgame.xmlparse.Relation;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import net.sf.jsqlparser.JSQLParserException;
 
 /**
  * Class Task.
@@ -368,7 +371,11 @@ public class Task {
             }
             
             case "referenceStatement": {
+            try {
                 dg.generateSelectExtension();
+            } catch (JSQLParserException ex) {
+                Logger.getLogger(Task.class.getName()).log(Level.SEVERE, null, ex);
+            }
                 break;
             }
         }

@@ -1,18 +1,19 @@
 package de.tu_bs.cs.ifis.sqlgame.datageneration;
 
 import com.typesafe.config.*;
-import net.sf.jsqlparser.*;
 
 import de.tu_bs.cs.ifis.sqlgame.dbconnection.DBConnection;
 import de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException;
 import de.tu_bs.cs.ifis.sqlgame.xmlparse.Exercise;
 import de.tu_bs.cs.ifis.sqlgame.xmlparse.Relation;
+import java.io.StringReader;
 
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Random;
 import java.util.StringTokenizer;
-import net.sf.jsqlparser.parser.CCJSqlParserManager;
-import net.sf.jsqlparser.parser.CCJSqlParserTokenManager;
+
 
 /**
  * Class DataGenerator.
@@ -102,25 +103,15 @@ public class DataGenerator {
     public void generateSelectExtension() throws MySQLAlchemistException {
         //Iterate through all exercises of the task
         for (Exercise exe : this.exercises) {
-            String selectStatement = exe.getReferencestatement();
-            selectStatement = selectStatement.toLowerCase();
-            ArrayList<String> tablesToSelectFrom = null;
-            ArrayList<ArrayList<String>> columnsNeedData = null;
+            String selectStatementString = exe.getReferencestatement().toLowerCase();
             
-            CCJSqlParserManager spm = new CCJSqlParserManager();
-            //HIER WEITER
+            SQLSelectParser sqlsp = new SQLSelectParser(selectStatementString);
+            ArrayList<ArrayList<String>> whereInformation = sqlsp.getWhereInformation();
             
-            StringTokenizer st = new StringTokenizer(selectStatement, "from");
-            //String in front of first from is not needed
-            st.nextToken();
-            String withTablestoSelectFrom = st.nextToken();
-            
-            st = new StringTokenizer(selectStatement);
-            
-            if (st.nextToken().equals("select")) {
-                
-            } else {
-                throw new MySQLAlchemistException("Das Referenzstatement ist kein SELECT - Statement.", new Exception());
+            if (!whereInformation.isEmpty()) {
+                for (ArrayList<String> whereInformationRow : whereInformation) {
+                    
+                }
             }
         }
     }

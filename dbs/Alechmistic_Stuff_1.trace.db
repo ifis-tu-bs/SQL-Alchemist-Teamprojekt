@@ -61,3 +61,7 @@ Method is only allowed for a query. Use execute or executeUpdate instead of exec
 	at java.lang.Thread.run(Thread.java:745)
 =======
 >>>>>>> 7f77d01b8d1e2b5461f9fe3a776a9d0c1b0f7a4c
+06-29 12:33:24 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Tabelle "POWDERS" besteht bereits
+Table "POWDERS" already exists; SQL statement:
+CREATE TABLE Powders(id int not null primary key, pname varchar(100), color varchar(50), price int) [42101-176]
