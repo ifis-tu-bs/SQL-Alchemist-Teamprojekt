@@ -427,7 +427,6 @@ public class Task {
             if (s.getSubTaskId() == subtaskid) {
                 refStatement = s.getReferencestatement();
                 refResult = this.tmpDbConn.executeSQLSelectStatement(this.conf.getString("auth.user"), this.conf.getString("auth.pass"), refStatement);
-                System.out.println("ref statement ausgeführt!");
                 if (s.getEvaluationstrategy().equals("LIST")) {
                     return userResult.equals(refResult);
                 } else {

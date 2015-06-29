@@ -16,6 +16,7 @@ import com.typesafe.config.*;
 import de.tu_bs.cs.ifis.sqlgame.dbconnection.DBConnection;
 import de.tu_bs.cs.ifis.sqlgame.sandbox.Task;
 import java.util.Iterator;
+import java.util.StringTokenizer;
 import org.h2.tools.DeleteDbFiles;
 
 /**
@@ -124,6 +125,10 @@ public class MySAXParser extends DefaultHandler {
                 
                 //Check CREATE-TABLE and INSERT-INTO statements
                 Iterator it1 = t.getMyRelation().iterator();
+                
+                    
+                    
+                    
                 while (it1.hasNext()) {
                     Relation r = (Relation) it1.next();
                     dbconn.executeSQLUpdateStatement(conf.getString("auth.user"), conf.getString("auth.pass"), r.getIntension());
@@ -143,6 +148,117 @@ public class MySAXParser extends DefaultHandler {
         } catch (SAXException | ParserConfigurationException | IOException se) {
             throw new MySQLAlchemistException("Fehler beim Parsen des Dokuments ", se);
         }
+    }
+    
+    public ArrayList<ArrayList> getColumnInformation(Relation rel) {
+        String createTableStatement = rel.getIntension();
+        ArrayList<ArrayList> resultList = new ArrayList();
+        ArrayList<String> foreignColumns = new ArrayList();
+
+        String compPrimaryKey = "";
+
+        String beforeStatement;
+
+        String createTableStatementForForeigns = createTableStatement;
+
+        if (createTableStatementForForeigns.contains("FOREIGN KEY")) {
+            String[] stringarrayF = createTableStatementForForeigns.split(", FOREIGN KEY ");
+            for (int ii = 1; ii < stringarrayF.length; ii++) {
+                foreignColumns.add(stringarrayF[ii]);
+            }
+            String lastElement = foreignColumns.get(foreignColumns.size() - 1);
+            foreignColumns.set(foreignColumns.size() - 1, lastElement.substring(0, lastElement.length() - 1));
+            ArrayList<String> foreignColumnsClone = (ArrayList) foreignColumns.clone();
+            foreignColumns.clear();
+            for (String str : foreignColumnsClone) {
+                String[] elements = str.split(" ");
+                String element = elements[0];
+                String ref = elements[2];
+
+                foreignColumns.add(element);
+                foreignColumns.add(ref);
+            }
+
+        }
+
+        if (createTableStatement.contains("PRIMARY KEY(")) {
+            String[] stringarray = createTableStatement.split(", PRIMARY KEY");
+            beforeStatement = stringarray[0];
+            compPrimaryKey = stringarray[1];
+            StringTokenizer sto2 = new StringTokenizer(compPrimaryKey, ")");
+            compPrimaryKey = sto2.nextToken();
+            compPrimaryKey = compPrimaryKey.replace("(", "");
+        } else {
+            beforeStatement = createTableStatement;
+        }
+        StringTokenizer st = new StringTokenizer(beforeStatement, ",");
+        ArrayList<String> columns = new ArrayList();
+        String info = "";
+        String columninfo = st.nextToken();
+        StringTokenizer st2 = new StringTokenizer(columninfo, "(");
+        st2.nextToken();
+        info += (st2.nextToken());
+
+        columns.add(info);
+
+        while (st.hasMoreTokens()) {
+            columns.add(st.nextToken());
+        }
+
+        for (int i = 0; i < columns.size(); i++) {
+            String s = columns.get(i);
+            if (s.contains(")") && !s.contains("(")) {
+                s = s.replace(")", "");
+            }
+            columns.set(i, s);
+        }
+        int countOfColumns = columns.size();
+        for (int i = 0; i < countOfColumns; i++) {
+
+            ArrayList partsOfColumnInfo = new ArrayList();
+            String cInfo = columns.get(i);
+            StringTokenizer st3 = new StringTokenizer(cInfo, " ");
+            while (st3.hasMoreTokens()) {
+                partsOfColumnInfo.add(st3.nextToken());
+            }
+            String attributeName = (String) partsOfColumnInfo.get(0);
+            String attributeType = (String) partsOfColumnInfo.get(1);
+            boolean containsPrimary = partsOfColumnInfo.contains("primary") || partsOfColumnInfo.contains("PRIMARY");
+            partsOfColumnInfo.clear();
+            partsOfColumnInfo.add(attributeName);
+            partsOfColumnInfo.add(attributeType);
+            partsOfColumnInfo.add(containsPrimary);
+            partsOfColumnInfo.add(null);
+
+            resultList.add((ArrayList) partsOfColumnInfo);
+        }
+
+        String[] primaryColumns = compPrimaryKey.split(", ");
+        for (ArrayList cols : resultList) {
+            for (String s : primaryColumns) {
+                if (cols.contains(s)) {
+                    cols.set(2, true);
+                }
+            }
+        }
+
+        for (ArrayList cols : resultList) {
+            for (int iii = 0; iii < foreignColumns.size() - 1; iii++) {
+                String s = foreignColumns.get(iii);
+
+                s = s.replace("(", "");
+                s = s.replace(")", "");
+                foreignColumns.set(iii, s);
+
+                if (cols.contains(s)) {
+
+                    cols.set(3, foreignColumns.get(iii + 1));
+                }
+                iii++;
+            }
+        }
+
+        return resultList;
     }
 
     /**
