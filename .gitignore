@@ -1,5 +1,4 @@
 .DS_Store
-.classpath_nb
 /nbproject/
 /build/
 build.xml
@@ -9,5 +8,3 @@ manifest.mf
 /target
 /project/target
 /project/project/target/
-.classpath_nb
-.classpath_nb
