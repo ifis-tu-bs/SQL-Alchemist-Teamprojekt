@@ -125,6 +125,66 @@ public class DataGenerator {
         }
     }
     
+    public String testbla(ArrayList<ArrayList> columns, String columnName, String compare, String value) throws MySQLAlchemistException {
+        String result = "3;none;";
+        for (ArrayList tmpList : columns) {
+            if (tmpList.get(0).equals(columnName)) {
+                switch (compare) {
+                    case ("="): {
+                        result += "fix," + value + ";";
+                        break;
+                    }
+                    case (">"):
+                    case (">="): {
+                        if (tmpList.get(1).equals("int")) {
+                            result += "min,int," + value + ";";
+                        } else if (tmpList.get(1).equals("double")) {
+                            result += "min,double," + value + ";";
+                        }
+                        break;
+                    }
+                    case ("<"):
+                    case ("<="): {
+                        if (tmpList.get(1).equals("int")) {
+                            result += "max,int," + value + ";";
+                        } else if (tmpList.get(1).equals("double")) {
+                            result += "max,double," + value + ";";
+                        }
+                        break;
+                    }
+                    case ("LIKE"): {
+                        result += "fix," + value + ";";
+                        break;
+                    }
+                }
+            } else {
+                if (tmpList.get(3) == null) {
+                    switch ((String) tmpList.get(1)) {
+                        case ("int"): {
+                            result += "random,int;";
+                            break;
+                        }
+                        case ("double"): {
+                            result += "random,double;";
+                            break;
+                        }
+                        case ("varchar"): {
+                            result += "random,string;";
+                            break;
+                        }
+                        case ("date"): {
+                            result += "random,date;";
+                            break;
+                        }
+                    }
+                } else {
+                    result += "ref," + tmpList.get(3) + ";";
+                }
+            }
+        }
+        return result;
+    }
+    
     /**
      * Method generateFixExtension.
      * 
