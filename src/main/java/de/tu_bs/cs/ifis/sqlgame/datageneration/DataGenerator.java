@@ -79,8 +79,8 @@ public class DataGenerator {
      * Initialize the local attributes relations and dbConn with the given
      * parameter.
      * 
-     * @param relations ArrayList<Relation> list with the relations of the task
-     * @param exercises ArrayList<Exercise> list with the exercises of the task
+     * @param relations ArrayList list with the relations of the task
+     * @param exercises ArrayList list with the exercises of the task
      * @param dbConn DBConnection database connection to execute sql statements
      */
     public DataGenerator(ArrayList<Relation> relations, ArrayList<Exercise> exercises, DBConnection dbConn) {
@@ -96,7 +96,8 @@ public class DataGenerator {
      * insert statements for each table of the task based on the tuples
      * of the xml file.
      * 
-     * @throws de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException
+     * @throws de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException exception
+     *         thrown if there is an error executing the insert statement on db
      */
     public void generateFixExtension() throws MySQLAlchemistException {
         //Iterate through all relations of the task
@@ -128,7 +129,8 @@ public class DataGenerator {
      * Grab the reference select statements and generate an extension so that
      * there is always enough data if the select statement is executed.
      * 
-     * @throws de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException
+     * @throws de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException exception
+     *         thrown if there is an error executing the insert statement on db
      */
     public void generateSelectExtension() throws MySQLAlchemistException {
         //Iterate through all exercises of the task
@@ -163,13 +165,14 @@ public class DataGenerator {
      * Create a generation tuple with the information given by a where clause
      * of a reference statement.
      * 
-     * @param columnInformation ArrayList<ArrayList> information of each column
+     * @param columnInformation ArrayList information of each column
      *                          of the relation relatd to the refrence statement
      * @param columnName String name of the column for which data should be created
      * @param compare String comparison type of the where clause of the reference statement
      * @param value String comparison value of the where clause of the reference statement
      * @return String generated generation tuple
-     * @throws de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException
+     * @throws de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException exception
+     *         thrown if there is an error executing the insert statement on db
      */
     public String createGenerationTuple(ArrayList<ArrayList> columnInformation, String columnName, String compare, String value) throws MySQLAlchemistException {
         String result = "3;none;";
@@ -247,7 +250,8 @@ public class DataGenerator {
      * 
      * @param rel Relation relation for which data should be created
      * @param generationTuple String generation tuple of which data should be created
-     * @throws de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException
+     * @throws de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException exception
+     *         thrown if there is an error executing the insert statement on db
      */
     private void generateDataFromGenerationTuple(Relation rel, String generationTuple) throws MySQLAlchemistException {
         StringTokenizer st = new StringTokenizer(generationTuple, ";");
@@ -306,7 +310,8 @@ public class DataGenerator {
      * 
      * @param relation Relation relation for wich the primary key assignments
      *                 should be created
-     * @throws de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException
+     * @throws de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException exception
+     *         thrown if there is an error executing the insert statement on db
      */
     private void calculatePrimaryKeyAssignments(Relation relation) throws MySQLAlchemistException {
         //Get the column names from the given relation/table
@@ -356,7 +361,8 @@ public class DataGenerator {
      * 
      * @param numberFunction String function to calculate the number
      * @return int number that is calculated
-     * @throws de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException
+     * @throws de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException exception
+     *         thrown if there is an error executing the insert statement on db
      */
     private int calculateNumber(String numberFunction) throws MySQLAlchemistException {
         StringTokenizer st = new StringTokenizer(numberFunction, ",");
@@ -400,9 +406,10 @@ public class DataGenerator {
      * 
      * @param tableName String name of the given table
      * @param numberFunction number of the inserted statements
-     * @param refFunctionList ArrayList<String> list of the reference function
-     * @param columnFunctions ArrayList<ArrayList<String>> list of the column functions
-     * @throws de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException
+     * @param refFunctionList ArrayList list of the reference function
+     * @param columnFunctions ArrayList list of the column functions
+     * @throws de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException exception
+     *         thrown if there is an error executing the insert statement on db
      */
     private void generateDataFromFunction(String tableName, int number, ArrayList<String> refFunctionList, ArrayList<ArrayList<String>> columnFunctions) throws MySQLAlchemistException {
         //Iterate through the columnFunctions to save the referencing columns
@@ -485,10 +492,11 @@ public class DataGenerator {
      * @param generateType String type of generation strategy: none, refAll, refRandom
      * @param tableName String name of the given table
      * @param number int number of the insert statements to be generated
-     * @param columnFunctions ArrayList<ArrayList<String>> list of the column functions
-     * @param referenceList ArrayList<ArrayList<String>> list of the referenced values
+     * @param columnFunctions ArrayList list of the column functions
+     * @param referenceList ArrayList list of the referenced values
      * @param referenceIndex int index of the reference value if generateType is refAll
-     * @throws de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException
+     * @throws de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException exception
+     *         thrown if there is an error executing the insert statement on db
      */
     private void generateInsertStatements(
             String generateType,
@@ -667,7 +675,8 @@ public class DataGenerator {
      * 
      * @param tableName String name of the table in which the data is inserted
      * @param dataRow String[] data which is inserted
-     * @throws de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException
+     * @throws de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException exception
+     *         thrown if there is an error executing the insert statement on db
      */
     private void executeInsertStatements(String tableName, String[] dataRow) throws MySQLAlchemistException {
         //Build the insert statement as a string from the data row stringarray
@@ -698,7 +707,7 @@ public class DataGenerator {
      * @param params a list of paramters for the function
      * @return string with the generated data
      * @throws de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException
-     *         Exception if the user gives not the correct parameters
+     *         exception thrown if the user gives not the correct parameters
      */
     private String findAndExecuteFunction(String functionName, ArrayList<String> params) throws MySQLAlchemistException{
         String result = "";
@@ -913,6 +922,7 @@ public class DataGenerator {
                 break;
             }
         }
+        
         return result;
     }
 }

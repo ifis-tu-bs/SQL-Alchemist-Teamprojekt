@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package de.tu_bs.cs.ifis.sqlgame.datageneration;
 
 import com.typesafe.config.Config;
@@ -18,8 +13,11 @@ import java.util.StringTokenizer;
 import org.fluttercode.datafactory.impl.DataFactory;
 
 /**
- *
- * @author Tobias
+ * Class GenerateSpecificData.
+ * 
+ * Class to generate specific data for a column.
+ * 
+ * @author Tobias Gruenhagen, Philip Holzhueter, Tobias Runge
  */
 public class GenerateSpecificData {
     
@@ -382,8 +380,9 @@ public class GenerateSpecificData {
      * @param metaData the name of the txt-file
      * @param random the percentage of how often the value or the default is chosen
      * @param defaultValue the defaultvalue
-     * @return
-     * @throws MySQLAlchemistException 
+     * @return String data that is created
+     * @throws de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException exception
+     *         thrown if there is an error executing the insert statement on db
      */
     public String generateCustomData(String metaData, int random, String defaultValue) throws MySQLAlchemistException {
         try {

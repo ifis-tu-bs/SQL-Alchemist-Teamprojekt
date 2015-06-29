@@ -13,7 +13,6 @@ import de.tu_bs.cs.ifis.sqlgame.xmlparse.Relation;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import net.sf.jsqlparser.JSQLParserException;
 
 /**
  * Class Task.
@@ -168,9 +167,9 @@ public class Task {
      * Constructor Task.
      * 
      * @param name String, name of the task
-     * @param myHeader
-     * @param myRelation
-     * @param myExercise 
+     * @param myHeader ArrayList list of the header of the task
+     * @param myRelation ArrayList list of the relations of the task
+     * @param myExercise ArrayList list of the exercises of the task
      */
     public Task(String name, ArrayList<Header> myHeader, ArrayList<Relation> myRelation, ArrayList<Exercise> myExercise) {
         this.name = name;
@@ -190,7 +189,7 @@ public class Task {
      * @param dbType int, 0-local DB, 1-server DB, 2-in-memory DB
      * @return Task, loaded or created task
      * @throws de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException Exception for the new database
-     * or the xml syntax check
+     *         or the xml syntax check
      */
     public Task startTask(String dbType) throws MySQLAlchemistException {
         try {
@@ -242,7 +241,8 @@ public class Task {
      *
      * Insert a new task-entry into the db and build up a new dbconnection.
      *
-     * @throws MySQLAlchemistException Exception for the new database connection
+     * @throws de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException Exception for the
+     *         new database connection
      */
     private void createTask(String dbType) throws MySQLAlchemistException {
         try {
@@ -270,7 +270,7 @@ public class Task {
      * the properties in the local attributes.
      *
      * @throws de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException Exception for the
-     * SQLSelectStatement
+     *         SQLSelectStatement
      */
     private void loadTask() throws MySQLAlchemistException {
         String selectStatement = "SELECT * FROM Task WHERE name = ?";
@@ -291,7 +291,7 @@ public class Task {
      * local attributes.
      *
      * @throws de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException Exception for the
-     * SQLUpdateStatement
+     *         SQLUpdateStatement
      */
     public void updateTask() throws MySQLAlchemistException {
         String[] variables = new String[3];
@@ -311,7 +311,7 @@ public class Task {
      * is deleted.
      *
      * @throws de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException Exception for the
-     * SQLUpdateStatement
+     *         SQLUpdateStatement
      */
     public void closeTask() throws MySQLAlchemistException {
         int playerNum = this.players - 1;
@@ -338,7 +338,7 @@ public class Task {
      * database.
      * 
      * @throws de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException Exception for the
-     * SQLUpdateStatement
+     *         SQLUpdateStatement
      */
     public void insertToDb() throws MySQLAlchemistException{
         Iterator<Relation> it = myRelation.iterator();
@@ -363,7 +363,8 @@ public class Task {
      * 
      * @param generateType String type of generation, can be userData for the generated extension
      *                     or referenceStatement for the reference statements
-     * @throws de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException
+     * @throws de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException Exception for the
+     *         SQLSelectStatement (reference statement)
      */
     public void generateData(String generateType) throws MySQLAlchemistException {
         DataGenerator dg = new DataGenerator(this.myRelation, this.myExercise, this.tmpDbConn);
@@ -376,11 +377,7 @@ public class Task {
             }
             
             case "referenceStatement": {
-            try {
                 dg.generateSelectExtension();
-            } catch (JSQLParserException ex) {
-                Logger.getLogger(Task.class.getName()).log(Level.SEVERE, null, ex);
-            }
                 break;
             }
         }
@@ -393,7 +390,7 @@ public class Task {
      * the database.
      * 
      * @throws de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException Exception for the
-     * SQLSelectStatement
+     *         SQLSelectStatement
      */
     public void selectFromDb() throws MySQLAlchemistException{
         Iterator<Exercise> it = myExercise.iterator();
@@ -406,17 +403,17 @@ public class Task {
     }
     
     /**
-     * Method executeUserStatement
+     * Method executeUserStatement.
      * 
      * Executes the select statement from the user
-     * and returns the result set
+     * and returns the result set.
      * 
      * @param statement the SQL user statement
      * @return result list with two lists
-     *              first a list with the column names
-     *              second a list with the content
+     *         first a list with the column names
+     *         second a list with the content
      * @throws de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException Exception for the
-     * SQLSelectStatement
+     *         SQLSelectStatement
      */
     public ArrayList<ArrayList<String>> executeUserStatement(String statement) throws MySQLAlchemistException{
             ArrayList<ArrayList<String>> result = this.tmpDbConn.executeSQLSelectStatement(this.conf.getString("auth.user"), this.conf.getString("auth.pass"), statement);
@@ -432,10 +429,8 @@ public class Task {
 
         while (it.hasNext()) {
             Exercise s = it.next();
-            //ArrayList<String> tmp = new ArrayList<>();
-            //tmp.add(s.getReferencestatement());
-
-            String refStatement = "";
+            String refStatement;
+            
             if (s.getSubTaskId() == subtaskid) {
                 refStatement = s.getReferencestatement();
                 refResult = this.tmpDbConn.executeSQLSelectStatement(this.conf.getString("auth.user"), this.conf.getString("auth.pass"), refStatement);
