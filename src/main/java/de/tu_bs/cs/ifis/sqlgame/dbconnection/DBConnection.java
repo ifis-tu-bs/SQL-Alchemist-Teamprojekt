@@ -64,7 +64,8 @@ public class DBConnection {
      *
      * @param dbType int 0-local DB, 1-server DB, 2-in-memory DB
      * @param dbPath String path, where the db is located
-     * @throws de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException
+     * @throws de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException exception
+     *         that is thrown if th db driver can not be registered
      */
     public DBConnection(String dbType, String dbPath) throws MySQLAlchemistException {
         this.conf = ConfigFactory.load();

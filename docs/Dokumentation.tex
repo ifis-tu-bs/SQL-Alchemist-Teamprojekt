@@ -68,7 +68,8 @@ Hier finden sich alle Inhalte aus der XML-Datei, die unter \textit{subtasks} zu 
 
 \subsection*{Klassenvariablen}
 
-String[] \textit{tasktexts}: Die Aufgabenstellung der Aufgabe in Deutsch und Englisch, falls vorhanden \\
+int \textit{subtaskid}: Die Nummer der Aufgabe\\
+List \textit{tasktexts}: Die Aufgabenstellung der Aufgabe in Deutsch und Englisch, falls vorhanden \\
 String \textit{referencestatement}: Das Lösungsstatement der Aufgabe \\
 String \textit{evaluationstrategy}: Rückgabetyp der Aufgabe (Liste oder Menge) \\
 String \textit{term}: Die Terme, die für die Lösung der Aufgabe benötigt werden \\
@@ -82,8 +83,8 @@ Hier finden sich alle Inhalte aus der XML-Datei, die am Anfang jedes Tasks stehe
 \subsection*{Klassenvariablen}
 
 String \textit{taskId}: Die eindeutige ID der Aufgabe \\
-String[] \textit{title}: Die Überschrift der Aufgabe \\
-String[] \textit{flufftext}: Die allgemeine Beschreibung der Aufgabe \\
+List \textit{title}: Die Überschrift der Aufgabe \\
+List \textit{flufftext}: Die allgemeine Beschreibung der Aufgabe \\
 String \textit{language}: Die Sprache für die Aufgabe (wird beim Parsen nicht gesetzt)
 
 \section{Relation.java}
@@ -92,7 +93,11 @@ Hier finden sich alle Inhalte aus der XML-Datei die unter \textit{schema} zu fin
 
 \subsection*{Klassenvariablen}
 String \textit{intension}: Ein Create-Table-Statement der Aufgabe \\
-String[] \textit{tuple}: Die zugehörigen Insert-Into-Statements der Aufgabe
+String \textit{tableName}: Der Name der Tabelle \\
+List \textit{columnInformation}: Alle Spalten mit den Namen und Typen, sowie einem boolean ob der Eintrag ein Primary Key ist und, ob er eine andere Tabelle referenziert\\
+List \textit{generationTuple}: Die Tuple für die Datengeneration \\
+List \textit{primaryKey}:Die Primary Keys der Tabelle \\
+List \textit{tuple}: Die zugehörigen Insert-Into-Statements der Aufgabe
 
 \section{Task.java}
 
@@ -159,16 +164,26 @@ Dabei wird über die Liste der Exercises iteriert und jedes Element dann über e
 Die Methode \textit{executeUserStatement} dient dazu ein User-Statement auszuführen und die Ergebnisse dieses Statements zurückzuliefern.
 Dabei wird das Statement (String) als Parameter an die Methode übergeben und dann auf der Datenbank ausgeführt. Das Ergebnis der Abfrage wird dann zurückgeliefert.
 
+\subsubsection*{isUserStatementCorrect(String statement, int subtaskid) }
+
+Die Methode \textit{isUserStatementCorrect} dient dazu ein User-Statement auszuführen und die Ergebnisse dieses Statements mit dem Referenzstatement zu vergleichen. Sollten sie gleich sein wird true, sonst false zurückgegeben.
+Dabei wird das Statement (String) und die Aufgabenummer (int) als Parameter an die Methode übergeben.
+
 \subsubsection*{printData()}
 
 Die Methode \textit{printData} gibt alle Inhalte des Aufgabenblattes aus.
 Es wird für jede der drei Listen nacheinander (für die Header, Relations und Exercises) die Anzahl der Elemente und anschließend die Elemente selbst ausgegeben.
 
+\subsubsection*{generateData(String generateType)}
+
+Die Methode \textit{generateData} generiert aus den User-GenerationTupeln oder den Referenzstatements die Insert-Statements und führt sie aus.
+Als Parameter wird ein String mit \texttt{userData} oder \texttt{referenceStatement} übergeben.
+
 \chapter{Datengenerierung}
 
 \section{XML-Tags}
 
-Wir benötigen zusätzliche Informationen in der XML-Datei, damit wir Daten generieren können. Ein Beispiel zeigen wir in \autoref{code:xml}. Innerhalb des \texttt{relation-Tags} benötigen wir ein \texttt{metadata-Tag}. In diesem wird im Tag \texttt{tablename} der Name der Tabelle, wie in der intension angegeben, genannt. Außerdem benötigen wir pro Primärschlüssel den Tag \texttt{primarykey} in dem der Schlüssel angegeben wird. Zum Schluss folgt der Tag \texttt{datageneration} mit dem die Daten generiert werden können. Dieser Tag kann mehrmals benutzt werden, sollte mehrere verschiedene Daten der Tabelle hinzugefügt werden. Der genaue Aufbau für die Datengenerierung folgt in \autoref{cha:aufbau}.
+Wir benötigen zusätzliche Informationen in der XML-Datei, damit wir Daten generieren können. Ein Beispiel zeigen wir in \autoref{code:xml}. Innerhalb des \texttt{relation-Tags} benötigen wir ein \texttt{extensiongeneration-Tag}. In diesem wird mit dem Tag \texttt{generationtuple} die Daten für die Insert-Statements generiert. Dieser Tag kann mehrmals benutzt werden, sollte mehrere verschiedene Daten der Tabelle hinzugefügt werden. Der genaue Aufbau für die Datengenerierung folgt in \autoref{cha:aufbau}.
 
 \begin{figure}[h]
 	\centering

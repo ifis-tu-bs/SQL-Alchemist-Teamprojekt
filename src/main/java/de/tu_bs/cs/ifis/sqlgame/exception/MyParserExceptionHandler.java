@@ -30,7 +30,7 @@ public class MyParserExceptionHandler implements ErrorHandler {
      * Print the warning with the line number, if the xml-file is not correct
      * 
      * @param e SAXParseException
-     * @throws SAXException
+     * @throws SAXException exception from parsing the document
      */
     @Override
     public void warning(SAXParseException e) throws SAXException {
@@ -46,7 +46,7 @@ public class MyParserExceptionHandler implements ErrorHandler {
      * Print the error with the line number, if the xml-file is not correct
      * 
      * @param e SAXParseException
-     * @throws SAXException
+     * @throws SAXException exception from parsing the document
      */
     @Override
     public void error(SAXParseException e) throws SAXException {
@@ -62,7 +62,7 @@ public class MyParserExceptionHandler implements ErrorHandler {
      * Print the fatal error with the line number, if the xml-file is not correct
      * 
      * @param e SAXParseException
-     * @throws SAXException
+     * @throws SAXException exception from parsing the document
      */
     @Override
     public void fatalError(SAXParseException e) throws SAXException {

@@ -9,13 +9,10 @@
             INSERT INTO Effects(id, ename) VALUES (1, 'Dizzyness')
         </tuple>
     </extension>
-    <metadata>
-        <tablename>effects</tablename>
-        <primarykey>id</primarykey>
-	<primarykey>weitererKey</primarykey>
-        <datageneration>
+    <extensiongeneration>
+        <generationtuple>
             10;none;max,int,20;random,effect,80;random,string,200
-        </datageneration>
-	<datageneration>weitere</datageneration>
-    </metadata>
+        </generationtuple>
+	<generationtuple>weitere</generationtuple>
+    </extensiongeneration>
 </relation>

@@ -30,7 +30,7 @@ public class InputFile {
     /**
      * Getter for tasks.
      * 
-     * @return ArrayList<Task> list of tasks
+     * @return ArrayList list of tasks
      */
     public ArrayList<Task> getTasks() {
         return tasks;
@@ -39,7 +39,7 @@ public class InputFile {
     /**
      * Setter for tasks.
      * 
-     * @param tasks ArrayList<Task> list of tasks
+     * @param tasks ArrayList list of tasks
      */
     public void setTasks(ArrayList<Task> tasks) {
         this.tasks = tasks;

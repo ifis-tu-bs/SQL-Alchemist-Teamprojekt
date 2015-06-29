@@ -2,10 +2,4 @@ CREATE TABLE Task(
     name varchar(200) PRIMARY KEY,
     db_name varchar(200) NOT NULL,
     players int(10) NOT NULL
-),
-
-CREATE TABLE PLAYER(
-    id int(10) unsigned PRIMARY KEY,
-    task_id int(10) NOT NULL,
-    FOREIGN KEY (task_id) REFERENCES TASK (id)
 )

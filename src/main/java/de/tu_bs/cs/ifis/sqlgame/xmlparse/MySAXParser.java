@@ -105,7 +105,7 @@ public class MySAXParser extends DefaultHandler {
      * 
      * @param exercise the xml-file that is parsed
      * @throws de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException
-     * Exception from parsing the document
+     *         exception from parsing the document
      */
     public void parseDocument(String exercise) throws MySQLAlchemistException {
         SAXParserFactory spf = SAXParserFactory.newInstance();
