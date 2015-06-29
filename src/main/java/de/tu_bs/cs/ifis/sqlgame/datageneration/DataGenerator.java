@@ -6,11 +6,8 @@ import de.tu_bs.cs.ifis.sqlgame.dbconnection.DBConnection;
 import de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException;
 import de.tu_bs.cs.ifis.sqlgame.xmlparse.Exercise;
 import de.tu_bs.cs.ifis.sqlgame.xmlparse.Relation;
-import java.io.StringReader;
 
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Random;
 import java.util.StringTokenizer;
 
@@ -95,90 +92,6 @@ public class DataGenerator {
     /**
      * Method generateFixExtension.
      * 
-     * Grab the reference select statements and generate an extension so that
-     * there is always enough data if the select statement is executed.
-     * 
-     * @throws de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException
-     */
-    public void generateSelectExtension() throws MySQLAlchemistException {
-        //Iterate through all exercises of the task
-        for (Exercise exe : this.exercises) {
-            String selectStatementString = exe.getReferencestatement().toLowerCase();
-            
-            SQLSelectParser sqlsp = new SQLSelectParser(selectStatementString);
-            ArrayList<ArrayList<String>> whereInformation = sqlsp.getWhereInformation();
-            
-            if (!whereInformation.isEmpty()) {
-                for (ArrayList<String> whereInformationRow : whereInformation) {
-                    
-                }
-            }
-        }
-    }
-    
-    public String testbla(ArrayList<ArrayList> columns, String columnName, String compare, String value) throws MySQLAlchemistException {
-        String result = "3;none;";
-        for (ArrayList tmpList : columns) {
-            if (tmpList.get(0).equals(columnName)) {
-                switch (compare) {
-                    case ("="): {
-                        result += "fix," + value + ";";
-                        break;
-                    }
-                    case (">"):
-                    case (">="): {
-                        if (tmpList.get(1).equals("int")) {
-                            result += "min,int," + value + ";";
-                        } else if (tmpList.get(1).equals("double")) {
-                            result += "min,double," + value + ";";
-                        }
-                        break;
-                    }
-                    case ("<"):
-                    case ("<="): {
-                        if (tmpList.get(1).equals("int")) {
-                            result += "max,int," + value + ";";
-                        } else if (tmpList.get(1).equals("double")) {
-                            result += "max,double," + value + ";";
-                        }
-                        break;
-                    }
-                    case ("LIKE"): {
-                        result += "fix," + value + ";";
-                        break;
-                    }
-                }
-            } else {
-                if (tmpList.get(3) == null) {
-                    switch ((String) tmpList.get(1)) {
-                        case ("int"): {
-                            result += "random,int;";
-                            break;
-                        }
-                        case ("double"): {
-                            result += "random,double;";
-                            break;
-                        }
-                        case ("varchar"): {
-                            result += "random,string;";
-                            break;
-                        }
-                        case ("date"): {
-                            result += "random,date;";
-                            break;
-                        }
-                    }
-                } else {
-                    result += "ref," + tmpList.get(3) + ";";
-                }
-            }
-        }
-        return result;
-    }
-    
-    /**
-     * Method generateFixExtension.
-     * 
      * Grab the extension to be generated and generate the extension. Generate
      * insert statements for each table of the task based on the tuples
      * of the xml file.
@@ -198,53 +111,8 @@ public class DataGenerator {
             this.calculatePrimaryKeyAssignments(rel);
             
             //Iterate through all data constraints
-            for (String dataConstraint : rel.getDataGeneration()) {
-                StringTokenizer st = new StringTokenizer(dataConstraint, ";");
-                
-                //First token for the number function
-                String numberFunction = st.nextToken();
-                
-                //Second token for the reference function
-                String refFunction = st.nextToken();
-                ArrayList<String> refFunctionList = new ArrayList<>();
-                StringTokenizer stt = new StringTokenizer(refFunction, ",");
-                while (stt.hasMoreTokens()) {
-                    refFunctionList.add(stt.nextToken());
-                }
-                
-                //The following tokens for the column function of the relation
-                ArrayList<ArrayList<String>> columnFunctions = new ArrayList<>();
-                while (st.hasMoreTokens()) {
-                    ArrayList<String> columnFunction = new ArrayList<>();
-                    stt = new StringTokenizer(st.nextToken(), ",");
-                    while (stt.hasMoreTokens()) {
-                        columnFunction.add(stt.nextToken());
-                    }
-                    columnFunctions.add(columnFunction);
-                }
-
-                //Fill primary key values list
-                //Build the sql select statement to get the primary key columns
-                String primaryKeyColumns = "*";
-                int i = 0;
-                for (String primaryKey : rel.getPrimaryKey()) {
-                    if (i == 0) {
-                        primaryKeyColumns = primaryKey;
-                    } else {
-                        primaryKeyColumns += ", " + primaryKey;
-                    }
-                    i++;
-                }
-                //Execute the sql select statement to get the primary key columns
-                this.primaryKeyValues = this.dbConn.executeSQLSelectStatement(
-                        this.conf.getString("auth.user"),
-                        this.conf.getString("auth.pass"),
-                        "SELECT " + primaryKeyColumns + " FROM " + rel.getTableName()
-                );
-                
-                //Generate and execute the insert statements with the grabed data
-                int number = generateNumber(numberFunction);
-                this.generateDataFromFunction(rel.getTableName(), number, refFunctionList, columnFunctions);
+            for (String generationTuple : rel.getDataGeneration()) {
+                this.generateDataFromGenerationTuple(rel, generationTuple);
             }
             
             //Reset the primarykey and reference lists for the new data constraint
@@ -255,12 +123,189 @@ public class DataGenerator {
     }
     
     /**
+     * Method generateSelectExtension.
+     * 
+     * Grab the reference select statements and generate an extension so that
+     * there is always enough data if the select statement is executed.
+     * 
+     * @throws de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException
+     */
+    public void generateSelectExtension() throws MySQLAlchemistException {
+        //Iterate through all exercises of the task
+        for (Exercise exe : this.exercises) {
+            String selectStatementString = exe.getReferencestatement().toLowerCase();
+            
+            SQLSelectParser sqlsp = new SQLSelectParser(selectStatementString);
+            //Get the table name of the select statement
+            String tableName = sqlsp.getFromInformation();
+            //Get the related relation
+            Relation relation = null;
+            for (Relation rel : this.relations) {
+                if (rel.getTableName().equals(tableName)) {
+                    relation = rel;
+                }
+            }
+            //Get the information of the where clause
+            ArrayList<ArrayList<String>> whereInformation = sqlsp.getWhereInformation();
+            //Generate the insert statements
+            if (!whereInformation.isEmpty()) {
+                for (ArrayList<String> whereInformationRow : whereInformation) {
+                    String generationTuple = this.createGenerationTuple(null, whereInformationRow.get(0), whereInformationRow.get(1), whereInformationRow.get(2));
+                    this.generateDataFromGenerationTuple(relation, generationTuple);
+                }
+            }
+        }
+    }
+    
+    /**
+     * Method createGenerationTuple.
+     * 
+     * Create a generation tuple with the information given by a where clause
+     * of a reference statement.
+     * 
+     * @param columnInformation ArrayList<ArrayList> information of each column
+     *                          of the relation relatd to the refrence statement
+     * @param columnName String name of the column for which data should be created
+     * @param compare String comparison type of the where clause of the reference statement
+     * @param value String comparison value of the where clause of the reference statement
+     * @return String generated generation tuple
+     * @throws de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException
+     */
+    public String createGenerationTuple(ArrayList<ArrayList> columnInformation, String columnName, String compare, String value) throws MySQLAlchemistException {
+        String result = "3;none;";
+        
+        for (ArrayList tmpList : columnInformation) {
+            if (tmpList.get(0).equals(columnName)) {
+                switch (compare) {
+                    case ("="): {
+                        result += "fix," + value + ";";
+                        break;
+                    }
+                    
+                    case (">"):
+                    case (">="): {
+                        if (tmpList.get(1).equals("int")) {
+                            result += "min,int," + value + ";";
+                        } else if (tmpList.get(1).equals("double")) {
+                            result += "min,double," + value + ";";
+                        }
+                        break;
+                    }
+                    
+                    case ("<"):
+                    case ("<="): {
+                        if (tmpList.get(1).equals("int")) {
+                            result += "max,int," + value + ";";
+                        } else if (tmpList.get(1).equals("double")) {
+                            result += "max,double," + value + ";";
+                        }
+                        break;
+                    }
+                    
+                    case ("LIKE"): {
+                        result += "fix," + value + ";";
+                        break;
+                    }
+                }
+            } else {
+                if (tmpList.get(3) == null) {
+                    switch ((String) tmpList.get(1)) {
+                        case ("int"): {
+                            result += "random,int;";
+                            break;
+                        }
+                        
+                        case ("double"): {
+                            result += "random,double;";
+                            break;
+                        }
+                        
+                        case ("varchar"): {
+                            result += "random,string;";
+                            break;
+                        }
+                        
+                        case ("date"): {
+                            result += "random,date;";
+                            break;
+                        }
+                    }
+                } else {
+                    result += "ref," + tmpList.get(3) + ";";
+                }
+            }
+        }
+        
+        return result;
+    }
+    
+    /**
+     * Method generateDataFromGenerationTuple.
+     * 
+     * Generate data and insert statements for the given relation with the given
+     * generation tuple.
+     * 
+     * @param rel Relation relation for which data should be created
+     * @param generationTuple String generation tuple of which data should be created
+     * @throws de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException
+     */
+    private void generateDataFromGenerationTuple(Relation rel, String generationTuple) throws MySQLAlchemistException {
+        StringTokenizer st = new StringTokenizer(generationTuple, ";");
+
+        //First token for the number function
+        String numberFunction = st.nextToken();
+
+        //Second token for the reference function
+        String refFunction = st.nextToken();
+        ArrayList<String> refFunctionList = new ArrayList<>();
+        StringTokenizer stt = new StringTokenizer(refFunction, ",");
+        while (stt.hasMoreTokens()) {
+            refFunctionList.add(stt.nextToken());
+        }
+
+        //The following tokens for the column function of the relation
+        ArrayList<ArrayList<String>> columnFunctions = new ArrayList<>();
+        while (st.hasMoreTokens()) {
+            ArrayList<String> columnFunction = new ArrayList<>();
+            stt = new StringTokenizer(st.nextToken(), ",");
+            while (stt.hasMoreTokens()) {
+                columnFunction.add(stt.nextToken());
+            }
+            columnFunctions.add(columnFunction);
+        }
+
+        //Fill primary key values list
+        //Build the sql select statement to get the primary key columns
+        String primaryKeyColumns = "*";
+        int i = 0;
+        for (String primaryKey : rel.getPrimaryKey()) {
+            if (i == 0) {
+                primaryKeyColumns = primaryKey;
+            } else {
+                primaryKeyColumns += ", " + primaryKey;
+            }
+            i++;
+        }
+        //Execute the sql select statement to get the primary key columns
+        this.primaryKeyValues = this.dbConn.executeSQLSelectStatement(
+                this.conf.getString("auth.user"),
+                this.conf.getString("auth.pass"),
+                "SELECT " + primaryKeyColumns + " FROM " + rel.getTableName()
+        );
+
+        //Generate and execute the insert statements with the grabed data
+        int number = calculateNumber(numberFunction);
+        this.generateDataFromFunction(rel.getTableName(), number, refFunctionList, columnFunctions);
+    }
+    
+    /**
      * Method calculatePrimaryKeyAssignments.
      * 
      * Get the primary keys of the given relation and assigne its column index
      * to it.
      * 
-     * @param relation Relation
+     * @param relation Relation relation for wich the primary key assignments
+     *                 should be created
      * @throws de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException
      */
     private void calculatePrimaryKeyAssignments(Relation relation) throws MySQLAlchemistException {
@@ -293,7 +338,7 @@ public class DataGenerator {
      * 
      * Method to calculate the columns of the given relation/table.
      * 
-     * @param relation Relation
+     * @param relation Relation relation for which the columns should be calculated
      */
     private void calculateColumns(Relation relation) {
         //Count the tokens of the given metadata row (this is the column number
@@ -304,16 +349,16 @@ public class DataGenerator {
     }
     
     /**
-     * Method generateNumber.
+     * Method calculateNumber.
      * 
      * Generate a number from the given number function. This can be just an
      * integer value of for example a random integer between two values.
      * 
-     * @param numberFunction
-     * @return
+     * @param numberFunction String function to calculate the number
+     * @return int number that is calculated
      * @throws de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException
      */
-    private int generateNumber(String numberFunction) throws MySQLAlchemistException {
+    private int calculateNumber(String numberFunction) throws MySQLAlchemistException {
         StringTokenizer st = new StringTokenizer(numberFunction, ",");
         //Get the function name of the number function
         String functionName = st.nextToken();
@@ -653,7 +698,7 @@ public class DataGenerator {
      * @param params a list of paramters for the function
      * @return string with the generated data
      * @throws de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException
-     *         Exception, if the user give not the correct parameters
+     *         Exception if the user gives not the correct parameters
      */
     private String findAndExecuteFunction(String functionName, ArrayList<String> params) throws MySQLAlchemistException{
         String result = "";

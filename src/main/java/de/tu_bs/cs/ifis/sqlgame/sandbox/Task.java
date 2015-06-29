@@ -253,6 +253,11 @@ public class Task {
             //Set db for task
             String dbPath = this.conf.getString("input.dbsPath") + this.dbName;
             this.tmpDbConn = new DBConnection(dbType, dbPath);
+            
+            //Insert the given values into the db of the task
+            this.insertToDb();
+            this.generateData("referenceStatement");
+            this.generateData("userData");
         } catch(MySQLAlchemistException se){
             throw new MySQLAlchemistException("Fehler beim erstellen der Task ", se);
         }

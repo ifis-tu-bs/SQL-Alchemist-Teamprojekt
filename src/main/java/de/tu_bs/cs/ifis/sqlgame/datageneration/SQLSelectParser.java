@@ -20,6 +20,14 @@ public class SQLSelectParser {
         this.selectStatement = selectStatement.toLowerCase();
     }
     
+    public String getFromInformation() {
+        StringTokenizer st = new StringTokenizer(this.selectStatement, "from");
+        st.nextToken();
+        StringTokenizer stt = new StringTokenizer(st.nextToken().trim());
+        
+        return stt.nextToken();
+    }
+    
     public ArrayList<ArrayList<String>> getWhereInformation() {
         ArrayList<ArrayList<String>> whereInformation = new ArrayList<>();
         

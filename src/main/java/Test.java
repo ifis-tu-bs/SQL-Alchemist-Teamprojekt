@@ -25,15 +25,10 @@ public class Test {
      */
     public static void main(String[] args) {
         try {
-            
             InputFile testFile = new InputFile("alchemy-task.xml", true);
             Iterator it = testFile.getTasks().iterator();
             Task task = (Task) it.next();
             task.startTask("local");
-            //task.insertToDb();
-            System.out.println(task.isUserStatementCorrect("SELECT * FROM Powders WHERE color='red'", 1));
-            task.generateData("referenceStatement");
-            //task.generateData("userData");
             
             /**
             InputFile testString = new InputFile("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
