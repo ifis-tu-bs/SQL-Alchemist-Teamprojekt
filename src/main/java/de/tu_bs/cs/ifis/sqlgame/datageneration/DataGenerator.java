@@ -238,7 +238,8 @@ public class DataGenerator {
                 }
             }
         }
-        
+        int length = result.length();
+        result = result.substring(0, length - 1);
         return result;
     }
     
