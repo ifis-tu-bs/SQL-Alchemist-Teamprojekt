@@ -234,7 +234,10 @@ public class DataGenerator {
                         }
                     }
                 } else {
-                    result += "ref," + tmpList.get(3) + ";";
+                    String refString = (String) tmpList.get(3);
+                    refString = refString.replace("(", ",");
+                    refString = refString.replace(")", "");
+                    result += "ref," + refString + ";";
                 }
             }
         }
