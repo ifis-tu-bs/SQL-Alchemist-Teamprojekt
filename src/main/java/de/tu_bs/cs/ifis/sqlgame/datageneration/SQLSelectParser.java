@@ -30,34 +30,35 @@ public class SQLSelectParser {
     public ArrayList<ArrayList<String>> getWhereInformation() {
         ArrayList<ArrayList<String>> whereInformation = new ArrayList<>();
         
-        String [] splitWhere = this.selectStatement.split("where");
-        String [] splitAnd = splitWhere[1].split("and");
-        for (String whereClause : splitAnd) {
-            //New row of where information
-            ArrayList<String> whereInformationRow = new ArrayList<>();
-            
-            //Split the where clause
-            StringTokenizer st = new StringTokenizer(whereClause);
-            
-            //First token of the where clause is the column name
-            StringTokenizer stt = new StringTokenizer(st.nextToken(), ".");
-            String columnName = stt.nextToken();
-            if (stt.hasMoreTokens()) {
-                columnName = stt.nextToken();
+        if(this.selectStatement.contains("where")){
+            String [] splitWhere = this.selectStatement.split("where");
+            String [] splitAnd = splitWhere[1].split("and");
+            for (String whereClause : splitAnd) {
+                //New row of where information
+                ArrayList<String> whereInformationRow = new ArrayList<>();
+
+                //Split the where clause
+                StringTokenizer st = new StringTokenizer(whereClause);
+
+                //First token of the where clause is the column name
+                StringTokenizer stt = new StringTokenizer(st.nextToken(), ".");
+                String columnName = stt.nextToken();
+                if (stt.hasMoreTokens()) {
+                    columnName = stt.nextToken();
+                }
+                whereInformationRow.add(columnName);
+
+                //Second token of the where clause is the where comparison type
+                String comparisonType = st.nextToken();
+                whereInformationRow.add(comparisonType);
+
+                //Third token of the where clause is the comparsion String or number
+                String comparison = st.nextToken();
+                whereInformationRow.add(comparison);
+
+                whereInformation.add(whereInformationRow);
             }
-            whereInformationRow.add(columnName);
-            
-            //Second token of the where clause is the where comparison type
-            String comparisonType = st.nextToken();
-            whereInformationRow.add(comparisonType);
-            
-            //Third token of the where clause is the comparsion String or number
-            String comparison = st.nextToken();
-            whereInformationRow.add(comparison);
-            
-            whereInformation.add(whereInformationRow);
         }
-        
         return whereInformation;
     }
 }

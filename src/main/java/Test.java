@@ -25,7 +25,7 @@ public class Test {
      */
     public static void main(String[] args) {
         try {
-            InputFile testFile = new InputFile("alchemy-task.xml", true);
+            InputFile testFile = new InputFile("exercises-wise13.xml", true);
             Iterator it = testFile.getTasks().iterator();
             Task task = (Task) it.next();
             task.startTask("local");

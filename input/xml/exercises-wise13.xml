@@ -15,7 +15,7 @@
     <schema>
       <relation>
         <intension>
-          CREATE TABLE Comic (
+            CREATE TABLE Comic(
             no INTEGER NOT NULL PRIMARY KEY,
             title VARCHAR(255) NOT NULL,
             pages INTEGER,
@@ -29,14 +29,10 @@
           <tuple>INSERT INTO Comic(no, title, publisher) VALUES (18, 'Wonderboy Rocks', 'Marvel');</tuple>
           <tuple>INSERT INTO Comic(no, title, publisher) VALUES (21, 'Young Nastyman''s Revenge', 'Marvel');</tuple>
         </extension>
-        <metadata>
-          <primarykey>no</primarykey>
-          <datageneration>5$none;max$1,int;random$string;max$1,int;random$string</datageneration>
-        </metadata>
       </relation>
       <relation>
         <intension>
-          CREATE TABLE PoweredPerson (
+          CREATE TABLE PoweredPerson(
             alias VARCHAR(255) NOT NULL PRIMARY KEY,
             firstname VARCHAR(100) NOT NULL,
             lastname VARCHAR(100),
@@ -54,11 +50,11 @@
       </relation>
       <relation>
         <intension>
-          CREATE TABLE HasPowerSince (
+          CREATE TABLE HasPowerSince(
             comic INTEGER NOT NULL REFERENCES Comic(no),
             alias VARCHAR(255) NOT NULL REFERENCES PoweredPerson(alias),
             power VARCHAR(100) NOT NULL,
-            PRIMARY KEY (comic, alias, power)
+            PRIMARY KEY(comic, alias, power)
           );
         </intension>
         <extension>
@@ -75,10 +71,10 @@
       </relation>
       <relation>
         <intension>
-          CREATE TABLE SuperHero (
+          CREATE TABLE SuperHero(
             alias VARCHAR(255) NOT NULL REFERENCES PoweredPerson(alias),
             cape BOOLEAN,
-            PRIMARY KEY (alias)
+            PRIMARY KEY(alias)
           );
         </intension>
         <extension>
@@ -89,9 +85,9 @@
       </relation>
       <relation>
         <intension>
-          CREATE TABLE SuperVillain (
+          CREATE TABLE SuperVillain(
             alias VARCHAR(255) NOT NULL REFERENCES PoweredPerson(alias),
-            PRIMARY KEY (alias)
+            PRIMARY KEY(alias)
           );
         </intension>
         <extension>
@@ -105,6 +101,7 @@
     <subtasks>
       
       <subtask>
+          <subtaskid>1</subtaskid>
         <tasktexts>
           <tasktext language="EN">The super villain table is an excerpt of the powered person table. Provide a query on the powered person table that reproduces the super villain table.</tasktext>
         </tasktexts>
@@ -112,7 +109,7 @@
           <referencestatement>
             SELECT alias
             FROM PoweredPerson
-            WHERE evilness_level > 0;
+            WHERE evilness_level > 0
           </referencestatement>
           <evaluationstrategy>SET</evaluationstrategy>
         </solution>
@@ -120,6 +117,7 @@
       </subtask>
       
       <subtask>
+          <subtaskid>2</subtaskid>
         <tasktexts>
           <tasktext language="EN">A query for all super heroes having no cape.</tasktext>
         </tasktexts>
@@ -127,7 +125,7 @@
           <referencestatement>
             SELECT *
             FROM SuperHero
-            WHERE cape = 'FALSE';
+            WHERE cape = 'FALSE'
           </referencestatement>
           <evaluationstrategy>SET</evaluationstrategy>
         </solution>
@@ -135,6 +133,7 @@
       </subtask>
       
       <subtask>
+        <subtaskid>3</subtaskid>
         <tasktexts>
           <tasktext language="EN">A query for the names of all powers of Young Nastyman and the number of the comic they first appeared in, ordered by their appearance (newest first). If two powers appeared at the same time, sort them alphabetically by their name.</tasktext>
         </tasktexts>
@@ -143,7 +142,7 @@
             SELECT power, comic
             FROM HasPowerSince
             WHERE alias = 'Young Nastyman'
-            ORDER BY comic DESC, power ASC;
+            ORDER BY comic DESC, power ASC
           </referencestatement>
           <evaluationstrategy>LIST</evaluationstrategy>
         </solution>
@@ -154,6 +153,7 @@
       </subtask>
       
       <subtask>
+          <subtaskid>4</subtaskid>
         <tasktexts>
           <tasktext language="EN">A query for the number of pages I would have to read if I wanted to read all Marvel comics in the database.</tasktext>
         </tasktexts>
@@ -161,7 +161,7 @@
           <referencestatement>
             SELECT SUM(pages) AS sum
             FROM comic
-            WHERE publisher = 'Marvel';
+            WHERE publisher = 'Marvel'
           </referencestatement>
           <evaluationstrategy>SET</evaluationstrategy>
         </solution>
@@ -172,41 +172,18 @@
       </subtask>
       
       <subtask>
+          <subtaskid>5</subtaskid>
         <tasktexts>
           <tasktext language="EN">A query that states if the average powered person is evil (evilness > 0) or good (evilness ≤ 0), depending on all powered persons’ evilness levels.</tasktext>
         </tasktexts>
         <solution>
           <referencestatement>
             SELECT AVG(evilness_level)
-            FROM PoweredPerson;
+            FROM PoweredPerson
           </referencestatement>
           <evaluationstrategy>SET</evaluationstrategy>
         </solution>
         <points>2</points>
-      </subtask>
-      
-      <subtask>
-        <tasktexts>
-          <tasktext language="EN">A query for the aliases of all super heroes that fought super villains in a comic with a no from 10
-to 20, the comic’s title, and the number of powers the respective hero already possessed in that comic.</tasktext>
-        </tasktexts>
-        <solution>
-          <referencestatement>
-            WITH no_alias_count (comic_no, alias, count) AS (
-              SELECT no AS comic_no, h.alias, COUNT(power) AS count
-              FROM comic
-                JOIN HasPowerSince AS h ON comic &lt;= no
-                JOIN SuperHero AS s ON h.alias = s.alias
-              WHERE no BETWEEN 10
-                AND 20 GROUP BY no, h.alias
-            )
-            SELECT title, alias, count
-            FROM no_alias_count
-              JOIN comic ON comic_no = no;
-          </referencestatement>
-          <evaluationstrategy>SET</evaluationstrategy>
-        </solution>
-        <points>4</points>
       </subtask>
       
     </subtasks>
