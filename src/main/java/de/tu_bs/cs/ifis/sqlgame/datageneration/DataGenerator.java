@@ -169,9 +169,9 @@ public class DataGenerator {
                     
                     case (">"):
                     case (">="): {
-                        if (tmpList.get(1).equals("int")) {
+                        if (tmpList.get(1).equals("int") || tmpList.get(1).equals("INT") || tmpList.get(1).equals("INTEGER")) {
                             result += "min,int," + value + ";";
-                        } else if (tmpList.get(1).equals("double")) {
+                        } else if (tmpList.get(1).equals("double")|| tmpList.get(1).equals("DOUBLE")) {
                             result += "min,double," + value + ";";
                         }
                         break;
@@ -179,9 +179,9 @@ public class DataGenerator {
                     
                     case ("<"):
                     case ("<="): {
-                        if (tmpList.get(1).equals("int")) {
+                        if (tmpList.get(1).equals("int") || tmpList.get(1).equals("INT") || tmpList.get(1).equals("INTEGER")) {
                             result += "max,int," + value + ";";
-                        } else if (tmpList.get(1).equals("double")) {
+                        } else if (tmpList.get(1).equals("double")|| tmpList.get(1).equals("DOUBLE")) {
                             result += "max,double," + value + ";";
                         }
                         break;
@@ -195,23 +195,37 @@ public class DataGenerator {
             } else {
                 if (tmpList.get(3) == null) {
                     switch ((String) tmpList.get(1)) {
+                        case ("INTEGER"):
+                        case ("INT"):
                         case ("int"): {
-                            result += "random,int;";
+                            result += "random,int+;";
                             break;
                         }
                         
+                        case ("DOUBLE"):
                         case ("double"): {
                             result += "random,double;";
                             break;
                         }
                         
-                        case ("varchar(100)"): {
-                            result += "random,string;";
+                        case ("DATE"):
+                        case ("date"): {
+                            result += "random,date;";
                             break;
                         }
                         
-                        case ("date"): {
-                            result += "random,date;";
+                        case ("BOOL"):
+                        case ("BOOLEAN"):
+                        case ("bool"):
+                        case ("boolean"): {
+                            result += "random,boolean;";
+                            break;
+                        }
+                        default:{
+                            String type = (String) tmpList.get(1);
+                            if (type.contains("varchar") || type.contains("VARCHAR")) {
+                                result += "random,string;";
+                            }
                             break;
                         }
                     }
@@ -795,6 +809,10 @@ public class DataGenerator {
                         result = gd.generateEmail();
                         break;
                     }
+                    case("boolean"):{
+                        result = gd.generateBoolean();
+                        break;
+                    }
                     default:{
                         int random = 100;
                         String def = "NULL";
@@ -929,7 +947,6 @@ public class DataGenerator {
                 break;
             }
         }
-        
         return result;
     }
 }

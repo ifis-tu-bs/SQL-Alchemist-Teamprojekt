@@ -241,6 +241,20 @@ public class GenerateSpecificData {
     }
     
     /**
+     * Method generateBoolean
+     * 
+     * Generates a random boolean.
+     * 
+     * @return String with the boolean
+     */
+    public String generateBoolean() {
+        Random r = new Random();
+        int res = r.nextInt(2);
+        String result = res > 0 ? "true" : "false";
+        return result;
+    }
+    
+    /**
      * Method generateMinInteger.
      * 
      * Generates an integer greater than the parameter.

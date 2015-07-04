@@ -157,7 +157,9 @@ public class MySAXParser extends DefaultHandler {
      * @param rel Relation relation to get the information from
      */
     private void setColumnInformationForRelation(Relation rel) {
-        String createTableStatement = rel.getIntension();
+        String createTableStatement = rel.getIntension().trim();
+        createTableStatement = createTableStatement.replace("\n", "");
+        createTableStatement = createTableStatement.replaceAll(" +", " ");
         ArrayList<ArrayList> resultList = new ArrayList();
         ArrayList<String> foreignColumns = new ArrayList();
 
@@ -203,20 +205,21 @@ public class MySAXParser extends DefaultHandler {
         } else {
             beforeStatement = createTableStatement;
         }
-        StringTokenizer st = new StringTokenizer(beforeStatement, ",");
+        String[] st = beforeStatement.split(",");
         ArrayList<String> columns = new ArrayList();
         String info = "";
-        String columninfo = st.nextToken();
+        String columninfo = st[0];
         StringTokenizer st2 = new StringTokenizer(columninfo, "(");
         st2.nextToken();
-        info += (st2.nextToken());
+        while(st2.hasMoreTokens()){
+            info += (st2.nextToken());
+        }
 
         columns.add(info);
 
-        while (st.hasMoreTokens()) {
-            columns.add(st.nextToken());
+        for (int j = 1; j < st.length; j++) {
+            columns.add(st[j]);
         }
-
         for (int i = 0; i < columns.size(); i++) {
             String s = columns.get(i);
             if (s.contains(")") && !s.contains("(")) {
@@ -233,6 +236,7 @@ public class MySAXParser extends DefaultHandler {
             while (st3.hasMoreTokens()) {
                 partsOfColumnInfo.add(st3.nextToken());
             }
+            //System.out.println(partsOfColumnInfo);
             String attributeName = (String) partsOfColumnInfo.get(0);
             String attributeType = (String) partsOfColumnInfo.get(1);
             boolean containsPrimary = partsOfColumnInfo.contains("primary") || partsOfColumnInfo.contains("PRIMARY");
@@ -276,7 +280,6 @@ public class MySAXParser extends DefaultHandler {
                 rel.setPrimaryKey((String) columnInformationRow.get(0));
             }
         }
-        
         rel.setColumnInformation(resultList);
     }
 
