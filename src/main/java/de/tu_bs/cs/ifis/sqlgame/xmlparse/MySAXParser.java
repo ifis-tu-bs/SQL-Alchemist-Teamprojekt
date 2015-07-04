@@ -137,6 +137,9 @@ public class MySAXParser extends DefaultHandler {
                     Exercise e = (Exercise) it2.next();
                     dbconn.executeSQLSelectStatement(conf.getString("auth.user"), conf.getString("auth.pass"), e.getReferencestatement());
                 }
+                
+                //Delete checkDatabase
+                dbconn.executeSQLUpdateStatement(conf.getString("auth.user"), conf.getString("auth.pass"), "DROP ALL OBJECTS");
             }
             
             //Delete the in-memory-database

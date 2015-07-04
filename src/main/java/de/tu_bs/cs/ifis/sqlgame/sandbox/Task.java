@@ -196,15 +196,15 @@ public class Task {
             this.fixDbConn = new DBConnection(dbType, this.conf.getString("input.fixDbPath"));
             if (this.checkTask()) {
                 this.loadTask();
-
+                
                 //Set db for task
                 String dbPath = this.conf.getString("input.dbsPath") + this.dbName;
                 this.tmpDbConn = new DBConnection(dbType, dbPath);
-
+                
                 //Update #players
                 int playerNum = this.getPlayers() + 1;
                 this.setPlayers(playerNum);
-
+                
                 this.updateTask();
             } else {
                 this.players = 1;
@@ -342,7 +342,7 @@ public class Task {
      */
     public void insertToDb() throws MySQLAlchemistException{
         Iterator<Relation> it = myRelation.iterator();
-
+        
         while (it.hasNext()) {
             Relation s = it.next();
             ArrayList<String> tmp = s.getTuple();
@@ -416,6 +416,9 @@ public class Task {
      *         SQLSelectStatement
      */
     public ArrayList<ArrayList<String>> executeUserStatement(String statement) throws MySQLAlchemistException{
+        if (this.tmpDbConn == null) {
+            System.out.println("jafiuhiebn");
+        }
             ArrayList<ArrayList<String>> result = this.tmpDbConn.executeSQLSelectStatement(this.conf.getString("auth.user"), this.conf.getString("auth.pass"), statement);
             return result;
     }
