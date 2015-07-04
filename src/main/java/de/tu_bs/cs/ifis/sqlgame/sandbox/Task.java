@@ -256,7 +256,7 @@ public class Task {
             
             //Insert the given values into the db of the task
             this.insertToDb();
-            this.generateData("referenceStatement");
+            //this.generateData("referenceStatement");
             this.generateData("userData");
         } catch(MySQLAlchemistException se){
             throw new MySQLAlchemistException("Fehler beim erstellen der Task ", se);
