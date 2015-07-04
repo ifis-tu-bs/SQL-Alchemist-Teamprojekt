@@ -416,11 +416,8 @@ public class Task {
      *         SQLSelectStatement
      */
     public ArrayList<ArrayList<String>> executeUserStatement(String statement) throws MySQLAlchemistException{
-        if (this.tmpDbConn == null) {
-            System.out.println("jafiuhiebn");
-        }
-            ArrayList<ArrayList<String>> result = this.tmpDbConn.executeSQLSelectStatement(this.conf.getString("auth.user"), this.conf.getString("auth.pass"), statement);
-            return result;
+        ArrayList<ArrayList<String>> result = this.tmpDbConn.executeSQLSelectStatement(this.conf.getString("auth.user"), this.conf.getString("auth.pass"), statement);
+        return result;
     }
     
     public boolean isUserStatementCorrect(String statement, int subtaskid) throws MySQLAlchemistException {
