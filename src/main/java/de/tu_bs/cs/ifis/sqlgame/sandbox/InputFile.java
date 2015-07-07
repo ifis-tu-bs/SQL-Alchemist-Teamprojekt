@@ -7,10 +7,14 @@ import de.tu_bs.cs.ifis.sqlgame.xmlparse.Header;
 import de.tu_bs.cs.ifis.sqlgame.xmlparse.MySAXParser;
 import de.tu_bs.cs.ifis.sqlgame.xmlparse.XMLSyntaxCheck;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Iterator;
+import org.xml.sax.InputSource;
 
 /**
  * Class InputFile.
@@ -57,40 +61,26 @@ public class InputFile {
     public InputFile(String file, boolean isFile) throws MySQLAlchemistException {
         String filePath = conf.getString("input.xmlPath");
         File newfile = null;
-        
+        XMLSyntaxCheck sych = new XMLSyntaxCheck();
+        MySAXParser msp = new MySAXParser();
         //Proof if a fileString or a file is given
         if (isFile) {
             //A file is given
             this.filename = file;
+            //Make the xml-sructure-check
+            sych.checkxml(this.filename, true);
+            //Parse the xml-file und build the db-tables
+            msp.parseDocument(this.filename, true);
+            this.tasks = msp.getMyTasks();
         } else {
-            //A file string is given, so create a new file from it
-            this.filename = "newdata.xml";
-            String fullFilePath = filePath + this.filename;
-            newfile = new File(fullFilePath);
-            if (checkFile(newfile)) {
-                System.out.println(fullFilePath + " erzeugt");
-            }
-            try {
-                FileWriter writer = new FileWriter(newfile);
-                writer.write(file);
-                writer.flush();
-                writer.close();
-            } catch (IOException ex) {
-                throw new MySQLAlchemistException("Fehler beim Erstellen der Datei. ", ex);
-            }
-        }
-
-        //Make the xml-sructure-check
-        XMLSyntaxCheck sych = new XMLSyntaxCheck();
-        sych.checkxml(this.filename);
-
-        //Parse the xml-file und build the db-tables
-        MySAXParser msp = new MySAXParser();
-        msp.parseDocument(this.filename);
-        this.tasks = msp.getMyTasks();
-        
-        if (!isFile) {
-            //Rename the new file from the file string
+            //A file string is given
+            //Make the xml-sructure-check
+            sych.checkxml(file, false);
+            //Parse the xml-file und build the db-tables
+            msp.parseDocument(file, false);
+            this.tasks = msp.getMyTasks();
+   
+            //Create a new file from the file string
             Iterator<Task> it = this.tasks.iterator();
             if (it.hasNext()) {
                 Task task = it.next();
@@ -99,7 +89,19 @@ public class InputFile {
                     Header header = it2.next();
 
                     this.filename = header.getTaskId();
-                    newfile.renameTo(new File(filePath + this.filename + ".xml"));
+                    String fullFilePath = filePath + this.filename + ".xml";
+                    newfile = new File(fullFilePath);
+                    if (checkFile(newfile)) {
+                        System.out.println(fullFilePath + " erzeugt");
+                    }
+                    try {
+                        OutputStreamWriter out = new OutputStreamWriter(new FileOutputStream(newfile),"UTF-8");
+                        out.write(file);
+                        out.flush();
+                        out.close();
+                    } catch (IOException ex) {
+                        throw new MySQLAlchemistException("Fehler beim Erstellen der Datei. ", ex);
+                    }
                 }
             }
         }

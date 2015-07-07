@@ -15,9 +15,11 @@ import org.xml.sax.helpers.DefaultHandler;
 import com.typesafe.config.*;
 import de.tu_bs.cs.ifis.sqlgame.dbconnection.DBConnection;
 import de.tu_bs.cs.ifis.sqlgame.sandbox.Task;
+import java.io.StringReader;
 import java.util.Iterator;
 import java.util.StringTokenizer;
 import org.h2.tools.DeleteDbFiles;
+import org.xml.sax.InputSource;
 
 /**
  * Class MySAXParser.
@@ -104,10 +106,12 @@ public class MySAXParser extends DefaultHandler {
      * SQL-statements
      * 
      * @param exercise the xml-file that is parsed
+     * @param isFile boolean true if the String is a file name,
+     *        false if the String is a file string
      * @throws de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException
      *         exception from parsing the document
      */
-    public void parseDocument(String exercise) throws MySQLAlchemistException {
+    public void parseDocument(String exercise, boolean isFile) throws MySQLAlchemistException {
         SAXParserFactory spf = SAXParserFactory.newInstance();
         try {
             //New instance of a parser
@@ -115,7 +119,12 @@ public class MySAXParser extends DefaultHandler {
             
             //Parse the file and register this class for call backs
             Config conf = ConfigFactory.load();
-            sp.parse(conf.getString("input.xmlPath") + exercise, this);
+            if (isFile) {
+                sp.parse(conf.getString("input.xmlPath") + exercise, this);
+            } else {
+                InputSource is = new InputSource(new StringReader(exercise));
+                sp.parse(is, this);
+            }
             
             //Check SQL-syntax
             DBConnection dbconn = new DBConnection("memory", conf.getString("input.testDbPath"));

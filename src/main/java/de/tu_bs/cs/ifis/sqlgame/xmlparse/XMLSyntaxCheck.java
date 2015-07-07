@@ -10,6 +10,7 @@ import com.typesafe.config.ConfigFactory;
 import de.tu_bs.cs.ifis.sqlgame.exception.MyParserExceptionHandler;
 import de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException;
 import java.io.IOException;
+import java.io.StringReader;
 import java.util.StringTokenizer;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
@@ -39,9 +40,11 @@ public class XMLSyntaxCheck {
      * regarding XML-schema tasks.xsd.
      * 
      * @param s name of the xml-file you want to validate (like "tasks.xml")
+     * @param isFile boolean true if the String is a file name,
+     *        false if the String is a file string
      * @throws de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException throwing MySQLAlchemistException
      */
-    public void checkxml(String s) throws MySQLAlchemistException {
+    public void checkxml(String s, boolean isFile) throws MySQLAlchemistException {
         try {
             SAXParserFactory factory = SAXParserFactory.newInstance();
             factory.setValidating(false);
@@ -58,11 +61,17 @@ public class XMLSyntaxCheck {
 
             XMLReader reader = parser.getXMLReader();
             reader.setErrorHandler(new MyParserExceptionHandler());
-            reader.parse(
+            if(isFile){
+                reader.parse(
+                    //source of xml-file
+                    new InputSource(conf.getString("input.xmlPath") + s)
+                );
+            } else {
+                reader.parse(
                 //source of xml-file
-                new InputSource(conf.getString("input.xmlPath") + s)
-            );
-            
+                new InputSource(new StringReader(s))
+                );
+            }
             //If this line is executed, the file is valid.
             System.out.println("Datei ist valide.");
         } catch (SAXException | ParserConfigurationException | IOException e) {
