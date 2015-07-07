@@ -60,7 +60,7 @@ public class InputFile {
      */
     public InputFile(String file, boolean isFile) throws MySQLAlchemistException {
         String filePath = conf.getString("input.xmlPath");
-        File newfile = null;
+        File newfile;
         XMLSyntaxCheck sych = new XMLSyntaxCheck();
         MySAXParser msp = new MySAXParser();
         //Proof if a fileString or a file is given
@@ -95,10 +95,10 @@ public class InputFile {
                         System.out.println(fullFilePath + " erzeugt");
                     }
                     try {
-                        OutputStreamWriter out = new OutputStreamWriter(new FileOutputStream(newfile),"UTF-8");
-                        out.write(file);
-                        out.flush();
-                        out.close();
+                        try (OutputStreamWriter out = new OutputStreamWriter(new FileOutputStream(newfile),"UTF-8")) {
+                            out.write(file);
+                            out.flush();
+                        }
                     } catch (IOException ex) {
                         throw new MySQLAlchemistException("Fehler beim Erstellen der Datei. ", ex);
                     }

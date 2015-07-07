@@ -15,7 +15,7 @@
     <schema>
       <relation>
         <intension>
-            CREATE TABLE Comic(
+          CREATE TABLE Comic(
             no INTEGER NOT NULL PRIMARY KEY,
             title VARCHAR(255) NOT NULL,
             pages INTEGER,
@@ -101,15 +101,14 @@
     <subtasks>
       
       <subtask>
-          <subtaskid>1</subtaskid>
-        <tasktexts>
+      <subtaskid>1</subtaskid>        <tasktexts>
           <tasktext language="EN">The super villain table is an excerpt of the powered person table. Provide a query on the powered person table that reproduces the super villain table.</tasktext>
         </tasktexts>
         <solution>
           <referencestatement>
             SELECT alias
             FROM PoweredPerson
-            WHERE evilness_level > 0
+            WHERE evilness_level > 0;
           </referencestatement>
           <evaluationstrategy>SET</evaluationstrategy>
         </solution>
@@ -117,15 +116,14 @@
       </subtask>
       
       <subtask>
-          <subtaskid>2</subtaskid>
-        <tasktexts>
+      <subtaskid>2</subtaskid>        <tasktexts>
           <tasktext language="EN">A query for all super heroes having no cape.</tasktext>
         </tasktexts>
         <solution>
           <referencestatement>
             SELECT *
             FROM SuperHero
-            WHERE cape = 'FALSE'
+            WHERE cape = 'FALSE';
           </referencestatement>
           <evaluationstrategy>SET</evaluationstrategy>
         </solution>
@@ -133,8 +131,7 @@
       </subtask>
       
       <subtask>
-        <subtaskid>3</subtaskid>
-        <tasktexts>
+      <subtaskid>3</subtaskid>        <tasktexts>
           <tasktext language="EN">A query for the names of all powers of Young Nastyman and the number of the comic they first appeared in, ordered by their appearance (newest first). If two powers appeared at the same time, sort them alphabetically by their name.</tasktext>
         </tasktexts>
         <solution>
@@ -142,7 +139,7 @@
             SELECT power, comic
             FROM HasPowerSince
             WHERE alias = 'Young Nastyman'
-            ORDER BY comic DESC, power ASC
+            ORDER BY comic DESC, power ASC;
           </referencestatement>
           <evaluationstrategy>LIST</evaluationstrategy>
         </solution>
@@ -153,15 +150,14 @@
       </subtask>
       
       <subtask>
-          <subtaskid>4</subtaskid>
-        <tasktexts>
+      <subtaskid>4</subtaskid>        <tasktexts>
           <tasktext language="EN">A query for the number of pages I would have to read if I wanted to read all Marvel comics in the database.</tasktext>
         </tasktexts>
         <solution>
           <referencestatement>
             SELECT SUM(pages) AS sum
             FROM comic
-            WHERE publisher = 'Marvel'
+            WHERE publisher = 'Marvel';
           </referencestatement>
           <evaluationstrategy>SET</evaluationstrategy>
         </solution>
@@ -172,19 +168,20 @@
       </subtask>
       
       <subtask>
-          <subtaskid>5</subtaskid>
-        <tasktexts>
-          <tasktext language="EN">A query that states if the average powered person is evil (evilness > 0) or good (evilness ≤ 0), depending on all powered persons’ evilness levels.</tasktext>
+      <subtaskid>5</subtaskid>        <tasktexts>
+          <tasktext language="EN">A query that states if the average powered person is evil (evilness > 0) or good (evilness = 0), depending on all powered persons evilness levels.</tasktext>
         </tasktexts>
         <solution>
           <referencestatement>
             SELECT AVG(evilness_level)
-            FROM PoweredPerson
+            FROM PoweredPerson;
           </referencestatement>
           <evaluationstrategy>SET</evaluationstrategy>
         </solution>
         <points>2</points>
       </subtask>
+      
+      
       
     </subtasks>
     
