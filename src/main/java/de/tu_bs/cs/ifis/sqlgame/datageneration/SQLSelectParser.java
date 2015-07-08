@@ -7,6 +7,7 @@ package de.tu_bs.cs.ifis.sqlgame.datageneration;
 
 import java.util.ArrayList;
 import java.util.StringTokenizer;
+import sun.util.locale.StringTokenIterator;
 
 /**
  *
@@ -52,11 +53,39 @@ public class SQLSelectParser {
                 String comparisonType = st.nextToken();
                 whereInformationRow.add(comparisonType);
 
-                //Last tokens of the where clause are the comparsion String or number
-                String comparison = "";
+                //Get the token comparison token of the where clause
+                CharSequence comparisonString = "";
                 while (st.hasMoreTokens()) {
-                    comparison += st.nextToken();
+                    comparisonString += " " + st.nextToken();
                 }
+                
+                String comparison = "";
+                if (comparisonString.charAt(0) == '"') {
+                    //varchar
+                    for (int i = 1; i < comparisonString.length(); i++) {
+                        if (comparisonString.charAt(i) == '"') {
+                            break;
+                        } else {
+                            comparison += comparisonString.charAt(i);
+                        }
+                    }
+                } else if (comparisonString.charAt(0) == '\'') {
+                    //varchar
+                    for (int i = 1; i < comparisonString.length(); i++) {
+                        if (comparisonString.charAt(i) == '\'') {
+                            break;
+                        } else {
+                            comparison += comparisonString.charAt(i);
+                        }
+                    }
+                } else {
+                    //int or double
+                    StringTokenizer sttt = new StringTokenizer(comparisonString.toString());
+                    if (sttt.hasMoreTokens()) {
+                        comparison = sttt.nextToken();
+                    }
+                }
+                
                 whereInformationRow.add(comparison);
 
                 whereInformation.add(whereInformationRow);
