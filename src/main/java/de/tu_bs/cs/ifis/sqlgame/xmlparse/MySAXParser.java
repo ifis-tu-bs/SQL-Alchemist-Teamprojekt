@@ -201,7 +201,6 @@ public class MySAXParser extends DefaultHandler {
                 foreignColumns.add(element);
                 foreignColumns.add(ref);
             }
-
         }
 
         if (createTableStatement.contains("PRIMARY KEY(")) {
@@ -218,11 +217,10 @@ public class MySAXParser extends DefaultHandler {
         ArrayList<String> columns = new ArrayList();
         String info = "";
         String columninfo = st[0];
-        StringTokenizer st2 = new StringTokenizer(columninfo, "(");
+        columninfo = columninfo.replaceFirst("\\(", "|");
+        StringTokenizer st2 = new StringTokenizer(columninfo, "|");
         st2.nextToken();
-        while(st2.hasMoreTokens()){
-            info += (st2.nextToken());
-        }
+        info += st2.nextToken();
 
         columns.add(info);
 
@@ -249,11 +247,20 @@ public class MySAXParser extends DefaultHandler {
             String attributeName = (String) partsOfColumnInfo.get(0);
             String attributeType = (String) partsOfColumnInfo.get(1);
             boolean containsPrimary = partsOfColumnInfo.contains("primary") || partsOfColumnInfo.contains("PRIMARY");
+            String refContent = null;
+            if (partsOfColumnInfo.contains("references")) {
+               int refInt = partsOfColumnInfo.indexOf("references");
+               refContent = (String) partsOfColumnInfo.get(refInt +1);
+            }
+            if (partsOfColumnInfo.contains("REFERENCES")) {
+               int refInt = partsOfColumnInfo.indexOf("REFERENCES");
+               refContent = (String) partsOfColumnInfo.get(refInt +1);
+            }
             partsOfColumnInfo.clear();
             partsOfColumnInfo.add(attributeName);
             partsOfColumnInfo.add(attributeType);
             partsOfColumnInfo.add(containsPrimary);
-            partsOfColumnInfo.add(null);
+            partsOfColumnInfo.add(refContent);
 
             resultList.add((ArrayList) partsOfColumnInfo);
         }

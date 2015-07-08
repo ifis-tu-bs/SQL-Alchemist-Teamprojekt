@@ -18,11 +18,11 @@ public class SQLSelectParser {
     String selectStatement;
     
     public SQLSelectParser(String selectStatement) {
-        this.selectStatement = selectStatement.toLowerCase();
+        this.selectStatement = selectStatement;
     }
     
     public String getFromInformation() {
-        String [] splitFrom = this.selectStatement.split("from");
+        String [] splitFrom = this.selectStatement.split("FROM");
         StringTokenizer st = new StringTokenizer(splitFrom[1].trim());
         
         return st.nextToken();
@@ -31,9 +31,9 @@ public class SQLSelectParser {
     public ArrayList<ArrayList<String>> getWhereInformation() {
         ArrayList<ArrayList<String>> whereInformation = new ArrayList<>();
         
-        if (this.selectStatement.contains("where")) {
-            String [] splitWhere = this.selectStatement.split("where");
-            String [] splitAnd = splitWhere[1].split("and");
+        if (this.selectStatement.contains("WHERE")) {
+            String [] splitWhere = this.selectStatement.split("WHERE");
+            String [] splitAnd = splitWhere[1].split("AND");
             for (String whereClause : splitAnd) {
                 //New row of where information
                 ArrayList<String> whereInformationRow = new ArrayList<>();
@@ -54,7 +54,7 @@ public class SQLSelectParser {
                 whereInformationRow.add(comparisonType);
 
                 //Get the token comparison token of the where clause
-                CharSequence comparisonString = "";
+                CharSequence comparisonString = st.nextToken();
                 while (st.hasMoreTokens()) {
                     comparisonString += " " + st.nextToken();
                 }
@@ -69,6 +69,7 @@ public class SQLSelectParser {
                             comparison += comparisonString.charAt(i);
                         }
                     }
+                    
                 } else if (comparisonString.charAt(0) == '\'') {
                     //varchar
                     for (int i = 1; i < comparisonString.length(); i++) {

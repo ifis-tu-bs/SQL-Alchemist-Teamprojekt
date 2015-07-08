@@ -121,7 +121,7 @@ public class DataGenerator {
     public void generateSelectExtension() throws MySQLAlchemistException {
         //Iterate through all exercises of the task
         for (Exercise exe : this.exercises) {
-            String selectStatementString = exe.getReferencestatement().toLowerCase();
+            String selectStatementString = exe.getReferencestatement();
             SQLSelectParser sqlsp = new SQLSelectParser(selectStatementString);
             
             //Get the table name of the select statement
@@ -130,7 +130,7 @@ public class DataGenerator {
             //Get the related relation
             Relation relation = null;
             for (Relation rel : this.relations) {
-                if (rel.getTableName().equals(tableName)) {
+                if (rel.getTableName().equals(tableName.toLowerCase())) {
                     relation = rel;
                 }
             }
@@ -166,7 +166,6 @@ public class DataGenerator {
      */
     public String createGenerationTuple(ArrayList<ArrayList> columnInformation, String columnName, String compare, String value) throws MySQLAlchemistException {
         String result = "3;none;";
-        
         for (ArrayList tmpList : columnInformation) {
             if (tmpList.get(0).equals(columnName)) {
                 switch (compare) {
@@ -195,6 +194,7 @@ public class DataGenerator {
                         break;
                     }
                     
+                    case ("like"):
                     case ("LIKE"): {
                         result += "fix," + value + ";";
                         break;
@@ -732,6 +732,7 @@ public class DataGenerator {
         
         //Excute the insert statement
         String insert = "INSERT INTO " + rel.getTableName() + " VALUES(" + insertedValues + ")";
+        System.out.println(insert);
         try {
         this.dbConn.executeSQLUpdateStatement(
                 this.conf.getString("auth.user"),
@@ -739,7 +740,7 @@ public class DataGenerator {
                 insert
         );
         } catch(MySQLAlchemistException e){
-            logger.warn("Das generierte Insert-Statement konnt nicht ohne Fehler ausgeführt werden. Statement: " + insert);
+            logger.error("Das generierte Insert-Statement konnt nicht ohne Fehler ausgeführt werden. Statement: " + insert);
         }
     }
     
