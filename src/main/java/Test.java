@@ -1,5 +1,4 @@
 import de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException;
-import java.util.Iterator;
 import de.tu_bs.cs.ifis.sqlgame.sandbox.*;
 import java.util.ArrayList;
 
@@ -8,7 +7,7 @@ import java.util.ArrayList;
  * 
  * Testing an presenting the actual projectstatus.
  * 
- * @author Tobias Grünhagen
+ * @author Tobias Grünhagen, Philip Holzhüter, Tobias Runge
  */
 public class Test {
     

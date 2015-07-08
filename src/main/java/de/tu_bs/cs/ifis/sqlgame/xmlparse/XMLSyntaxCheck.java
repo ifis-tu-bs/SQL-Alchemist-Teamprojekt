@@ -31,6 +31,9 @@ import org.xml.sax.XMLReader;
  */
 public class XMLSyntaxCheck {
     
+    /**
+     * Config to load dynamic paths.
+     */
     private final Config conf = ConfigFactory.load();
     
     /**

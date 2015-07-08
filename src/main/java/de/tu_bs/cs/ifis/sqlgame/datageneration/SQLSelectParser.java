@@ -7,7 +7,6 @@ package de.tu_bs.cs.ifis.sqlgame.datageneration;
 
 import java.util.ArrayList;
 import java.util.StringTokenizer;
-import sun.util.locale.StringTokenIterator;
 
 /**
  *
@@ -15,12 +14,29 @@ import sun.util.locale.StringTokenIterator;
  */
 public class SQLSelectParser {
     
-    String selectStatement;
+    /**
+     * Select statement as a string.
+     */
+    private String selectStatement;
     
+    /**
+     * Constructor SQLSelectParser.
+     * 
+     * Set up defaults.
+     * 
+     * @param selectStatement String select statement
+     */
     public SQLSelectParser(String selectStatement) {
         this.selectStatement = selectStatement;
     }
     
+    /**
+     * Method getFromInformation.
+     * 
+     * Get the column names from where is selected.
+     * 
+     * @return String from column name
+     */
     public String getFromInformation() {
         String [] splitFrom = this.selectStatement.split("FROM");
         StringTokenizer st = new StringTokenizer(splitFrom[1].trim());
@@ -28,6 +44,13 @@ public class SQLSelectParser {
         return st.nextToken();
     }
     
+    /**
+     * Method getWhereInformation.
+     * 
+     * Get the where clause information.
+     * 
+     * @return ArrayList list with the where clause information
+     */
     public ArrayList<ArrayList<String>> getWhereInformation() {
         ArrayList<ArrayList<String>> whereInformation = new ArrayList<>();
         

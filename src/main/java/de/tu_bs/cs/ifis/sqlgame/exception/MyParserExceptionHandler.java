@@ -15,6 +15,9 @@ import org.apache.logging.log4j.Logger;
  */
 public class MyParserExceptionHandler implements ErrorHandler {
     
+    /**
+     * Logger to logg errors and warnings.
+     */
     private static final Logger logger = LogManager.getLogger(MyParserExceptionHandler.class.getName());
     
     /**

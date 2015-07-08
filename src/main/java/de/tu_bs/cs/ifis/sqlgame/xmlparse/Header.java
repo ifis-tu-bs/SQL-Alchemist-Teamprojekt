@@ -8,29 +8,36 @@ import java.util.ArrayList;
  * @author Tobias Gruenhagen, Philip Holzhueter, Tobias Runge
  */
 public class Header {
-
-    //private String tasks;
+    
+    /**
+     * Id of the task.
+     */
     private String taskId;
+    
+    /**
+     * ArrayList with the titles.
+     */
     private ArrayList<String> title;
+    
+    /**
+     * ArrayList with the flufftexts.
+     */
     private ArrayList<String> flufftext;
+    
+    /**
+     * Language of the task.
+     */
     private String language;
 
     /**
-     * constructor
+     * Constructor Header.
+     * 
+     * Set up defaults.
      */
     public Header() {
         this.title = new ArrayList<>();
         this.flufftext = new ArrayList<>();
     }
-    /*
-     public String getTasks() {
-     return tasks;
-     }
-
-     public void setTasks(String tasks) {
-     this.tasks = tasks;
-     }
-     */
 
     /**
      * get-method for the taskid
@@ -111,14 +118,14 @@ public class Header {
      */
     @Override
     public String toString() {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         sb.append("Header \n");
-        for (String title : this.title) {
+        for (String titleString : this.title) {
 
-            sb.append("Title:" + title + "\n");
+            sb.append("Title:").append(titleString).append("\n");
         }
-        for (String flufftext : this.flufftext) {
-            sb.append("text:" + flufftext + "\n");
+        for (String flufftextString : this.flufftext) {
+            sb.append("text:").append(flufftextString).append("\n");
         }
         return sb.toString();
     }
