@@ -16,9 +16,19 @@ import java.util.ArrayList;
  */
 public class DBConnection {
     
+    /**
+     * Db type (local, server, memory).
+     */
     private int dbType;
+    
+    /**
+     * URL of the db.
+     */
     private String dbURL;
     
+    /**
+     * Config to load dynamic paths.
+     */
     private final Config conf;
     
     /**

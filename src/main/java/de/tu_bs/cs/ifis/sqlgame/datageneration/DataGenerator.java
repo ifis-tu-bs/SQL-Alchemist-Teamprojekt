@@ -22,12 +22,12 @@ import java.util.StringTokenizer;
 public class DataGenerator {
     
     /**
-     * List with the relations of the task
+     * List with the relations of the task.
      */
     private final ArrayList<Relation> relations;
     
     /**
-     * List with the exercises of the task
+     * List with the exercises of the task.
      */
     private final ArrayList<Exercise> exercises;
     

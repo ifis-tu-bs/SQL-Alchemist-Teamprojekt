@@ -8,13 +8,10 @@ import de.tu_bs.cs.ifis.sqlgame.xmlparse.MySAXParser;
 import de.tu_bs.cs.ifis.sqlgame.xmlparse.XMLSyntaxCheck;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Iterator;
-import org.xml.sax.InputSource;
 
 /**
  * Class InputFile.
@@ -26,9 +23,19 @@ import org.xml.sax.InputSource;
  */
 public class InputFile {
 
+    /**
+     * Name of the given file.
+     */
     private String filename;
+    
+    /**
+     * ArrayList with the task parsed from the given string or file.
+     */
     private ArrayList<Task> tasks;
     
+    /**
+     * Config to load dynamic paths.
+     */
     private final Config conf = ConfigFactory.load();
     
     /**
@@ -108,10 +115,11 @@ public class InputFile {
     }
        
     /**
-     * check if the file can be created
+     * Method checkFile.
      * 
-     * @param file
-     *            the file that should be created
+     * Check if the file can be created.
+     * 
+     * @param file File the file that should be created
      * @return boolean if it was possible
      */
     private boolean checkFile(File file) throws MySQLAlchemistException {

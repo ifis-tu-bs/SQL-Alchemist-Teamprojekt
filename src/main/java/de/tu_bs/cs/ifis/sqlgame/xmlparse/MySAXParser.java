@@ -30,15 +30,44 @@ import org.xml.sax.InputSource;
  */
 public class MySAXParser extends DefaultHandler {
 
+    /**
+     * ArrayList with the relations of a task.
+     */
     private ArrayList<Relation> myRelation;
+    
+    /**
+     * ArrayList with the headers of a task.
+     */
     private ArrayList<Header> myHeader;
+    
+    /**
+     * ArrayList with the exercises of a task.
+     */
     private ArrayList<Exercise> myExercise;
+    
+    /**
+     * ArrayList with the tasks.
+     */
     private ArrayList<Task> myTasks;
 
+    /**
+     * Temporary header.
+     */
     private Header tempHeader;
+    
+    /**
+     * Temporary relation.
+     */
     private Relation tempRelation;
+    
+    /**
+     * Temporary exercise.
+     */
     private Exercise tempExercise;
 
+    /**
+     * String buffer to work with strings.
+     */
     private final StringBuffer sb;
 
     /**

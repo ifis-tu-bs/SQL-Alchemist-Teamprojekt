@@ -11,8 +11,6 @@ import de.tu_bs.cs.ifis.sqlgame.xmlparse.Exercise;
 import de.tu_bs.cs.ifis.sqlgame.xmlparse.Header;
 import de.tu_bs.cs.ifis.sqlgame.xmlparse.Relation;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Class Task.
@@ -24,17 +22,49 @@ import java.util.logging.Logger;
  */
 public class Task {
 
+    /**
+     * Name of the task.
+     */
     private String name = "";
+    
+    /**
+     * Name of the task db.
+     */
     private String dbName = "";
+    
+    /**
+     * Number of the players who play this task.
+     */
     private int players = 0;
 
+    /**
+     * ArrayList with the headers of the task.
+     */
     private ArrayList<Header> myHeader;
+    
+    /**
+     * ArrayList with the relations of the task.
+     */
     private ArrayList<Relation> myRelation;
+    
+    /**
+     * ArrayList with the exercises of the task.
+     */
     private ArrayList<Exercise> myExercise;
     
+    /**
+     * DBConnection to the task db.
+     */
     private DBConnection tmpDbConn;
+    
+    /**
+     * DBConnection to the fix db.
+     */
     private DBConnection fixDbConn;
     
+    /**
+     * Config to load dynamic paths.
+     */
     private final Config conf = ConfigFactory.load();
 
     /**
@@ -420,11 +450,20 @@ public class Task {
         return result;
     }
     
+    /**
+     * Method isUserStatementCorrect.
+     * 
+     * Checks wheter the given statement is correct or not.
+     * 
+     * @param statement String select statement to proof
+     * @param subtaskid int id of the subtask the statement is assigned to
+     * @return boolean true if the statement is correct, false if not
+     * @throws de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException Exception for the
+     *         SQLSelectStatement
+     */
     public boolean isUserStatementCorrect(String statement, int subtaskid) throws MySQLAlchemistException {
-
         ArrayList<ArrayList<String>> userResult = this.executeUserStatement(statement);
-        System.out.println("user statement ausgeführt!");
-        ArrayList<ArrayList<String>> refResult = new ArrayList<>();
+        ArrayList<ArrayList<String>> refResult;
         Iterator<Exercise> it = myExercise.iterator();
 
         while (it.hasNext()) {
