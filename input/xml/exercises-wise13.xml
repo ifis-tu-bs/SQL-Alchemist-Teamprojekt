@@ -50,11 +50,11 @@
       </relation>
       <relation>
         <intension>
-          CREATE TABLE HasPowerSince(
+          CREATE TABLE HasPowerSince (
             comic INTEGER NOT NULL REFERENCES Comic(no),
-            alias VARCHAR(255) NOT NULL REFERENCES PoweredPerson(alias),
+            alias VARCHAR(255) NOT NULL REFERENCES PoweredPerson (alias),
             power VARCHAR(100) NOT NULL,
-            PRIMARY KEY(comic, alias, power)
+            PRIMARY KEY (comic, alias, power)
           );
         </intension>
         <extension>
