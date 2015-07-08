@@ -30,7 +30,7 @@ public class SQLSelectParser {
     public ArrayList<ArrayList<String>> getWhereInformation() {
         ArrayList<ArrayList<String>> whereInformation = new ArrayList<>();
         
-        if(this.selectStatement.contains("where")){
+        if (this.selectStatement.contains("where")) {
             String [] splitWhere = this.selectStatement.split("where");
             String [] splitAnd = splitWhere[1].split("and");
             for (String whereClause : splitAnd) {
@@ -52,13 +52,17 @@ public class SQLSelectParser {
                 String comparisonType = st.nextToken();
                 whereInformationRow.add(comparisonType);
 
-                //Third token of the where clause is the comparsion String or number
-                String comparison = st.nextToken();
+                //Last tokens of the where clause are the comparsion String or number
+                String comparison = "";
+                while (st.hasMoreTokens()) {
+                    comparison += st.nextToken();
+                }
                 whereInformationRow.add(comparison);
 
                 whereInformation.add(whereInformationRow);
             }
         }
+        
         return whereInformation;
     }
 }

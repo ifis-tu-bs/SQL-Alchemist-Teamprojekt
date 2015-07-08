@@ -204,7 +204,7 @@ public class Task {
                 //Update #players
                 int playerNum = this.getPlayers() + 1;
                 this.setPlayers(playerNum);
-                
+                this.generateData("userData");
                 this.updateTask();
             } else {
                 this.players = 1;
