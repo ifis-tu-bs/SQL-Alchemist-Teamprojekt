@@ -11,6 +11,9 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.StringTokenizer;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 /**
  * Class DataGenerator.
@@ -22,12 +25,12 @@ import java.util.StringTokenizer;
 public class DataGenerator {
     
     /**
-     * List with the relations of the task
+     * List with the relations of the task.
      */
     private final ArrayList<Relation> relations;
     
     /**
-     * List with the exercises of the task
+     * List with the exercises of the task.
      */
     private final ArrayList<Exercise> exercises;
     
@@ -73,6 +76,8 @@ public class DataGenerator {
      */
     private final Config conf = ConfigFactory.load();
     
+    private static final Logger logger = LogManager.getLogger(DataGenerator.class.getName());
+    
     /**
      * Constructor DataGenerator.
      * 
@@ -116,26 +121,29 @@ public class DataGenerator {
     public void generateSelectExtension() throws MySQLAlchemistException {
         //Iterate through all exercises of the task
         for (Exercise exe : this.exercises) {
-            String selectStatementString = exe.getReferencestatement().toLowerCase();
-            
+            String selectStatementString = exe.getReferencestatement();
             SQLSelectParser sqlsp = new SQLSelectParser(selectStatementString);
+            
             //Get the table name of the select statement
             String tableName = sqlsp.getFromInformation();
+            
             //Get the related relation
             Relation relation = null;
             for (Relation rel : this.relations) {
-                if (rel.getTableName().equals(tableName)) {
+                if (rel.getTableName().equals(tableName.toLowerCase())) {
                     relation = rel;
                 }
             }
             
-            //Get the information of the where clause
-            ArrayList<ArrayList<String>> whereInformation = sqlsp.getWhereInformation();
-            //Generate the insert statements
-            if (!whereInformation.isEmpty()) {
-                for (ArrayList<String> whereInformationRow : whereInformation) {
-                    String generationTuple = this.createGenerationTuple(relation.getColumnInformation(), whereInformationRow.get(0), whereInformationRow.get(1), whereInformationRow.get(2));
-                    relation.setDataGeneration(generationTuple);
+            if (relation != null) {
+                //Get the information of the where clause
+                ArrayList<ArrayList<String>> whereInformation = sqlsp.getWhereInformation();
+                //Generate the insert statements
+                if (!whereInformation.isEmpty()) {
+                    for (ArrayList<String> whereInformationRow : whereInformation) {
+                        String generationTuple = this.createGenerationTuple(relation.getColumnInformation(), whereInformationRow.get(0), whereInformationRow.get(1), whereInformationRow.get(2));
+                        relation.setDataGeneration(generationTuple);
+                    }
                 }
             }
         }
@@ -158,7 +166,6 @@ public class DataGenerator {
      */
     public String createGenerationTuple(ArrayList<ArrayList> columnInformation, String columnName, String compare, String value) throws MySQLAlchemistException {
         String result = "3;none;";
-        
         for (ArrayList tmpList : columnInformation) {
             if (tmpList.get(0).equals(columnName)) {
                 switch (compare) {
@@ -187,6 +194,7 @@ public class DataGenerator {
                         break;
                     }
                     
+                    case ("like"):
                     case ("LIKE"): {
                         result += "fix," + value + ";";
                         break;
@@ -312,7 +320,7 @@ public class DataGenerator {
 
                 //Generate and execute the insert statements with the grabed data
                 int number = calculateNumber(numberFunction);
-                this.generateDataFromFunction(rel.getTableName(), number, refFunctionList, columnFunctions);
+                this.generateDataFromFunction(rel, number, refFunctionList, columnFunctions);
             }
             
             //Reset the primarykey and reference lists for the new data constraint
@@ -432,7 +440,7 @@ public class DataGenerator {
      * @throws de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException exception
      *         thrown if there is an error executing the insert statement on db
      */
-    private void generateDataFromFunction(String tableName, int number, ArrayList<String> refFunctionList, ArrayList<ArrayList<String>> columnFunctions) throws MySQLAlchemistException {
+    private void generateDataFromFunction(Relation rel, int number, ArrayList<String> refFunctionList, ArrayList<ArrayList<String>> columnFunctions) throws MySQLAlchemistException {
         //Iterate through the columnFunctions to save the referencing columns
         int i = 0;
         for (ArrayList<String> columnFunction : columnFunctions) {
@@ -457,7 +465,7 @@ public class DataGenerator {
             //No reference type
             case "none": {
                 //Generate insert statements
-                this.generateInsertStatements("none", tableName, number, columnFunctions, null, 0);
+                this.generateInsertStatements("none", rel, number, columnFunctions, null, 0);
                 
                 break;
             }
@@ -478,7 +486,7 @@ public class DataGenerator {
                 //Iterate through every referenced value
                 for (i = 1; i < referenceList.size(); i++) {
                     //Generate insert statements
-                    this.generateInsertStatements("refAll", tableName, number, columnFunctions, referenceList, i);
+                    this.generateInsertStatements("refAll", rel, number, columnFunctions, referenceList, i);
                 }
                 
                 break;
@@ -498,7 +506,7 @@ public class DataGenerator {
                 }
                 
                 //Generate insert statements
-                this.generateInsertStatements("refRandom", tableName, number, columnFunctions, referenceList, 0);
+                this.generateInsertStatements("refRandom", rel, number, columnFunctions, referenceList, 0);
                 
                 break;
             }
@@ -521,7 +529,7 @@ public class DataGenerator {
      */
     private void generateInsertStatements(
             String generateType,
-            String tableName,
+            Relation rel,
             int number,
             ArrayList<ArrayList<String>> columnFunctions,
             ArrayList<ArrayList<String>> referenceList,
@@ -684,7 +692,7 @@ public class DataGenerator {
             this.primaryKeyValues.add(primaryKey);
 
             //Execute an insert statement based on the data row
-            this.executeInsertStatements(tableName, dataRow);
+            this.executeInsertStatements(rel, dataRow);
         }
     }
     
@@ -699,23 +707,39 @@ public class DataGenerator {
      * @throws de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException exception
      *         thrown if there is an error executing the insert statement on db
      */
-    private void executeInsertStatements(String tableName, String[] dataRow) throws MySQLAlchemistException {
+    private void executeInsertStatements(Relation rel, String[] dataRow) throws MySQLAlchemistException {
         //Build the insert statement as a string from the data row stringarray
         String insertedValues = "";
         for (int i = 0; i < dataRow.length; i++) {
+            String data = dataRow[i];
+            
+            //Add "'" to a varchar, date or something else that is not int or double
+            String columnType = ((String) rel.getColumnInformation().get(i).get(1)).toLowerCase();
+            CharSequence csInt = "int";
+            CharSequence csDouble = "double";
+            if (!(columnType.contains(csInt) || columnType.contains(csDouble))) {
+                data = "'" + data + "'";
+            }
+            
             //Only insert no comma if it is the first value
             if (i == 0) {
-                insertedValues += dataRow[i];
+                insertedValues += data;
             } else {
-                insertedValues += ", " + dataRow[i];
+                insertedValues += ", " + data;
             }
         }
+        
         //Excute the insert statement
+        String insert = "INSERT INTO " + rel.getTableName() + " VALUES(" + insertedValues + ")";
+        try {
         this.dbConn.executeSQLUpdateStatement(
                 this.conf.getString("auth.user"),
                 this.conf.getString("auth.pass"),
-                "INSERT INTO " + tableName + " VALUES(" + insertedValues + ")"
+                insert
         );
+        } catch(MySQLAlchemistException e){
+            logger.error("Das generierte Insert-Statement konnt nicht ohne Fehler ausgeführt werden. Statement: " + insert);
+        }
     }
     
     /**

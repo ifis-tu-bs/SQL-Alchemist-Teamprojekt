@@ -1,5 +1,4 @@
 import de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException;
-import java.util.Iterator;
 import de.tu_bs.cs.ifis.sqlgame.sandbox.*;
 import java.util.ArrayList;
 
@@ -8,7 +7,7 @@ import java.util.ArrayList;
  * 
  * Testing an presenting the actual projectstatus.
  * 
- * @author Tobias Grünhagen
+ * @author Tobias Grünhagen, Philip Holzhüter, Tobias Runge
  */
 public class Test {
     
@@ -26,31 +25,32 @@ public class Test {
      */
     public static void main(String[] args) {
         try {
-            InputFile testFile = new InputFile("alchemy-task.xml", true);
-            ArrayList<Task> tasks = testFile.getTasks();
-            for (Task task : tasks) {
-                task.startTask("local");
-            }
-            
-            InputFile testFileExisting = new InputFile("alchemy-task.xml", true);
-            ArrayList<Task> tasksExisting = testFileExisting.getTasks();
-            if (!tasksExisting.isEmpty()) {
-                Task newTask = tasksExisting.get(0);
-                newTask.startTask("local");
-                newTask.executeUserStatement("SELECT * FROM Powders WHERE color='blue'");
-                System.out.println(newTask.isUserStatementCorrect("SELECT * FROM Powders WHERE color='red'", 1));
-                newTask.closeTask();
-            }
-            
-            InputFile testFileExisting2 = new InputFile("alchemy-task.xml", true);
-            ArrayList<Task> tasksExisting2 = testFileExisting2.getTasks();
-            if (!tasksExisting.isEmpty()) {
-                Task newTask2 = tasksExisting2.get(0);
-                newTask2.startTask("local");
-                newTask2.executeUserStatement("SELECT * FROM Powders WHERE color='blue'");
-                System.out.println(newTask2.isUserStatementCorrect("SELECT * FROM Powders WHERE color='blue'", 1));
-                newTask2.closeTask();
-            }
+//            InputFile testFile = new InputFile("alchemy-task.xml", true);
+//            ArrayList<Task> tasks = testFile.getTasks();
+//            for (Task task : tasks) {
+//                task.startTask("local");
+//                task.generateData("referenceStatement");
+//            }
+//            
+//            InputFile testFileExisting = new InputFile("alchemy-task.xml", true);
+//            ArrayList<Task> tasksExisting = testFileExisting.getTasks();
+//            if (!tasksExisting.isEmpty()) {
+//                Task newTask = tasksExisting.get(0);
+//                newTask.startTask("local");
+//                newTask.executeUserStatement("SELECT * FROM Powders WHERE color='blue'");
+//                System.out.println(newTask.isUserStatementCorrect("SELECT * FROM Powders WHERE color='red'", 1));
+//                newTask.closeTask();
+//            }
+//            
+//            InputFile testFileExisting2 = new InputFile("alchemy-task.xml", true);
+//            ArrayList<Task> tasksExisting2 = testFileExisting2.getTasks();
+//            if (!tasksExisting.isEmpty()) {
+//                Task newTask2 = tasksExisting2.get(0);
+//                newTask2.startTask("local");
+//                newTask2.executeUserStatement("SELECT * FROM Powders WHERE color='blue'");
+//                System.out.println(newTask2.isUserStatementCorrect("SELECT * FROM Powders WHERE color='blue'", 1));
+//                newTask2.closeTask();
+//            }
             
             InputFile testString = new InputFile("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
             "\n" +
@@ -104,11 +104,11 @@ public class Test {
             "      </relation>\n" +
             "      <relation>\n" +
             "        <intension>\n" +
-            "          CREATE TABLE HasPowerSince(\n" +
+            "          CREATE TABLE HasPowerSince (\n" +
             "            comic INTEGER NOT NULL REFERENCES Comic(no),\n" +
-            "            alias VARCHAR(255) NOT NULL REFERENCES PoweredPerson(alias),\n" +
+            "            alias VARCHAR(255) NOT NULL REFERENCES PoweredPerson (alias),\n" +
             "            power VARCHAR(100) NOT NULL,\n" +
-            "            PRIMARY KEY(comic, alias, power)\n" +
+            "            PRIMARY KEY (comic, alias, power)\n" +
             "          );\n" +
             "        </intension>\n" +
             "        <extension>\n" +
@@ -251,6 +251,8 @@ public class Test {
             ArrayList<Task> tasksString = testString.getTasks();
             for (Task taskString : tasksString) {
                 taskString.startTask("local");
+                taskString.generateData("referenceStatement");
+                taskString.generateData("userData");
             }
             
             /**

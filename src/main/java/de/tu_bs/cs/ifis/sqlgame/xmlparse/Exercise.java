@@ -9,16 +9,45 @@ import java.util.ArrayList;
  */
 public class Exercise {
 
+    /**
+     * Id of the subtask.
+     */
     private int subtaskid;
+    
+    /**
+     * ArrayList with the task texts.
+     */
     private ArrayList<String> tasktexts;
+    
+    /**
+     * Reference statement of this exercise.
+     */
     private String referencestatement;
+    
+    /**
+     * Evaluation strategy of this exercise.
+     */
     private String evaluationstrategy;
+    
+    /**
+     * ArrayList with the terms that the exercise contains.
+     */
     private ArrayList<String> term;
+    
+    /**
+     * Number of the points of this exercise.
+     */
     private int points;
+    
+    /**
+     * Language of this exercise.
+     */
     private String language;
 
     /**
-     * constructor without parameters
+     * Constructor Exercise.
+     * 
+     * Set up defaults.
      */
     public Exercise() {
         this.tasktexts = new ArrayList<>();
@@ -158,20 +187,26 @@ public class Exercise {
     }
 
     /**
-     * method to make a string out of the tasks
+     * Method toString.
+     * 
+     * Print out the exercise.
      *
-     * @return String with all content
+     * @return String string with all the content
      */
+    @Override
     public String toString() {
-        StringBuffer sb = new StringBuffer();
-        sb.append("Task " + this.subtaskid + "\n");
+        StringBuilder sb = new StringBuilder();
+        
+        sb.append("Task ").append(this.subtaskid).append("\n");
+        
         for (String taskText : this.tasktexts) {
-            sb.append("Tasktext:" + taskText + "\n");
+            sb.append("Tasktext:").append(taskText).append("\n");
         }
-        sb.append("Referencestatement:" + this.getReferencestatement() + "\n");
-        sb.append("Evaluationstrategy:" + this.getEvaluationstrategy() + "\n");
-        sb.append("Requiredterms:" + this.getTerm() + "\n");
-        sb.append("Points:" + this.getPoints() + "\n");
+        
+        sb.append("Referencestatement:").append(this.getReferencestatement()).append("\n");
+        sb.append("Evaluationstrategy:").append(this.getEvaluationstrategy()).append("\n");
+        sb.append("Requiredterms:").append(this.getTerm()).append("\n");
+        sb.append("Points:").append(this.getPoints()).append("\n");
 
         return sb.toString();
     }

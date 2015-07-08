@@ -10,7 +10,14 @@ package de.tu_bs.cs.ifis.sqlgame.exception;
  */
 public class MySQLAlchemistException extends Exception {
 
+    /**
+     * Exception that is thrown.
+     */
     Exception exception;
+    
+    /**
+     * Message of the error or warning.
+     */
     String message;
 
     /**

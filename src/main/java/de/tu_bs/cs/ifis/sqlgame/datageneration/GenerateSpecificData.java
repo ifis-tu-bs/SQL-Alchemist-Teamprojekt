@@ -42,7 +42,7 @@ public class GenerateSpecificData {
      */
     public String generateFirstName() {
         DataFactory df = new DataFactory();
-        String result = "'" + df.getFirstName() + "'";
+        String result = df.getFirstName();
         return result;
     }
     
@@ -55,7 +55,7 @@ public class GenerateSpecificData {
      */   
     public String generateLastName() {
         DataFactory df = new DataFactory();
-        String result = "'" + df.getLastName() + "'";
+        String result = df.getLastName();
         return result;
     }
     
@@ -68,7 +68,7 @@ public class GenerateSpecificData {
      */  
     public String generateFullName() {
         DataFactory df = new DataFactory();
-        String result = "'" + df.getFirstName() + " " + df.getLastName() + "'";
+        String result = df.getFirstName() + " " + df.getLastName();
         return result;
     }
     
@@ -125,7 +125,7 @@ public class GenerateSpecificData {
      */
     public String generateString(int length) {
         DataFactory df = new DataFactory();
-        String result = "'" + df.getRandomChars(length) + "'";
+        String result = df.getRandomChars(length);
         return result;
     }
     
@@ -139,7 +139,7 @@ public class GenerateSpecificData {
      */
     public String generateWord(int length) {
         DataFactory df = new DataFactory();
-        String result = "'" + df.getRandomWord(length) + "'";
+        String result = df.getRandomWord(length);
         return result;
     }
     
@@ -153,11 +153,11 @@ public class GenerateSpecificData {
      */
     public String generateText(int number) {
         DataFactory df = new DataFactory();
-        String result = "'";
+        String result = "";
         for(int i = 1; i < number; i++){
             result += df.getRandomWord() + " ";
         }
-        result += df.getRandomWord() + ".'";
+        result += df.getRandomWord();
         return result;
     }
     
@@ -171,8 +171,7 @@ public class GenerateSpecificData {
     public String generateDate() {
         DataFactory df = new DataFactory();
         String date = new SimpleDateFormat("yyyy-MM-dd").format(df.getBirthDate());
-        String result = "'" + date + "'";
-        return result;
+        return date;
     }
     
     /**
@@ -184,7 +183,7 @@ public class GenerateSpecificData {
      */
     public String generateBusinessName() {
         DataFactory df = new DataFactory();
-        String result = "'" + df.getBusinessName() + "'";
+        String result = df.getBusinessName();
         return result;
     }
     
@@ -197,7 +196,7 @@ public class GenerateSpecificData {
      */
     public String generateStreetName() {
         DataFactory df = new DataFactory();
-        String result = "'" + df.getStreetName() + "'";
+        String result = df.getStreetName();
         return result;
     }
     
@@ -210,7 +209,7 @@ public class GenerateSpecificData {
      */
     public String generateCity() {
         DataFactory df = new DataFactory();
-        String result = "'" + df.getCity() + "'";
+        String result = df.getCity();
         return result;
     }
     
@@ -223,7 +222,7 @@ public class GenerateSpecificData {
      */
     public String generateAdress() {
         DataFactory df = new DataFactory();
-        String result = "'" + df.getAddress() + "'";
+        String result = df.getAddress();
         return result;
     }
     
@@ -236,7 +235,7 @@ public class GenerateSpecificData {
      */
     public String generateEmail() {
         DataFactory df = new DataFactory();
-        String result = "'" + df.getEmailAddress() + "'";
+        String result = df.getEmailAddress();
         return result;
     }
     
@@ -412,11 +411,7 @@ public class GenerateSpecificData {
             }
             String[] valuesStringArray = values.toArray(new String[values.size()]);
             String result;
-                if(metaData.equals("size")){
-                    result = df.getItem(valuesStringArray, random, defaultValue);
-                } else{
-                    result = "'" + df.getItem(valuesStringArray, random, defaultValue) + "'";
-                }
+            result = df.getItem(valuesStringArray, random, defaultValue);
             return result;
         } catch (IOException e) {
             throw new MySQLAlchemistException("Fehler beim Generieren", e);

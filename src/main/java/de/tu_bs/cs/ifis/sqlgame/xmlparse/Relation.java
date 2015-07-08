@@ -9,15 +9,40 @@ import java.util.ArrayList;
  */
 public class Relation {
 
+    /**
+     * Intension of the relation.
+     */
     private String intension;
+    
+    /**
+     * Intension of the relation.
+     */
     private String tableName;
+    
+    /**
+     * ArrayList with the column information.
+     */
     private ArrayList<ArrayList> columnInformation;
+    
+    /**
+     * ArrayList with the intension tuples.
+     */
     private ArrayList<String> tuple;
+    
+    /**
+     * ArrayList with the generation tuples.
+     */
     private ArrayList<String> generationTuples;
+    
+    /**
+     * ArrayList with the primary keys.
+     */
     private ArrayList<String> primaryKey;
 
     /**
-     * constructor without parameters
+     * Constructor Relation.
+     * 
+     * Set up defaults.
      */
     public Relation() {
         this.tuple = new ArrayList<>();
@@ -153,9 +178,10 @@ public class Relation {
      *
      * @return string with all content
      */
+    @Override
     public String toString() {
-        StringBuffer sb = new StringBuffer();
-        sb.append(getIntension() + "\n" + getTupleAsString());
+        StringBuilder sb = new StringBuilder();
+        sb.append(getIntension()).append("\n").append(getTupleAsString());
         return sb.toString();
     }
 }
