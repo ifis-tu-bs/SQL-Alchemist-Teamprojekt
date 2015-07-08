@@ -247,7 +247,6 @@ public class DataGenerator {
         }
         int length = result.length();
         result = result.substring(0, length - 1);
-        System.out.println(result);
         return result;
     }
     
@@ -732,7 +731,6 @@ public class DataGenerator {
         
         //Excute the insert statement
         String insert = "INSERT INTO " + rel.getTableName() + " VALUES(" + insertedValues + ")";
-        System.out.println(insert);
         try {
         this.dbConn.executeSQLUpdateStatement(
                 this.conf.getString("auth.user"),

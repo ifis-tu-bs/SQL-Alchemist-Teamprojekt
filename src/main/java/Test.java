@@ -104,11 +104,11 @@ public class Test {
             "      </relation>\n" +
             "      <relation>\n" +
             "        <intension>\n" +
-            "          CREATE TABLE HasPowerSince(\n" +
+            "          CREATE TABLE HasPowerSince (\n" +
             "            comic INTEGER NOT NULL REFERENCES Comic(no),\n" +
-            "            alias VARCHAR(255) NOT NULL REFERENCES PoweredPerson(alias),\n" +
+            "            alias VARCHAR(255) NOT NULL REFERENCES PoweredPerson (alias),\n" +
             "            power VARCHAR(100) NOT NULL,\n" +
-            "            PRIMARY KEY(comic, alias, power)\n" +
+            "            PRIMARY KEY (comic, alias, power)\n" +
             "          );\n" +
             "        </intension>\n" +
             "        <extension>\n" +
