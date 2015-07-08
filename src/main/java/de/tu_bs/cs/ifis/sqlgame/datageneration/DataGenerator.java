@@ -11,6 +11,9 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.StringTokenizer;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 /**
  * Class DataGenerator.
@@ -72,6 +75,8 @@ public class DataGenerator {
      * Config to load dynamic paths.
      */
     private final Config conf = ConfigFactory.load();
+    
+    private static final Logger logger = LogManager.getLogger(DataGenerator.class.getName());
     
     /**
      * Constructor DataGenerator.
@@ -242,6 +247,7 @@ public class DataGenerator {
         }
         int length = result.length();
         result = result.substring(0, length - 1);
+        System.out.println(result);
         return result;
     }
     
@@ -723,12 +729,18 @@ public class DataGenerator {
                 insertedValues += ", " + data;
             }
         }
+        
         //Excute the insert statement
+        String insert = "INSERT INTO " + rel.getTableName() + " VALUES(" + insertedValues + ")";
+        try {
         this.dbConn.executeSQLUpdateStatement(
                 this.conf.getString("auth.user"),
                 this.conf.getString("auth.pass"),
-                "INSERT INTO " + rel.getTableName() + " VALUES(" + insertedValues + ")"
+                insert
         );
+        } catch(MySQLAlchemistException e){
+            logger.warn("Das generierte Insert-Statement konnt nicht ohne Fehler ausgeführt werden. Statement: " + insert);
+        }
     }
     
     /**
