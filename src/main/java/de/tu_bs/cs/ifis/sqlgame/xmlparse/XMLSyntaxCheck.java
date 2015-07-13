@@ -78,8 +78,7 @@ public class XMLSyntaxCheck {
             //If this line is executed, the file is valid.
             System.out.println("Datei ist valide.");
         } catch (SAXException | ParserConfigurationException | IOException e) {
-            StringTokenizer st = new StringTokenizer(e.toString(), "\n");
-            throw new MySQLAlchemistException(st.toString(), e);
+            throw new MySQLAlchemistException("Fehler beim checken der XML Syntax.", e);
         }
     }
 }
