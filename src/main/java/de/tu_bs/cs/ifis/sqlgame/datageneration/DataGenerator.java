@@ -117,13 +117,13 @@ public class DataGenerator {
             for (ArrayList columnInformation : rel.getColumnInformation()) {
                 String columnInformationString;
                 
-                if ((Boolean) columnInformation.get(3) != null) {
+                if (columnInformation.get(3) != null) {
                     //Ref
                     StringTokenizer st = new StringTokenizer((String) columnInformation.get(3), "(");
                     columnInformationString = "ref," + st.nextToken() + "," + st.nextToken().replace(")", "") ;
                 } else {
                     //No ref
-                    String type = ((String) columnInformation.get(2)).toLowerCase();
+                    String type = ((String) columnInformation.get(1)).toLowerCase();
                     if (type.contains("int")) {
                         columnInformationString = "random,int";
                     } else if (type.contains("tinyint")) {
@@ -136,7 +136,9 @@ public class DataGenerator {
                         columnInformationString = "random,double";
                     } else if (type.contains("varchar")) {
                         int length = Integer.parseInt(type.replaceAll("\\D", ""));
-                        columnInformationString = "random,string," + length;
+                        Random r = new Random();
+                        int random = r.nextInt(length - 5) + 5;
+                        columnInformationString = "random,string," + random;
                     } else if (type.contains("boolean")) {
                         columnInformationString = "random,boolean,15";
                     } else if (type.contains("date")) {

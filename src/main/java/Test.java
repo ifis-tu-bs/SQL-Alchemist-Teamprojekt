@@ -252,8 +252,9 @@ public class Test {
             ArrayList<Task> tasksString = testString.getTasks();
             for (Task taskString : tasksString) {
                 taskString.startTask("local");
-                taskString.generateData("referenceStatement");
-                taskString.generateData("userData");
+                //taskString.generateData("referenceStatement");
+                //taskString.generateData("userData");
+                taskString.generateData("randomData");
             }
             
             /**
