@@ -14,6 +14,7 @@ import org.xml.sax.helpers.DefaultHandler;
 
 import com.typesafe.config.*;
 import de.tu_bs.cs.ifis.sqlgame.dbconnection.DBConnection;
+import de.tu_bs.cs.ifis.sqlgame.exception.MyXMLParserErrorHandler;
 import de.tu_bs.cs.ifis.sqlgame.sandbox.Task;
 import java.io.StringReader;
 import java.util.Iterator;
@@ -21,8 +22,6 @@ import java.util.StringTokenizer;
 import org.h2.tools.DeleteDbFiles;
 import org.xml.sax.InputSource;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  * Class MySAXParser.
@@ -73,7 +72,11 @@ public class MySAXParser extends DefaultHandler {
      */
     private final StringBuffer sb;
 
-    private static final Logger logger = LogManager.getLogger(MySAXParser.class.getName());
+    /**
+     * Boolean gets true, when an error cocures
+     */
+    
+    private boolean error = false;
     /**
      * Getter for myRelation.
      *
@@ -157,6 +160,9 @@ public class MySAXParser extends DefaultHandler {
             } else {
                 InputSource is = new InputSource(new StringReader(exercise));
                 sp.parse(is, this);
+            }
+            if (this.error) {
+                throw new MySQLAlchemistException("Fehler beim Parsen des CREATE TABLE-Statements! Bitte auf Formatierung achten!", null);
             }
             
             //Check SQL-syntax
@@ -338,8 +344,8 @@ public class MySAXParser extends DefaultHandler {
             }
             rel.setColumnInformation(resultList);
         } catch(RuntimeException e) {
-            logger.error("Bitte auf korrekte Formatierung des Dokuments achten." + e.getMessage());
-            System.exit(1);
+            MyXMLParserErrorHandler.addError("Bitte auf korrekte Formatierung des Dokuments achten. " + e.getMessage());
+            this.error = true;
         }
     }
 

@@ -4,15 +4,13 @@ import com.typesafe.config.*;
 
 import de.tu_bs.cs.ifis.sqlgame.dbconnection.DBConnection;
 import de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException;
+import de.tu_bs.cs.ifis.sqlgame.exception.MyXMLParserErrorHandler;
 import de.tu_bs.cs.ifis.sqlgame.xmlparse.Exercise;
 import de.tu_bs.cs.ifis.sqlgame.xmlparse.Relation;
 
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.StringTokenizer;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 
 /**
@@ -76,7 +74,6 @@ public class DataGenerator {
      */
     private final Config conf = ConfigFactory.load();
     
-    private static final Logger logger = LogManager.getLogger(DataGenerator.class.getName());
     
     /**
      * Constructor DataGenerator.
@@ -738,7 +735,7 @@ public class DataGenerator {
                 insert
         );
         } catch(MySQLAlchemistException e){
-            logger.error("Das generierte Insert-Statement konnt nicht ohne Fehler ausgeführt werden. Statement: " + insert);
+            MyXMLParserErrorHandler.addError("Das generierte Insert-Statement konnt nicht ohne Fehler ausgeführt werden. Statement: " + insert);
         }
     }
     

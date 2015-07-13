@@ -1,4 +1,5 @@
 import de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException;
+import de.tu_bs.cs.ifis.sqlgame.exception.MyXMLParserErrorHandler;
 import de.tu_bs.cs.ifis.sqlgame.sandbox.*;
 import java.util.ArrayList;
 
@@ -84,7 +85,7 @@ public class Test {
             "          <tuple>INSERT INTO Comic(no, title, publisher) VALUES (21, 'Young Nastyman''s Revenge', 'Marvel');</tuple>\n" +
             "        </extension>\n" +
             "      </relation>\n" +
-            "      <relation>\n" +
+            "      <relation\n" +
             "        <intension>\n" +
             "          CREATE TABLE PoweredPerson(\n" +
             "            alias VARCHAR(255) NOT NULL PRIMARY KEY,\n" +
@@ -475,6 +476,6 @@ public class Test {
             */            
         } catch (MySQLAlchemistException mse) {
             System.out.println(mse.getMyMessage());
-        }
+        }           
     }
 }

@@ -3,6 +3,7 @@ package de.tu_bs.cs.ifis.sqlgame.sandbox;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException;
+import de.tu_bs.cs.ifis.sqlgame.exception.MyXMLParserErrorHandler;
 import de.tu_bs.cs.ifis.sqlgame.xmlparse.Header;
 import de.tu_bs.cs.ifis.sqlgame.xmlparse.MySAXParser;
 import de.tu_bs.cs.ifis.sqlgame.xmlparse.XMLSyntaxCheck;
@@ -70,6 +71,7 @@ public class InputFile {
         File newfile;
         XMLSyntaxCheck sych = new XMLSyntaxCheck();
         MySAXParser msp = new MySAXParser();
+        MyXMLParserErrorHandler.resetThis();
         //Proof if a fileString or a file is given
         if (isFile) {
             //A file is given

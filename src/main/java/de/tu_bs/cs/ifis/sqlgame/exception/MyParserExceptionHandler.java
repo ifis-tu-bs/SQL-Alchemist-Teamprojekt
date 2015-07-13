@@ -1,10 +1,9 @@
 package de.tu_bs.cs.ifis.sqlgame.exception;
 
+import java.util.ArrayList;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.ErrorHandler;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  * Class MyParserException.
@@ -15,10 +14,6 @@ import org.apache.logging.log4j.Logger;
  */
 public class MyParserExceptionHandler implements ErrorHandler {
     
-    /**
-     * Logger to logg errors and warnings.
-     */
-    private static final Logger logger = LogManager.getLogger(MyParserExceptionHandler.class.getName());
     
     /**
      * Constructor MyParserException.
@@ -39,8 +34,7 @@ public class MyParserExceptionHandler implements ErrorHandler {
     public void warning(SAXParseException e) throws SAXException {
         int zeile = e.getLineNumber();
         int spalte = e.getColumnNumber();
-        logger.warn("Achtung! Warnung: Überprüfe Zeile " + zeile + ", Spalte " + spalte);
-        logger.warn(e.getMessage());
+        MyXMLParserErrorHandler.addWarning("Achtung! Warnung: Überprüfe Zeile " + zeile + ", Spalte " + spalte + " " + e.getMessage());
     }
     
     /**
@@ -55,8 +49,7 @@ public class MyParserExceptionHandler implements ErrorHandler {
     public void error(SAXParseException e) throws SAXException {
         int zeile = e.getLineNumber();
         int spalte = e.getColumnNumber();
-        logger.error("Achtung! Fehler in Zeile " + zeile + ", Spalte " + spalte);
-        logger.error(e.getMessage());
+        MyXMLParserErrorHandler.addError("Achtung! Fehler in Zeile " + zeile + ", Spalte " + spalte + " " + e.getMessage());
     }
     
     /**
@@ -71,7 +64,6 @@ public class MyParserExceptionHandler implements ErrorHandler {
     public void fatalError(SAXParseException e) throws SAXException {
         int zeile = e.getLineNumber();
         int spalte = e.getColumnNumber();
-        logger.error("Achtung! Fataler Fehler in Zeile " + zeile + ", Spalte " + spalte);
-        logger.error(e.getMessage());
+        MyXMLParserErrorHandler.addError("Achtung! Fataler Fehler in Zeile " + zeile + ", Spalte " + spalte + " " + e.getMessage());
     }
 }
