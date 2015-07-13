@@ -94,16 +94,63 @@ public class DataGenerator {
     /**
      * Method generateFixExtension.
      * 
-     * Grab the extension to be generated and generate the extension. Generate
-     * insert statements for each table of the task based on the tuples
-     * of the xml file.
-     * 
      * @throws de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException exception
      *         thrown if there is an error executing the insert statement on db
      */
     public void generateFixExtension() throws MySQLAlchemistException {
-        //Generate data
-        this.generateDataFromGenerationTuples();
+        //Nothing to do
+    }
+    
+
+    /**
+     * Method generateRandomExtension.
+     * 
+     * Method to generate random insert statements.
+     * 
+     * @throws de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException exception
+     *         thrown if there is an error executing the insert statement on db
+     */
+    public void generateRandomExtension() throws MySQLAlchemistException {
+        //Iterate through all relations
+        for (Relation rel : this.relations) {
+            String generationTuple = "10;none";
+            for (ArrayList columnInformation : rel.getColumnInformation()) {
+                String columnInformationString;
+                
+                if ((Boolean) columnInformation.get(3) != null) {
+                    //Ref
+                    StringTokenizer st = new StringTokenizer((String) columnInformation.get(3), "(");
+                    columnInformationString = "ref," + st.nextToken() + "," + st.nextToken().replace(")", "") ;
+                } else {
+                    //No ref
+                    String type = ((String) columnInformation.get(2)).toLowerCase();
+                    if (type.contains("int")) {
+                        columnInformationString = "random,int";
+                    } else if (type.contains("tinyint")) {
+                        columnInformationString = "between,-128,127";
+                    } else if (type.contains("smallint")) {
+                        columnInformationString = "between,-32768,32767";
+                    } else if (type.contains("bigint")) {
+                        columnInformationString = "between,-9223372036854775808,9223372036854775807";
+                    } else if (type.contains("double")) {
+                        columnInformationString = "random,double";
+                    } else if (type.contains("varchar")) {
+                        int length = Integer.parseInt(type.replaceAll("\\D", ""));
+                        columnInformationString = "random,string," + length;
+                    } else if (type.contains("boolean")) {
+                        columnInformationString = "random,boolean,15";
+                    } else if (type.contains("date")) {
+                        columnInformationString = "random,date,15";
+                    } else {
+                        columnInformationString = "random,string,15";
+                    }
+                }
+                
+                generationTuple += ";" + columnInformationString;
+            }
+            
+            rel.setDataGeneration(generationTuple);
+        }
     }
     
     /**
@@ -253,12 +300,10 @@ public class DataGenerator {
      * Generate data and insert statements for the given relation with the given
      * generation tuple.
      * 
-     * @param rel Relation relation for which data should be created
-     * @param generationTuple String generation tuple of which data should be created
      * @throws de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException exception
      *         thrown if there is an error executing the insert statement on db
      */
-    private void generateDataFromGenerationTuples() throws MySQLAlchemistException {
+    public void generateDataFromGenerationTuples() throws MySQLAlchemistException {
         //Iterate through all relations of the task
         for (Relation rel : this.relations) {
             //Break if no data has to be generated

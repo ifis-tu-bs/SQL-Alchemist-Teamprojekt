@@ -20,7 +20,7 @@ public class Relation {
     private String tableName;
     
     /**
-     * ArrayList with the column information.
+     * ArrayList with the column information (columnName, columnType, primaryKey, ref).
      */
     private ArrayList<ArrayList> columnInformation;
     

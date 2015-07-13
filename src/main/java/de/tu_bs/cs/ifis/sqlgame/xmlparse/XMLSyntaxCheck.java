@@ -67,7 +67,7 @@ public class XMLSyntaxCheck {
             if(isFile){
                 reader.parse(
                     //source of xml-file
-                    new InputSource(conf.getString("input.xmlPath") + s)
+                    new InputSource(this.conf.getString("input.xmlPath") + s)
                 );
             } else {
                 reader.parse(

@@ -405,11 +405,18 @@ public class Task {
                 break;
             }
             
+            case "randomData": {
+                dg.generateRandomExtension();
+                break;
+            }
+            
             case "referenceStatement": {
                 dg.generateSelectExtension();
                 break;
             }
         }
+        
+        dg.generateDataFromGenerationTuples();
     }
 
     /**
