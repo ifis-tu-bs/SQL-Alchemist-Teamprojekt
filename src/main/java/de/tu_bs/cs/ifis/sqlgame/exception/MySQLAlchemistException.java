@@ -38,10 +38,14 @@ public class MySQLAlchemistException extends Exception {
      * @return string from the message
      */
     public String getMyMessage() {
-        if (exception.getClass() == MySQLAlchemistException.class) {
-            MySQLAlchemistException ex = (MySQLAlchemistException) exception;
-            return message + ex.getMyMessage();
+        if (exception != null) {
+            if (exception.getClass() == MySQLAlchemistException.class) {
+                MySQLAlchemistException ex = (MySQLAlchemistException) exception;
+                return message + ex.getMyMessage();
+            }
+            return message + exception.getMessage();
+        } else {
+            return message;
         }
-        return message + exception.getMessage();
-    }
+}
 }

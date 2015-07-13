@@ -192,6 +192,15 @@ public class Task {
     public void setTmpDbConn(DBConnection tmpDbConn) {
         this.tmpDbConn = tmpDbConn;
     }
+    
+    /**
+     * Setter for fixDbConn.
+     *
+     * @param fixDbConn DBConnection
+     */
+    public void setFixDbConn(DBConnection fixDbConn) {
+        this.fixDbConn = fixDbConn;
+    }
 
     /**
      * Constructor Task.
@@ -256,7 +265,7 @@ public class Task {
      * @throws de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException Exception for the
      * SQLSelectStatement
      */
-    private boolean checkTask() throws MySQLAlchemistException {
+    protected boolean checkTask() throws MySQLAlchemistException {
         String selectStatement = "SELECT * FROM Task WHERE name = ?";
         String[] variables = new String[1];
         variables[0] = this.name;

@@ -2,17 +2,21 @@ package de.tu_bs.cs.ifis.sqlgame.sandbox;
 
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
+import de.tu_bs.cs.ifis.sqlgame.dbconnection.DBConnection;
 import de.tu_bs.cs.ifis.sqlgame.exception.MySQLAlchemistException;
 import de.tu_bs.cs.ifis.sqlgame.exception.MyXMLParserErrorHandler;
 import de.tu_bs.cs.ifis.sqlgame.xmlparse.Header;
 import de.tu_bs.cs.ifis.sqlgame.xmlparse.MySAXParser;
 import de.tu_bs.cs.ifis.sqlgame.xmlparse.XMLSyntaxCheck;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Iterator;
+import org.xml.sax.InputSource;
 
 /**
  * Class InputFile.
@@ -88,7 +92,14 @@ public class InputFile {
             //Parse the xml-file und build the db-tables
             msp.parseDocument(file, false);
             this.tasks = msp.getMyTasks();
-   
+            boolean exist = false;
+            for (Task task : this.tasks) {
+                task.setFixDbConn(new DBConnection("local", this.conf.getString("input.fixDbPath")));
+                if (task.checkTask()) {
+                    exist = true;
+                }
+            }
+
             //Create a new file from the file string
             Iterator<Task> it = this.tasks.iterator();
             if (it.hasNext()) {
@@ -99,17 +110,50 @@ public class InputFile {
 
                     this.filename = header.getTaskId();
                     String fullFilePath = filePath + this.filename + ".xml";
-                    newfile = new File(fullFilePath);
-                    if (checkFile(newfile)) {
-                        System.out.println(fullFilePath + " erzeugt");
-                    }
-                    try {
-                        try (OutputStreamWriter out = new OutputStreamWriter(new FileOutputStream(newfile),"UTF-8")) {
-                            out.write(file);
-                            out.flush();
+                    String content = "";
+                    if (exist) {
+                        try {
+                            FileReader fr = new FileReader(fullFilePath);
+                            BufferedReader br = new BufferedReader(fr);
+                            String zeile = "";
+                            do {
+                                zeile = br.readLine();
+                                if (zeile != null) {
+                                    content += zeile + "\n";
+                                }
+                            } while (zeile != null);
+
+                            br.close();
+                        } catch (IOException e) {
+                            throw new MySQLAlchemistException("Fehler beim lesen der alten Datei.", null);
                         }
-                    } catch (IOException ex) {
-                        throw new MySQLAlchemistException("Fehler beim Erstellen der Datei. ", ex);
+                        int length = 0;
+                        content = content.trim();
+                        file = file.trim();
+                        if (content.length() != file.length()) {
+                            throw new MySQLAlchemistException("Ein User spielt bereits eine Aufgabe mit dem gleichen Namen, bitte nenne deine Aufgabe um.", null);
+                        } else {
+                            length = file.length();
+                        }
+                        for (int i = 0; i < length; i++) {
+                            if (content.charAt(i) != file.charAt(i)) {
+                                throw new MySQLAlchemistException("Ein User spielt bereits eine Aufgabe mit dem gleichen Namen, bitte nenne deine Aufgabe um.", null);
+                            }
+                        }
+
+                    } else {
+                        newfile = new File(fullFilePath);
+                        if (checkFile(newfile)) {
+                            System.out.println(fullFilePath + " erzeugt");
+                        }
+                        try {
+                            try (OutputStreamWriter out = new OutputStreamWriter(new FileOutputStream(newfile), "UTF-8")) {
+                                out.write(file);
+                                out.flush();
+                            }
+                        } catch (IOException ex) {
+                            throw new MySQLAlchemistException("Fehler beim Erstellen der Datei. ", ex);
+                        }
                     }
                 }
             }
