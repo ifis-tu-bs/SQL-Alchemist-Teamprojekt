@@ -482,7 +482,7 @@ public class Task {
         for (int i = 1; i < userResult.size(); i++){
             tmpList.add(userResult.get(i));
         }
-        userResult = tmpList;
+        userResult = (ArrayList<ArrayList<String>>) tmpList.clone();
         tmpList.clear();
         ArrayList<ArrayList<String>> refResult;
         Iterator<Exercise> it = myExercise.iterator();
@@ -497,13 +497,14 @@ public class Task {
                 for (int i = 1; i < refResult.size(); i++){
                     tmpList.add(refResult.get(i));
                 }
-                refResult = tmpList;
+                refResult = (ArrayList<ArrayList<String>>) tmpList.clone();
                 tmpList.clear();
                 if (s.getEvaluationstrategy().equals("LIST")) {
                     return userResult.equals(refResult);
                 } else {
                     boolean equal = false;
                     if (userResult.size() == refResult.size()) {
+                        
                         for (ArrayList<String> tmpUser : userResult) {
                             for (ArrayList<String> tmpRef : refResult) {
                                 if (tmpUser.equals(tmpRef)) {
